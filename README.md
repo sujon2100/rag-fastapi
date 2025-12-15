@@ -30,3 +30,23 @@ an instruction to answer only using the provided context
 Llama’s role is not memory.
 Llama’s role is reasoning and explanation.
 The final answer is then returned to the user through FastAPI.
+
+Client (Postman / UI)
+        |
+        v
+FastAPI (/rag/query)
+        |
+        v
+Query Embedding (SentenceTransformers)
+        |
+        v
+Vector Search (Pinecone)
+        |
+        v
+Context Injection
+        |
+        v
+LLM Generation (Ollama - Llama 3)
+        |
+        v
+Final Answer (JSON)
