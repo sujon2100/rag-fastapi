@@ -31,6 +31,7 @@ Llama’s role is not memory.
 Llama’s role is reasoning and explanation.
 The final answer is then returned to the user through FastAPI.
 
+Flow:
 Client (Postman / UI)
         |
         v
@@ -50,3 +51,28 @@ LLM Generation (Ollama - Llama 3)
         |
         v
 Final Answer (JSON)
+
+                      ┌──────────────────────┐
+                      │      Frontend /      │
+                      │   Query Client UI     │
+                      └──────────▲───────────┘
+                                 │ HTTP POST
+                                 ▼
+                     ┌──────────────────────────┐
+                     │       FastAPI Backend     │
+                     │ (app/main, routes, etc.) │
+                     └──────────▲───────────────┘
+                                 │ Calls
+ ┌───────────────────────────────┴────────────────────────────┐
+ │                     RAG Pipeline Components                │
+ │                                                            │
+ │   ┌─────────────────┐      ┌──────────────────────────┐    │
+ │   │   Vector Store   │      │    Local LLM (Ollama)     │  │
+ │   │   Pinecone DB    │◀────▶│   Llama3 / Model API     │   │
+ │   │  (384 dim index) │      │  (localhost network)      │  │
+ │   └─────────────────┘      └──────────────────────────┘     │
+ │             ▲                             ▲                 │
+ │  embed query│                             │ generate answer│
+ │             │                             │                 │
+ └────────────────────────────────────────────────────────────┘
+
