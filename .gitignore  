@@ -4,17 +4,9 @@ __pycache__/
 *.pyo
 *.pyd
 
-# Virtual environments
-venv/
+# Virtual environment
 venv311/
 .env
 
 # OS files
 .DS_Store
-
-# IDE
-.vscode/
-.idea/
-
-# Logs
-*.log
