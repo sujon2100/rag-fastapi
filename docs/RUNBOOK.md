@@ -272,6 +272,23 @@ Monitoring window started **2026-07-13**. Same rule as
 `ai-platform-builder`: no uptime percentage is citable evidence until a
 real amount of time has actually passed.
 
+### Monitoring log
+
+- **2026-07-13 22:43 UTC - readiness alert fired, self-resolved within
+  ~15 minutes.** Investigated rather than assumed benign: `dmesg` showed
+  no OOM-killer activity, but the systemd journal showed a fresh boot at
+  22:32-22:33 UTC with `unattended-upgrades.service - Unattended Upgrades
+  Shutdown` immediately before it - Debian's automatic security-update
+  reboot, not an application crash. `restart: unless-stopped` brought all
+  three containers back up with no manual intervention; the readiness
+  check failed for a few minutes during the cold `torch`/Ollama reload
+  that follows any restart (same delay documented in Part 2), then
+  cleared on its own once warm. Confirmed healthy afterward by re-running
+  both health checks manually. Left `unattended-upgrades`'s auto-reboot
+  enabled rather than disabling it - the occasional brief, self-healing
+  blip this causes is a more honest signal than silencing security
+  patching to keep the uptime number clean.
+
 ### Budget alerts
 
 Set on the shared billing account (not scoped to a single project), so
