@@ -2,11 +2,12 @@ import os
 
 import requests
 from fastapi import FastAPI, HTTPException
-from app.routes import router
+from app.routes import agent_router, router
 from app.services.vectorstore import index
 
 app = FastAPI(title="RAG FastAPI Service")
 app.include_router(router)
+app.include_router(agent_router)
 
 OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
 
