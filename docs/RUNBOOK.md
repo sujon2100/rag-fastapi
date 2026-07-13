@@ -167,9 +167,182 @@ Worth keeping in the record rather than glossing over.
 
 ## Part 3: cloud deployment
 
-Not yet deployed. Planned target: a new GCP Compute Engine VM in the same
-`ai-platform-eb2-demo` project used for the `ai-platform-builder` deployment,
-kept as a separate VM so the two stay independent. This section will be
-filled in with the same level of detail as `ai-platform-builder`'s runbook
-(provisioning commands, monitoring setup, synthetic traffic) once that
-deployment actually happens.
+Live on GCP since 2026-07-13, in its own dedicated project
+(`rag-mcp-agent-prod`) rather than reusing `ai-platform-eb2-demo` - a
+deliberate choice to keep this as a genuinely separate, independently
+verifiable deployment rather than two services riding on one project's
+identity.
+
+- Public endpoint: `http://104.198.167.39:8000`
+- Project: `rag-mcp-agent-prod` (account sujon2100@gmail.com), billed
+  against the same billing account as `ai-platform-eb2-demo`
+  (`0156C5-886573-BA959C`)
+- VM: `rag-mcp-agent-vm`, zone `us-central1-a`, machine type `e2-medium`
+  (see item 10 below for why not `e2-small`)
+- Static IP: `rag-mcp-agent-ip`, reserved so the address doesn't change
+  on restart
+- Boot disk: 50GB `pd-standard` (see item 9 below for why not 30GB)
+
+### One-time account setup
+
+Same billing account as `ai-platform-builder` - no new trial needed.
+Before provisioning anything, checked the actual remaining balance in the
+console (Billing -> Overview) rather than assuming: **$298.91 of $300
+credit remaining, 88 days left (ends 2026-10-08), still on free trial,
+not upgraded to a paid account** - confirmed as of 2026-07-13. On a free
+trial, GCP does not auto-charge if credit runs out; it suspends resources
+instead, so there was no risk of surprise billing before starting.
+
+```bash
+gcloud projects create rag-mcp-agent-prod --name="rag-mcp-agent-prod"
+gcloud billing projects link rag-mcp-agent-prod --billing-account=0156C5-886573-BA959C
+gcloud config set project rag-mcp-agent-prod
+gcloud config set compute/region us-central1
+gcloud config set compute/zone us-central1-a
+gcloud services enable compute.googleapis.com monitoring.googleapis.com billingbudgets.googleapis.com
+```
+
+### Provisioning
+
+```bash
+gcloud compute addresses create rag-mcp-agent-ip --region=us-central1
+
+gcloud compute firewall-rules create allow-ssh-iap \
+  --network=default --direction=INGRESS --action=ALLOW \
+  --rules=tcp:22 --source-ranges=35.235.240.0/20 \
+  --target-tags=rag-mcp-agent-vm
+
+gcloud compute firewall-rules create allow-gateway-http \
+  --network=default --direction=INGRESS --action=ALLOW \
+  --rules=tcp:8000 --source-ranges=0.0.0.0/0 \
+  --target-tags=rag-mcp-agent-vm
+
+gcloud compute instances create rag-mcp-agent-vm \
+  --zone=us-central1-a --machine-type=e2-medium \
+  --image-family=debian-12 --image-project=debian-cloud \
+  --boot-disk-size=50GB --boot-disk-type=pd-standard \
+  --address=rag-mcp-agent-ip --tags=rag-mcp-agent-vm \
+  --metadata-from-file=startup-script=infra/gcp/startup-script.sh
+```
+
+`infra/gcp/startup-script.sh` installs Docker CE, the compose plugin, and
+`at`/`atd` on first boot - same script `ai-platform-builder` uses.
+
+### Connecting to the VM
+
+```bash
+gcloud compute ssh rag-mcp-agent-vm --zone=us-central1-a --tunnel-through-iap
+```
+
+### Deploying
+
+```bash
+tar --exclude='.git' --exclude='__pycache__' --exclude='.pytest_cache' \
+    --exclude='venv311' --exclude='.env' -czf /tmp/rag-fastapi.tar.gz .
+gcloud compute scp /tmp/rag-fastapi.tar.gz rag-mcp-agent-vm:/tmp/ --tunnel-through-iap
+
+# on the VM:
+mkdir -p ~/rag-fastapi
+tar -xzf /tmp/rag-fastapi.tar.gz -C ~/rag-fastapi
+# write a real .env by hand on the VM - never scp'd, never in git:
+#   PINECONE_API_KEY=<real key>
+#   OLLAMA_BASE_URL=http://ollama:11434
+cd ~/rag-fastapi
+sudo docker compose up -d ollama
+sudo docker exec rag-fastapi-ollama-1 ollama pull qwen2.5:1.5b
+sudo docker compose build api
+sudo docker compose up -d mcp-server api
+```
+
+### Monitoring
+
+Two layers, same pattern as `ai-platform-builder`:
+
+1. GCP Cloud Monitoring: uptime checks `rag-mcp-agent-liveness` and
+   `rag-mcp-agent-readiness` hit `/health/live` and `/health/ready` every
+   5 minutes, each with an alert policy emailing sujon2100@gmail.com on
+   failure.
+2. UptimeRobot (independent third party): separate monitors and a
+   separate public status page from `ai-platform-builder`'s, distinct
+   name/URL so the two are unambiguous at a glance - set up manually via
+   the UptimeRobot console rather than the API (no API key was on file
+   for this project). Link to be added here once created.
+
+Monitoring window started **2026-07-13**. Same rule as
+`ai-platform-builder`: no uptime percentage is citable evidence until a
+real amount of time has actually passed.
+
+### Budget alerts
+
+Set on the shared billing account (not scoped to a single project), so
+one alert path covers both this deployment and `ai-platform-builder`'s:
+
+```bash
+gcloud billing budgets create \
+  --billing-account=0156C5-886573-BA959C \
+  --display-name="Trial credit guardrail" \
+  --budget-amount=300USD \
+  --threshold-rule=percent=0.1667 \
+  --threshold-rule=percent=0.3333 \
+  --threshold-rule=percent=0.6667 \
+  --threshold-rule=percent=1.0
+```
+
+Fires at roughly $50, $100, $200, and $300 of the $300 trial credit,
+emailing the billing account's default IAM recipients.
+
+### Issues found and fixed during deployment (2026-07-13)
+
+Worth keeping in the record rather than glossing over - this deployment
+surfaced more real problems than the local Docker Compose testing did,
+because a small cloud VM behaves differently from a Mac with Docker
+Desktop.
+
+9. **The 30GB boot disk ran out of space mid-build and the build
+   failed.** `docker compose build mcp-server api` built the identical
+   Dockerfile twice under two different image tags (`rag-fastapi-api` and
+   `rag-fastapi-mcp-server`), each unpacking its own ~3GB copy of
+   torch/sentence-transformers - so the build needed roughly double the
+   disk it actually should have. It failed partway through with
+   `write ...: no space left on device` while extracting `triton`'s
+   shared library. Fixed two ways: changed `docker-compose.yml` so `api`
+   builds and tags a single `rag-fastapi:latest` image and `mcp-server`
+   just references that same tag instead of building its own copy (halved
+   both the build time and the disk footprint), and resized the boot disk
+   from 30GB to 50GB for headroom (`gcloud compute disks resize`, then
+   `growpart`/`resize2fs` on the VM - `growpart` isn't installed by
+   default on Debian, needed `apt-get install cloud-guest-utils` first).
+
+10. **`e2-small` (2GB RAM, no swap) crashed under real traffic - twice.**
+    Health checks and even the first `/rag/query` test passed fine on
+    `e2-small`, but the very first real `/agent/query` request (which
+    runs `mcp-server`'s embedding step and the agent's Ollama tool-calling
+    step at the same time) made the entire VM unreachable - not just the
+    containers, but SSH and even the guest OS's own network stack
+    (`gcloud compute ssh` failed with `failed to connect to backend`, and
+    the serial console showed the guest stuck retrying
+    `dial tcp 169.254.169.254:80: connect: network is unreachable`,
+    consistent with an OOM event taking out something more than just the
+    offending container). A `gcloud compute instances reset` brought it
+    back, but the exact same request crashed it again within seconds -
+    confirmed reproducible, not a one-off. With zero swap on a 2GB
+    instance, running `mcp-server`'s embedding model and Ollama loading
+    `qwen2.5:1.5b` at the same time had no room to fail gracefully. Fixed
+    by resizing to `e2-medium` (4GB RAM): `gcloud compute instances stop`,
+    `gcloud compute instances set-machine-type --machine-type=e2-medium`,
+    `gcloud compute instances start`. Confirmed fixed by re-running the
+    exact request that crashed the VM twice under `e2-small` - it
+    succeeded, and the VM stayed reachable afterward. Two cheaper
+    alternatives considered and not taken here: adding swap (risked very
+    slow responses given the disk is `pd-standard`, not SSD) and merging
+    `api`/`mcp-server` into one process to stop loading the embedding
+    model twice (a real fix, but a bigger refactor than the deployment
+    timeline called for - worth doing later).
+
+11. **No restart policy meant a crash required manual recovery.** The
+    original `docker-compose.yml` had no `restart:` key on any service,
+    so when the VM reset killed all three containers, they stayed dead
+    until someone ran `docker compose up -d` by hand. Added
+    `restart: unless-stopped` to all three services. Confirmed working:
+    after the `e2-medium` resize and reboot, all three containers came
+    back on their own with no manual intervention.
