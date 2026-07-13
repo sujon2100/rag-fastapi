@@ -1,3 +1,5 @@
+import os
+
 import requests
 from sentence_transformers import SentenceTransformer
 from app.services.vectorstore import query_vectors
@@ -6,7 +8,8 @@ from app.services.vectorstore import query_vectors
 embedder = SentenceTransformer("all-MiniLM-L6-v2")
 
 # Ollama config
-OLLAMA_URL = "http://localhost:11434/api/generate"
+OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
+OLLAMA_URL = f"{OLLAMA_BASE_URL}/api/generate"
 OLLAMA_MODEL = "llama3"
 
 
