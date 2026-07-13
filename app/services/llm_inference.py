@@ -10,7 +10,7 @@ embedder = SentenceTransformer("all-MiniLM-L6-v2")
 # Ollama config
 OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
 OLLAMA_URL = f"{OLLAMA_BASE_URL}/api/generate"
-OLLAMA_MODEL = "llama3"
+OLLAMA_MODEL = "qwen2.5:1.5b"
 
 
 def generate_with_ollama(prompt: str) -> str:

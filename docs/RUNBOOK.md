@@ -17,8 +17,7 @@ python3.11 -m venv venv311
 source venv311/bin/activate
 pip install -r requirements.txt
 cp .env.example .env   # then edit in a real PINECONE_API_KEY
-ollama pull llama3       # used by /rag/query
-ollama pull qwen2.5:1.5b # used by the agent - see "llama3 doesn't do tools" below
+ollama pull qwen2.5:1.5b # used by both /rag/query and the agent
 ```
 
 ### Run it
@@ -63,7 +62,6 @@ pytest tests/ --run-integration   # spins up a real MCP server subprocess,
 ```bash
 cp .env.example .env   # real PINECONE_API_KEY
 docker compose up -d ollama
-docker exec -it $(docker compose ps -q ollama) ollama pull llama3
 docker exec -it $(docker compose ps -q ollama) ollama pull qwen2.5:1.5b
 docker compose up -d mcp-server api
 ```
@@ -121,9 +119,10 @@ Worth keeping in the record rather than glossing over.
    `ollama._types.ResponseError: registry.ollama.ai/library/llama3:latest
    does not support tools (status code: 400)`. Not every model on Ollama
    implements the tools/function-calling API; `llama3` (the base model)
-   doesn't. Switched the agent specifically to `qwen2.5`, which does,
-   while leaving `/rag/query`'s plain-generation path on `llama3`
-   unchanged since it never calls tools.
+   doesn't. Switched the agent specifically to `qwen2.5`, initially
+   leaving `/rag/query`'s plain-generation path on `llama3` since it never
+   calls tools and didn't strictly need to change. Revisited before
+   deployment (see item 8 below) and switched everywhere.
 
 5. **`qwen2.5:0.5b` was too small to reliably fill in both required fields**
    on the two-argument `ingest_document` tool call, in testing here - it
@@ -154,6 +153,17 @@ Worth keeping in the record rather than glossing over.
    item 5 worse) or failed a test assertion outright. Fixed in both
    places by extracting the actual text out of the content blocks before
    using it.
+
+8. **Running two different Ollama models risked exceeding a small
+   deployment VM's memory.** `/rag/query` was left on `llama3` (a 4.7GB
+   model) after item 4, while the agent used `qwen2.5:1.5b`. Ollama keeps
+   a model resident in memory for a keep-alive window after use, so if
+   both endpoints got hit within that window, both models could end up
+   loaded simultaneously - `ai-platform-builder` specifically picked a
+   small model (`qwen2.5:0.5b`) to fit on an `e2-small` (2GB RAM), and
+   `llama3` alone would already blow past that. Caught before deployment,
+   not after - switched `/rag/query` to `qwen2.5:1.5b` too, so the whole
+   system now runs on one small model instead of two.
 
 ## Part 3: cloud deployment
 

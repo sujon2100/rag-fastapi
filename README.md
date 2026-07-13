@@ -89,8 +89,10 @@ On top of the RAG pipeline described above, this repo now also has:
 - `app/agent/graph.py` - a LangGraph agent (`StateGraph`, conditional
   routing between an `agent` node and a `tools` node) that connects to that
   MCP server over HTTP and uses a local Ollama model to decide when to call
-  which tool. Uses `qwen2.5:1.5b`, not `llama3` - `llama3` doesn't support
-  Ollama's tool-calling API at all (see RUNBOOK).
+  which tool. Uses `qwen2.5:1.5b` - `llama3` doesn't support Ollama's
+  tool-calling API at all, and running two different models risked
+  exceeding a small deployment VM's memory, so `/rag/query` was switched
+  to `qwen2.5:1.5b` too (see RUNBOOK).
 - `app/agent/authz.py` - a small static allowlist checked before every tool
   call: which roles may call which tools. `reader` can only search;
   `ingest_agent` can search and ingest. Unknown roles get nothing. This is
@@ -111,7 +113,6 @@ python3.11 -m venv venv311
 source venv311/bin/activate
 pip install -r requirements.txt
 cp .env.example .env   # fill in a real PINECONE_API_KEY
-ollama pull llama3
 ollama pull qwen2.5:1.5b
 
 # terminal 1
@@ -131,7 +132,6 @@ curl -X POST http://localhost:8000/agent/query \
 ```bash
 cp .env.example .env   # fill in a real PINECONE_API_KEY
 docker compose up -d ollama
-docker exec -it $(docker compose ps -q ollama) ollama pull llama3
 docker exec -it $(docker compose ps -q ollama) ollama pull qwen2.5:1.5b
 docker compose up -d mcp-server api
 ```
