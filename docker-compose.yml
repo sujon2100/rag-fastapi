@@ -1,14 +1,16 @@
 services:
   ollama:
     image: ollama/ollama:latest
+    restart: unless-stopped
     volumes:
       - ollama_data:/root/.ollama
     ports:
       - "11434:11434"
 
   mcp-server:
-    build: .
+    image: rag-fastapi:latest
     init: true
+    restart: unless-stopped
     command: ["python", "-m", "app.mcp.server"]
     environment:
       - PINECONE_API_KEY=${PINECONE_API_KEY}
@@ -18,8 +20,13 @@ services:
       - "8001:8001"
 
   api:
-    build: .
+    build:
+      context: .
+      tags:
+        - rag-fastapi:latest
+    image: rag-fastapi:latest
     init: true
+    restart: unless-stopped
     depends_on:
       - ollama
       - mcp-server
