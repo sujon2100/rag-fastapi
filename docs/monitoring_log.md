@@ -37,3 +37,19 @@ failure caused by Debian's unattended-upgrades triggering an automatic
 reboot, recovered automatically by the restart: unless-stopped policy
 within minutes, no manual intervention needed. Baseline established, no
 cumulative uptime percentage to report yet.
+
+2026-07-13 (first automated check-in, same day): both /health/live and
+/health/ready responded 200 when hit directly just now. Pulled the
+check_passed metric from GCP Cloud Monitoring for both uptime checks
+(rag-mcp-agent-liveness and rag-mcp-agent-readiness) - only about 7 hours
+of data exists yet since the checks were only just created today, and
+every point in that window passed, so GCP shows 100% for both so far. That
+is a small sample, not a real 30-day figure, so it shouldn't be quoted as
+final evidence yet. Tried to pull the UptimeRobot public status page for
+a cross-check but it failed to load its monitor data (the page returned an
+"error while fetching the data" message when fetched - looks like a
+client-side rendering issue, not necessarily a real outage) - flagging
+this as a failed pull rather than reporting a number, will retry next
+week. VM (rag-mcp-agent-vm) confirmed RUNNING. Nothing down this week
+beyond the one restart already noted above. 30 days from window start
+(2026-07-13) puts the earliest petition-ready end date at 2026-08-12.
