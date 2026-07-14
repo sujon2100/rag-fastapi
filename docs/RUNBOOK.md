@@ -262,11 +262,22 @@ Two layers, same pattern as `ai-platform-builder`:
    `rag-mcp-agent-readiness` hit `/health/live` and `/health/ready` every
    5 minutes, each with an alert policy emailing sujon2100@gmail.com on
    failure.
-2. UptimeRobot (independent third party): separate monitors and a
-   separate public status page from `ai-platform-builder`'s, distinct
-   name/URL so the two are unambiguous at a glance - set up manually via
-   the UptimeRobot console rather than the API (no API key was on file
-   for this project). Link to be added here once created.
+2. UptimeRobot (independent third party): two new monitors,
+   `RAG-MCP-Agent — Liveness` and `RAG-MCP-Agent — Readiness`, created
+   manually via the UptimeRobot console (their API rejects monitor
+   *creation* on the free plan with a generic "not allowed to use some
+   settings" error, even though read-only API calls work fine - tried
+   several parameter combinations before concluding it's a plan
+   restriction, not a malformed request). Original plan was a fully
+   separate status page from `ai-platform-builder`'s, but the free plan
+   only allows one public status page per account, so both projects now
+   share the same one: `https://stats.uptimerobot.com/2JUsdtF71z`,
+   renamed from "AI Platform Gateway" to "Helal Uddin — Deployments" to
+   reflect that. Separation between the two projects is by monitor
+   naming instead of by URL - all four monitors are clearly prefixed
+   (`AI Platform Builder Gateway — ...` / `RAG-MCP-Agent — ...`), so it's
+   unambiguous which entries belong to which deployment even on one
+   shared page.
 
 Monitoring window started **2026-07-13**. Same rule as
 `ai-platform-builder`: no uptime percentage is citable evidence until a
