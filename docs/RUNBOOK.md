@@ -283,6 +283,54 @@ Monitoring window started **2026-07-13**. Same rule as
 `ai-platform-builder`: no uptime percentage is citable evidence until a
 real amount of time has actually passed.
 
+### Weekly check-in, running natively on the VM
+
+Originally the weekly check-in (pulling uptime numbers, summarizing,
+logging) ran as a Claude Code scheduled task. That only fires while the
+Claude app is open, so it went quiet whenever the laptop stayed closed -
+`ai-platform-builder` hit this exact problem first and solved it by
+moving the check-in onto its own VM's cron; this project reuses that
+same design directly rather than re-solving it.
+
+`infra/gcp/weekly_checkin.sh` hits both health endpoints locally, queries
+GCP Cloud Monitoring and the UptimeRobot API directly, and appends a
+dated block to `~/weekly_checkin.log` on the VM:
+
+```bash
+# crontab -l on the VM:
+35 9 * * 5 /home/hilalfelix/scripts/weekly_checkin.sh
+```
+
+It authenticates to GCP as a dedicated service account,
+`monitoring-reader@rag-mcp-agent-prod.iam.gserviceaccount.com`, created
+specifically for this and granted only `roles/monitoring.viewer` - it
+can't touch the VM, can't modify anything, can only read monitoring
+data. The key file lives at `~/.gcp/monitoring-reader-key.json` on the
+VM, outside the repo, same treatment as every other secret here.
+UptimeRobot access uses a read-only API key (not the main key, which can
+edit or delete monitors), stored in `.env` alongside the Pinecone key.
+The script filters UptimeRobot's monitor list to just the two whose URL
+contains this VM's IP (`104.198.167.39`), since the status page is
+shared with `ai-platform-builder` and its monitors would otherwise show
+up in the same pull.
+
+This only handles data collection and local logging on the VM. Pulling
+that log into this repo and committing it stays a manual, reviewed step
+- same standing rule as everywhere else in this project. The Claude
+scheduled task (`rag-mcp-agent-uptime-checkin`) still runs weekly, but
+its role changed: it now only pulls `~/weekly_checkin.log` from the VM,
+drafts a paragraph for `docs/monitoring_log.md`, and hands that draft
+and the exact git commands back to the user - it does not edit the file
+or run any git command itself. Autonomous git push from a VM cron job
+was considered and deliberately rejected: it would mean a GitHub-write
+credential living permanently on a publicly-reachable machine, and it
+would skip the review step this project has relied on throughout. To
+pull the latest check-in data directly:
+
+```bash
+gcloud compute ssh rag-mcp-agent-vm --zone=us-central1-a --project=rag-mcp-agent-prod --tunnel-through-iap --command="cat ~/weekly_checkin.log"
+```
+
 ### Monitoring log
 
 - **2026-07-13 22:43 UTC - readiness alert fired, self-resolved within
