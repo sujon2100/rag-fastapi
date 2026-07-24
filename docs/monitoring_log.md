@@ -53,3 +53,24 @@ this as a failed pull rather than reporting a number, will retry next
 week. VM (rag-mcp-agent-vm) confirmed RUNNING. Nothing down this week
 beyond the one restart already noted above. 30 days from window start
 (2026-07-13) puts the earliest petition-ready end date at 2026-08-12.
+
+2026-07-24: ran this check-in manually mid-audit after noticing the log
+had gone 11 days without a second entry even though the weekly cron
+(rag-mcp-agent-uptime-checkin, Fridays) should have produced one by now -
+closing that reporting gap rather than waiting for the next scheduled
+fire. Both /health/live and /health/ready returned 200 just now, VM
+confirmed RUNNING. Pulled the full check_passed history from GCP Cloud
+Monitoring for both checks from window start through today: liveness is
+3079 of 3079 five-minute samples passed except for one single missed
+sample around 2026-07-18 10:32-10:42 UTC (a 10-minute gap instead of the
+usual 5, i.e. one skipped check, not a sustained outage), readiness is
+3080 of 3080 passed with no gaps at all. That puts measured uptime at
+essentially 100% for both over 11 days, with that one asterisk on
+liveness. Cross-checked UptimeRobot's public status page directly in a
+browser this time (the plain WebFetch pull failed again with the same
+"error while fetching the data" client-side issue as last week, so I
+loaded it in an actual browser instead) - it shows RAG-MCP-Agent -
+Liveness at 100.000% Operational and RAG-MCP-Agent - Readiness at
+100.000% Operational, consistent with the GCP numbers. No incidents
+reported on either monitor. Nothing down this week. 19 days remain until
+the 2026-08-12 minimum window end.
