@@ -74,3 +74,22 @@ Liveness at 100.000% Operational and RAG-MCP-Agent - Readiness at
 100.000% Operational, consistent with the GCP numbers. No incidents
 reported on either monitor. Nothing down this week. 19 days remain until
 the 2026-08-12 minimum window end.
+
+2026-07-24 (scheduled weekly check-in, same day as the entry above): this
+is the automated Friday run, firing a few hours after the manual pass
+noted just above. Hit both endpoints directly again: /health/live and
+/health/ready both returned 200. Pulled the check_passed metric from GCP
+Cloud Monitoring again via the REST API (daily ALIGN_FRACTION_TRUE
+aggregation this time rather than raw samples): both liveness and
+readiness show a fraction of 1.0 (100%) for every one of the 12 days from
+window start (2026-07-13) through today. That's consistent with the
+manual pull above, aggregated differently. Rechecked the UptimeRobot
+status page in a browser and also pulled its underlying JSON API directly
+(getMonitorList and getEventFeed) rather than just reading the rendered
+page: RAG-MCP-Agent - Liveness and RAG-MCP-Agent - Readiness both show
+100.000% with status "excellent" on every daily bucket back to their
+creation date, and the event feed returned zero incidents across all
+monitors on the shared status page for the last 30 days. VM
+(rag-mcp-agent-vm) confirmed RUNNING via gcloud. Nothing down this week,
+two independent checks same day agree. 19 days remain until the
+2026-08-12 minimum window end.
