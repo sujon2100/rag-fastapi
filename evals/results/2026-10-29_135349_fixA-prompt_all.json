@@ -1,0 +1,1796 @@
+{
+  "meta": {
+    "started": "2026-10-29T13:53:49",
+    "phase": "all",
+    "git_sha": "31a333a",
+    "git_dirty": true,
+    "namespace": "eval-v1",
+    "top_k": 3,
+    "agent_model": "qwen2.5:1.5b",
+    "agent_temperature": 0.0,
+    "judge_model": "gemma3:4b",
+    "repeats": 1,
+    "cases": 40,
+    "host": "Darwin x86_64 i386",
+    "case_timeout_s": 300.0,
+    "grounded_prompt": true,
+    "force_search": false,
+    "agent_max_tokens": 1024,
+    "agent_phase_s": 611.3,
+    "judge_phase_s": 1587.0
+  },
+  "summary": {
+    "per_repeat": [
+      {
+        "cases": 40,
+        "errors": 0,
+        "tool_call_correctness": 0.05,
+        "retriever_hit_at_k": 0.8667,
+        "retriever_doc_hit_at_k": 1.0,
+        "retriever_mrr": 0.7111,
+        "agent_hit_rate": null,
+        "agent_searched_rate": 0.0,
+        "model_initiated_search_rate": 0.0,
+        "latency_p50_s": 12.67,
+        "latency_p95_s": 44.19,
+        "groundedness": 0.0,
+        "groundedness_incl_partial": 0.0,
+        "answer_fact_coverage": 0.5944,
+        "refusal_accuracy": 0.0,
+        "false_refusal_rate": 0.0,
+        "refusal_accuracy_regex": 0.0
+      }
+    ],
+    "mean": {
+      "cases": 40,
+      "errors": 0,
+      "tool_call_correctness": 0.05,
+      "retriever_hit_at_k": 0.8667,
+      "retriever_doc_hit_at_k": 1.0,
+      "retriever_mrr": 0.7111,
+      "agent_hit_rate": null,
+      "agent_searched_rate": 0.0,
+      "model_initiated_search_rate": 0.0,
+      "latency_p50_s": 12.67,
+      "latency_p95_s": 44.19,
+      "groundedness": 0.0,
+      "groundedness_incl_partial": 0.0,
+      "answer_fact_coverage": 0.5944,
+      "refusal_accuracy": 0.0,
+      "false_refusal_rate": 0.0,
+      "refusal_accuracy_regex": 0.0
+    },
+    "judge_vs_hand_labels": {
+      "compared": 0,
+      "agree": 0,
+      "agreement": null,
+      "disagreements": []
+    }
+  },
+  "records": [
+    {
+      "id": "fa-01",
+      "category": "answerable",
+      "repeat": 0,
+      "retriever": {
+        "retrieved": [
+          "fastapi-middleware#0",
+          "fastapi-background-tasks#0",
+          "fastapi-middleware#4"
+        ],
+        "hit": true,
+        "doc_hit": true,
+        "rr": 0.5
+      },
+      "latency_s": 28.98,
+      "answer": "A FastAPI endpoint can run some work after the response has already been sent to the client by using the `Response` object's `after` method. This method allows you to execute additional code after the response has been sent, such as sending a confirmation email, updating a database, or performing other tasks.\n\nHere's a basic example of how you might use the `Response` object's `after` method:\n\n```python\nfrom fastapi import FastAPI, Response\n\napp = FastAPI()\n\n@app.post(\"/send_confirmation\")\nasync def send_confirmation(email: str):\n    confirmation_email = await send_confirmation_email(email)\n    response = Response(\"Confirmation email sent successfully\", status_code=200)\n    response.headers[\"X-Confirmation-Email\"] = confirmation_email\n    response.headers[\"X-Confirmation-Status\"] = \"sent\"\n    return response\n```\n\nIn this example, the `send_confirmation_email` function sends an email and returns the email address. The `Response` object is then created with a status code of 200 and headers containing the confirmation email and status. This way, the confirmation email is sent after the response has been sent to the client.\n\nRemember that this approach is not recommended for production use, as it can lead to issues with the client's connection to the server. A more appropriate approach would be to use a background task or a message queue to perform the work after the response has been sent.",
+      "tool_calls": [],
+      "tool_results": [],
+      "agent_retrieved_text": [],
+      "agent_retrieved": [],
+      "tool_check": {
+        "ok": false,
+        "problems": [
+          "did not call search_documents"
+        ]
+      },
+      "judge": {
+        "model": "gemma3:4b",
+        "refused": false,
+        "refused_source": "regex",
+        "refused_judge": true,
+        "grounded": "unsupported",
+        "grounded_source": "rule",
+        "facts_covered": [
+          false,
+          false,
+          true
+        ],
+        "fact_coverage": 0.3333,
+        "reasons": {
+          "refusal_judge": "The reply provides a basic example but also cautions against its use and suggests alternative approaches, implying a decline to directly answer the core question.",
+          "grounded": "nothing was retrieved"
+        },
+        "latency_s": 48.3,
+        "tokens": 923
+      }
+    },
+    {
+      "id": "fa-02",
+      "category": "answerable",
+      "repeat": 0,
+      "retriever": {
+        "retrieved": [
+          "fastapi-background-tasks#6",
+          "fastapi-background-tasks#5",
+          "fastapi-background-tasks#1"
+        ],
+        "hit": true,
+        "doc_hit": true,
+        "rr": 1.0
+      },
+      "latency_s": 14.06,
+      "answer": "Celery and FastAPI's BackgroundTasks are both used for asynchronous task execution in Python, but they serve different purposes and have different use cases. Celery is a more powerful and flexible task queue that is designed for complex distributed systems, while FastAPI's BackgroundTasks are simpler and more lightweight.\n\nCelery is suitable for:\n\n1. Large-scale distributed systems where tasks need to be executed on multiple nodes.\n2. Complex workflows where tasks need to be scheduled and executed in a specific order.\n3. Systems where tasks need to be executed asynchronously and independently of the main application flow.\n4. Systems where tasks need to be executed on a cluster of machines.\n\nFastAPI's BackgroundTasks are suitable for:\n\n1. Small-scale applications where tasks can be executed on the same machine.\n2. Applications where tasks can be executed in parallel without complex scheduling.\n3. Applications where tasks can be executed in a simple and straightforward manner.\n4. Applications where tasks can be executed without the need for a task queue.\n\nIn summary, Celery is better suited for large-scale, distributed systems with complex workflows, while FastAPI's BackgroundTasks are better suited for small-scale applications with simple task execution needs.",
+      "tool_calls": [],
+      "tool_results": [],
+      "agent_retrieved_text": [],
+      "agent_retrieved": [],
+      "tool_check": {
+        "ok": false,
+        "problems": [
+          "did not call search_documents"
+        ]
+      },
+      "judge": {
+        "model": "gemma3:4b",
+        "refused": false,
+        "refused_source": "regex",
+        "refused_judge": true,
+        "grounded": "unsupported",
+        "grounded_source": "rule",
+        "facts_covered": [
+          true,
+          false,
+          true
+        ],
+        "fact_coverage": 0.6667,
+        "reasons": {
+          "refusal_judge": "The reply provides a clear comparison and answer to the question.",
+          "grounded": "nothing was retrieved"
+        },
+        "latency_s": 22.1,
+        "tokens": 788
+      }
+    },
+    {
+      "id": "fa-03",
+      "category": "answerable",
+      "repeat": 0,
+      "retriever": {
+        "retrieved": [
+          "fastapi-cors#1",
+          "fastapi-cors#0",
+          "fastapi-cors#2"
+        ],
+        "hit": true,
+        "doc_hit": true,
+        "rr": 1.0
+      },
+      "latency_s": 5.63,
+      "answer": "In CORS (Cross-Origin Resource Sharing), two origins are considered different if they do not share the same origin. This means that the origins must have different host names or different port numbers. CORS is a security feature that restricts the ability of a web page to make requests to a different domain than the one that serves the page. The origins must be considered different to ensure that the web page can only make requests to the domain it is served from, and not to any other domain.",
+      "tool_calls": [],
+      "tool_results": [],
+      "agent_retrieved_text": [],
+      "agent_retrieved": [],
+      "tool_check": {
+        "ok": false,
+        "problems": [
+          "did not call search_documents"
+        ]
+      },
+      "judge": {
+        "model": "gemma3:4b",
+        "refused": false,
+        "refused_source": "regex",
+        "refused_judge": true,
+        "grounded": "unsupported",
+        "grounded_source": "rule",
+        "facts_covered": [
+          true,
+          true
+        ],
+        "fact_coverage": 1.0,
+        "reasons": {
+          "refusal_judge": "The reply provides a definition but doesn't directly answer the question.",
+          "grounded": "nothing was retrieved"
+        },
+        "latency_s": 14.43,
+        "tokens": 457
+      }
+    },
+    {
+      "id": "fa-04",
+      "category": "answerable",
+      "repeat": 0,
+      "retriever": {
+        "retrieved": [
+          "fastapi-cors#4",
+          "fastapi-cors#3",
+          "fastapi-cors#6"
+        ],
+        "hit": true,
+        "doc_hit": true,
+        "rr": 0.5
+      },
+      "latency_s": 17.89,
+      "answer": "The decision to set allowed origins to \"*\" in FastAPI CORS should be carefully considered, especially when requests use cookies or Authorization headers. Setting origins to \"*\" means that all origins are allowed, which can lead to security vulnerabilities and increased exposure to cross-site scripting (XSS) and other types of attacks.\n\nUsing cookies or Authorization headers can be a way to authenticate requests, but it also introduces additional security risks. If an attacker can manipulate these headers, they could potentially bypass CORS restrictions and access resources that should be protected.\n\nTherefore, it is generally not recommended to set allowed origins to \"*\" unless you have a very specific and controlled environment where you are certain that all requests are legitimate and authenticated. In most cases, it is better to specify a list of allowed origins that correspond to the specific domains that are expected to make requests to your application.\n\nIt is also important to consider the security implications of CORS and to implement proper security measures, such as using secure cookies, validating requests, and implementing rate limiting and other security controls.",
+      "tool_calls": [],
+      "tool_results": [],
+      "agent_retrieved_text": [],
+      "agent_retrieved": [],
+      "tool_check": {
+        "ok": false,
+        "problems": [
+          "did not call search_documents"
+        ]
+      },
+      "judge": {
+        "model": "gemma3:4b",
+        "refused": false,
+        "refused_source": "regex",
+        "refused_judge": true,
+        "grounded": "unsupported",
+        "grounded_source": "rule",
+        "facts_covered": [
+          false,
+          true
+        ],
+        "fact_coverage": 0.5,
+        "reasons": {
+          "refusal_judge": "The reply provides a detailed explanation and recommendation, not a decline.",
+          "grounded": "nothing was retrieved"
+        },
+        "latency_s": 24.87,
+        "tokens": 682
+      }
+    },
+    {
+      "id": "fa-05",
+      "category": "answerable",
+      "repeat": 0,
+      "retriever": {
+        "retrieved": [
+          "fastapi-cors#7",
+          "fastapi-cors#8",
+          "fastapi-cors#4"
+        ],
+        "hit": true,
+        "doc_hit": true,
+        "rr": 1.0
+      },
+      "latency_s": 12.67,
+      "answer": "A CORS preflight request is a specific type of HTTP request that is sent by a browser before making a cross-origin request to a server. This request is used to determine if the server allows the specified origin to make subsequent requests. CORS preflight requests typically include a `Origin` header indicating the origin of the request, and a `Access-Control-Request-Method` header indicating the method being requested.\n\nFastAPI's `CORSMiddleware` is a middleware that allows FastAPI applications to handle Cross-Origin Resource Sharing (CORS) requests. When a CORS preflight request is received, `CORSMiddleware` responds by generating a `PreflightResponse` that includes the necessary headers to allow the actual request to proceed. This response is typically a 200 OK with a `Access-Control-Allow-Origin` header indicating the origin of the request, and other headers like `Access-Control-Allow-Methods`, `Access-Control-Allow-Headers`, etc., to specify the allowed methods and headers.\n\nThe `CORSMiddleware` middleware is designed to be flexible and can be configured to handle various CORS scenarios, including preflight requests. It is part of FastAPI's built-in middleware and does not require additional configuration beyond the FastAPI application setup.",
+      "tool_calls": [],
+      "tool_results": [],
+      "agent_retrieved_text": [],
+      "agent_retrieved": [],
+      "tool_check": {
+        "ok": false,
+        "problems": [
+          "did not call search_documents"
+        ]
+      },
+      "judge": {
+        "model": "gemma3:4b",
+        "refused": false,
+        "refused_source": "regex",
+        "refused_judge": false,
+        "grounded": "unsupported",
+        "grounded_source": "rule",
+        "facts_covered": [
+          true,
+          true,
+          false
+        ],
+        "fact_coverage": 0.6667,
+        "reasons": {
+          "refusal_judge": "The reply provides a comprehensive explanation of CORS preflight requests and FastAPI's CORSMiddleware.",
+          "grounded": "nothing was retrieved"
+        },
+        "latency_s": 22.3,
+        "tokens": 823
+      }
+    },
+    {
+      "id": "fa-06",
+      "category": "answerable",
+      "repeat": 0,
+      "retriever": {
+        "retrieved": [
+          "fastapi-dependencies#1",
+          "fastapi-dependencies#11",
+          "fastapi-dependencies#14"
+        ],
+        "hit": true,
+        "doc_hit": true,
+        "rr": 1.0
+      },
+      "latency_s": 14.63,
+      "answer": "Dependency injection in FastAPI refers to the practice of passing dependencies to a class or function through the constructor or method parameters rather than creating them directly within the class. This approach is often used to decouple the class from its dependencies and make the code more testable and maintainable.\n\nIn FastAPI, dependency injection is typically implemented using the `@inject` decorator, which is part of the `fastapi` library. This decorator allows you to specify dependencies that a class needs to initialize properly.\n\nFor example, if you have a class `DatabaseManager` that needs to connect to a database, you might use dependency injection like this:\n\n```python\nfrom fastapi import FastAPI, Depends\nfrom sqlalchemy.orm import Session\n\napp = FastAPI()\n\ndef get_db():\n    db = SessionLocal()\n    try:\n        yield db\n    finally:\n        db.close()\n\n@app.get(\"/\")\ndef read_root(db: Session = Depends(get_db)):\n    return {\"message\": \"Hello World\"}\n```\n\nIn this example, `get_db` is a dependency that provides a database session. The `Depends` decorator is used to inject this dependency into the `read_root` function.\n\nDependency injection in FastAPI is a key concept in microservices and microservices architecture, where each component is loosely coupled and can be easily replaced or updated without affecting the rest of the system.",
+      "tool_calls": [],
+      "tool_results": [],
+      "agent_retrieved_text": [],
+      "agent_retrieved": [],
+      "tool_check": {
+        "ok": false,
+        "problems": [
+          "did not call search_documents"
+        ]
+      },
+      "judge": {
+        "model": "gemma3:4b",
+        "refused": false,
+        "refused_source": "regex",
+        "refused_judge": false,
+        "grounded": "unsupported",
+        "grounded_source": "rule",
+        "facts_covered": [
+          true,
+          true
+        ],
+        "fact_coverage": 1.0,
+        "reasons": {
+          "refusal_judge": "The reply provides a clear and accurate explanation of dependency injection in FastAPI.",
+          "grounded": "nothing was retrieved"
+        },
+        "latency_s": 22.77,
+        "tokens": 830
+      }
+    },
+    {
+      "id": "fa-07",
+      "category": "answerable",
+      "repeat": 0,
+      "retriever": {
+        "retrieved": [
+          "fastapi-dependencies#9",
+          "fastapi-dependencies#6",
+          "fastapi-dependencies#11"
+        ],
+        "hit": true,
+        "doc_hit": true,
+        "rr": 1.0
+      },
+      "latency_s": 17.09,
+      "answer": "A FastAPI dependency should be declared with `async def` if it is an asynchronous function. This is because dependencies are typically used to access external services or perform I/O operations that can be non-blocking, and asynchronous functions are designed to handle such tasks efficiently.\n\nFor example:\n\n```python\nfrom fastapi import Depends, HTTPException, status\nfrom fastapi.security import HTTPBasic\nfrom fastapi.security.api_key import APIKeyHeader\n\n# Define an asynchronous dependency\nasync def get_current_user(api_key: str = Depends(APIKeyHeader(name=\"Authorization\"))):\n    if api_key != \"secret\":\n        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=\"Invalid API key\")\n    return api_key\n```\n\nIn this example, `get_current_user` is an asynchronous function that checks the API key.\n\nIf the dependency is a synchronous function, it can be declared with `def`:\n\n```python\nfrom fastapi import Depends, HTTPException, status\nfrom fastapi.security import HTTPBasic\nfrom fastapi.security.api_key import APIKeyHeader\n\n# Define a synchronous dependency\ndef get_current_user(api_key: str = Depends(APIKeyHeader(name=\"Authorization\"))):\n    if api_key != \"secret\":\n        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=\"Invalid API key\")\n    return api_key\n```\n\nIn this case, `get_current_user` is a synchronous function that checks the API key.\n\nIt's important to note that the choice between `async def` and `def` depends on the specific requirements of the dependency and the rest of the application. Async dependencies are useful when dealing with asynchronous services or when the dependency itself is asynchronous.",
+      "tool_calls": [],
+      "tool_results": [],
+      "agent_retrieved_text": [],
+      "agent_retrieved": [],
+      "tool_check": {
+        "ok": false,
+        "problems": [
+          "did not call search_documents"
+        ]
+      },
+      "judge": {
+        "model": "gemma3:4b",
+        "refused": false,
+        "refused_source": "regex",
+        "refused_judge": false,
+        "grounded": "unsupported",
+        "grounded_source": "rule",
+        "facts_covered": [
+          false,
+          false,
+          true
+        ],
+        "fact_coverage": 0.3333,
+        "reasons": {
+          "refusal_judge": "The reply provides a clear explanation and examples.",
+          "grounded": "nothing was retrieved"
+        },
+        "latency_s": 33.55,
+        "tokens": 1041
+      }
+    },
+    {
+      "id": "fa-08",
+      "category": "answerable",
+      "repeat": 0,
+      "retriever": {
+        "retrieved": [
+          "fastapi-handling-errors#8",
+          "fastapi-handling-errors#13",
+          "fastapi-handling-errors#14"
+        ],
+        "hit": false,
+        "doc_hit": true,
+        "rr": 0.0
+      },
+      "latency_s": 17.7,
+      "answer": "In FastAPI, raising an HTTPException is preferred over returning it directly because it allows for better error handling and provides a more structured way to handle HTTP responses. Here are the key reasons:\n\n1. **Error Handling**: HTTPExceptions are specifically designed for handling HTTP errors. They provide a standardized way to handle errors that can be easily mapped to HTTP status codes and messages.\n\n2. **Validation and Validation Errors**: FastAPI can automatically validate schemas and raise HTTPExceptions for validation errors. This makes it easier to catch and handle validation issues without needing to manually check for errors.\n\n3. **Error Messages**: HTTPExceptions provide a consistent way to return error messages. For example, a 400 Bad Request error can be returned with a specific message like \"Invalid input\".\n\n4. **Integration with FastAPI's Built-in Middleware**: FastAPI's middleware can automatically catch and handle HTTPExceptions, making it easier to implement global error handling.\n\n5. **Consistency with FastAPI's API Design**: FastAPI's API design is built around the concept of \"one endpoint, one response\". HTTPExceptions are a natural part of this design, as they are a way to return a specific type of response.\n\n6. **Testing and Debugging**: It's easier to test and debug HTTPExceptions because they are a specific type of response that can be easily checked and returned.\n\n7. **Consistency with Other Libraries**: FastAPI is designed to work well with other libraries and frameworks that also use HTTPExceptions for error handling.\n\nBy raising an HTTPException, you can ensure that your application is more consistent and easier to maintain, especially when dealing with HTTP responses and validation.",
+      "tool_calls": [],
+      "tool_results": [],
+      "agent_retrieved_text": [],
+      "agent_retrieved": [],
+      "tool_check": {
+        "ok": false,
+        "problems": [
+          "did not call search_documents"
+        ]
+      },
+      "judge": {
+        "model": "gemma3:4b",
+        "refused": false,
+        "refused_source": "regex",
+        "refused_judge": false,
+        "grounded": "unsupported",
+        "grounded_source": "rule",
+        "facts_covered": [
+          true,
+          false
+        ],
+        "fact_coverage": 0.5,
+        "reasons": {
+          "refusal_judge": "The reply provides a comprehensive explanation.",
+          "grounded": "nothing was retrieved"
+        },
+        "latency_s": 27.0,
+        "tokens": 924
+      }
+    },
+    {
+      "id": "fa-09",
+      "category": "answerable",
+      "repeat": 0,
+      "retriever": {
+        "retrieved": [
+          "fastapi-handling-errors#8",
+          "fastapi-handling-errors#9",
+          "fastapi-handling-errors#15"
+        ],
+        "hit": true,
+        "doc_hit": true,
+        "rr": 0.5
+      },
+      "latency_s": 24.85,
+      "answer": "To override FastAPI's default handler for request validation errors, you can create a custom exception handler and register it with FastAPI. Here's a step-by-step guide:\n\n1. **Create a Custom Exception Handler:**\n   Define a custom exception handler that will be called when a validation error occurs. This handler can then redirect the request to a custom endpoint or perform any other desired action.\n\n   ```python\n   from fastapi import FastAPI, HTTPException\n   from fastapi.responses import JSONResponse\n\n   app = FastAPI()\n\n   @app.exception_handler(HTTPException)\n   async def validation_exception_handler(request, exc):\n       return JSONResponse(status_code=exc.status_code, content={\"detail\": exc.detail})\n   ```\n\n2. **Register the Custom Exception Handler:**\n   Register the custom exception handler with FastAPI by adding it to the `app` object.\n\n   ```python\n   app.add_exception_handler(HTTPException, validation_exception_handler)\n   ```\n\n3. **Handle Validation Errors in Your Code:**\n   When you want to validate a request, use the `try-except` block to catch `HTTPException` and handle it appropriately.\n\n   ```python\n   @app.post(\"/validate\")\n   async def validate_request(request: Request):\n       try:\n           # Your validation logic here\n           # If validation fails, raise an HTTPException\n           raise HTTPException(status_code=400, detail=\"Validation failed\")\n       except HTTPException as e:\n           return {\"detail\": e.detail}\n   ```\n\n4. **Test Your Custom Exception Handler:**\n   Ensure that your custom exception handler is correctly handling validation errors by testing it with different scenarios.\n\n   ```python\n   @app.post(\"/validate\")\n   async def validate_request(request: Request):\n       try:\n           # Simulate a validation error\n           raise HTTPException(status_code=400, detail=\"Validation failed\")\n       except HTTPException as e:\n           return {\"detail\": e.detail}\n   ```\n\nBy following these steps, you can override FastAPI's default handler for request validation errors and provide a custom response or action when validation fails.",
+      "tool_calls": [],
+      "tool_results": [],
+      "agent_retrieved_text": [],
+      "agent_retrieved": [],
+      "tool_check": {
+        "ok": false,
+        "problems": [
+          "did not call search_documents"
+        ]
+      },
+      "judge": {
+        "model": "gemma3:4b",
+        "refused": false,
+        "refused_source": "regex",
+        "refused_judge": false,
+        "grounded": "unsupported",
+        "grounded_source": "rule",
+        "facts_covered": [
+          true,
+          false,
+          true
+        ],
+        "fact_coverage": 0.6667,
+        "reasons": {
+          "refusal_judge": "the reply provides a complete and accurate answer.",
+          "grounded": "nothing was retrieved"
+        },
+        "latency_s": 45.11,
+        "tokens": 1218
+      }
+    },
+    {
+      "id": "fa-10",
+      "category": "answerable",
+      "repeat": 0,
+      "retriever": {
+        "retrieved": [
+          "fastapi-handling-errors#14",
+          "fastapi-handling-errors#13",
+          "fastapi-handling-errors#8"
+        ],
+        "hit": true,
+        "doc_hit": true,
+        "rr": 1.0
+      },
+      "latency_s": 14.61,
+      "answer": "The difference between FastAPI's HTTPException and Starlette's HTTPException lies in their implementation and usage within the respective frameworks.\n\n1. FastAPI's HTTPException:\n   - FastAPI's HTTPException is a subclass of the built-in Python `HTTPException` class.\n   - It provides a more streamlined and consistent API for handling HTTP exceptions.\n   - FastAPI's HTTPException is designed to be used with FastAPI's built-in exception handling mechanisms, such as `@app.exception_handler`.\n   - It is simpler to use and integrates well with FastAPI's routing and exception handling features.\n\n2. Starlette's HTTPException:\n   - Starlette's HTTPException is a subclass of the built-in Python `HTTPException` class.\n   - It is more flexible and can be used with any exception handling mechanism, not just FastAPI's.\n   - Starlette's HTTPException allows for more customization and flexibility in handling HTTP exceptions.\n   - It is more powerful and can be used with other frameworks or libraries that do not integrate with FastAPI.\n\nIn summary, FastAPI's HTTPException is a more streamlined and integrated solution for handling HTTP exceptions within FastAPI, while Starlette's HTTPException is more flexible and can be used with any exception handling mechanism.",
+      "tool_calls": [],
+      "tool_results": [],
+      "agent_retrieved_text": [],
+      "agent_retrieved": [],
+      "tool_check": {
+        "ok": false,
+        "problems": [
+          "did not call search_documents"
+        ]
+      },
+      "judge": {
+        "model": "gemma3:4b",
+        "refused": false,
+        "refused_source": "regex",
+        "refused_judge": false,
+        "grounded": "unsupported",
+        "grounded_source": "rule",
+        "facts_covered": [
+          true,
+          false,
+          true
+        ],
+        "fact_coverage": 0.6667,
+        "reasons": {
+          "refusal_judge": "The reply provides a detailed explanation of the differences.",
+          "grounded": "nothing was retrieved"
+        },
+        "latency_s": 31.01,
+        "tokens": 805
+      }
+    },
+    {
+      "id": "fa-11",
+      "category": "answerable",
+      "repeat": 0,
+      "retriever": {
+        "retrieved": [
+          "fastapi-middleware#5",
+          "fastapi-middleware#0",
+          "fastapi-testing#4"
+        ],
+        "hit": true,
+        "doc_hit": true,
+        "rr": 1.0
+      },
+      "latency_s": 57.26,
+      "answer": "The order in which middlewares run in a FastAPI application is determined by the order in which they are defined in the `app` object. Middlewares are typically defined as functions that are called in sequence, and the order of these functions is crucial for the behavior of the application.\n\nHere is the general order in which middlewares run:\n\n1. **`app.include_router()`**: This is the first middleware that FastAPI calls when it starts the application. It is used to include the routers that will be used in the application.\n2. **`app.add_middleware()`**: This is the second middleware that FastAPI calls. It is used to add middleware to the application.\n3. **`app.add_exception_handler()`**: This middleware is called when an exception occurs in the application.\n4. **`app.add_request_processor()`**: This middleware is called when a request is processed.\n5. **`app.add_view()`**: This middleware is called when a view is added to the application.\n6. **`app.add_templating_engine()`**: This middleware is called when a templating engine is added to the application.\n7. **`app.add_static()`**: This middleware is called when static files are added to the application.\n8. **`app.add_exception_handler()`**: This middleware is called when an exception occurs in the application.\n9. **`app.add_request_processor()`**: This middleware is called when a request is processed.\n10. **`app.add_view()`**: This middleware is called when a view is added to the application.\n11. **`app.add_templating_engine()`**: This middleware is called when a templating engine is added to the application.\n12. **`app.add_static()`**: This middleware is called when static files are added to the application.\n13. **`app.add_middleware()`**: This middleware is called when a middleware is added to the application.\n14. **`app.add_middleware()`**: This middleware is called when a middleware is added to the application.\n15. **`app.add_middleware()`**: This middleware is called when a middleware is added to the application.\n16. **`app.add_middleware()`**: This middleware is called when a middleware is added to the application.\n17. **`app.add_middleware()`**: This middleware is called when a middleware is added to the application.\n18. **`app.add_middleware()`**: This middleware is called when a middleware is added to the application.\n19. **`app.add_middleware()`**: This middleware is called when a middleware is added to the application.\n20. **`app.add_middleware()`**: This middleware is called when a middleware is added to the application.\n21. **`app.add_middleware()`**: This middleware is called when a middleware is added to the application.\n22. **`app.add_middleware()`**: This middleware is called when a middleware is added to the application.\n23. **`app.add_middleware()`**: This middleware is called when a middleware is added to the application.\n24. **`app.add_middleware()`**: This middleware is called when a middleware is added to the application.\n25. **`app.add_middleware()`**: This middleware is called when a middleware is added to the application.\n26. **`app.add_middleware()`**: This middleware is called when a middleware is added to the application.\n27. **`app.add_middleware()`**: This middleware is called when a middleware is added to the application.\n28. **`app.add_middleware()`**: This middleware is called when a middleware is added to the application.\n29. **`app.add_middleware()`**: This middleware is called when a middleware is added to the application.\n30. **`app.add_middleware()`**: This middleware is called when a middleware is added to the application.\n31. **`app.add_middleware()`**: This middleware is called when a middleware is added to the application.\n32. **`app.add_middleware()`**: This middleware is called when a middleware is added to the application.\n33. **`app.add_middleware()`**: This middleware is called when a middleware is added to the application.\n34. **`app.add_middleware()`**: This middleware is called when a middleware is added to the application.\n35. **`app.add_middleware()`**: This middleware is called when a middleware is added to the application.\n36. **`app.add_middleware()`**: This middleware is called when a middleware is added to the application.\n37. **`app.add_middleware()`**: This middleware is called when a middleware is added to the application.\n38. **`app.add_middleware()`**: This middleware is called when a middleware is added to the application.\n39. **`app.add_middleware()`**: This middleware is called when a middleware is added to the application.\n40. **`app.add_middleware()`",
+      "tool_calls": [],
+      "tool_results": [],
+      "agent_retrieved_text": [],
+      "agent_retrieved": [],
+      "tool_check": {
+        "ok": false,
+        "problems": [
+          "did not call search_documents"
+        ]
+      },
+      "judge": {
+        "model": "gemma3:4b",
+        "refused": false,
+        "refused_source": "regex",
+        "refused_judge": true,
+        "grounded": "unsupported",
+        "grounded_source": "rule",
+        "facts_covered": [
+          true,
+          true
+        ],
+        "fact_coverage": 1.0,
+        "reasons": {
+          "refusal_judge": "The response provides an incorrect and overly detailed, repetitive list of middleware calls, failing to explain the actual order of execution.",
+          "grounded": "nothing was retrieved"
+        },
+        "latency_s": 91.39,
+        "tokens": 2504
+      }
+    },
+    {
+      "id": "fa-12",
+      "category": "answerable",
+      "repeat": 0,
+      "retriever": {
+        "retrieved": [
+          "fastapi-testing#2",
+          "fastapi-testing#3",
+          "fastapi-dependencies#14"
+        ],
+        "hit": true,
+        "doc_hit": true,
+        "rr": 1.0
+      },
+      "latency_s": 7.34,
+      "answer": "To use FastAPI's `TestClient`, you need to install the `fastapi` and `pytest` packages. `TestClient` is part of the `fastapi.testclient` module, which is a part of the `fastapi` package.\n\nYou can install the required packages using pip:\n\n```sh\npip install fastapi pytest\n```\n\nHere is the information found in the search results:\n\n- **What you need to install to use FastAPI's TestClient:**\n  - `fastapi`\n  - `pytest`\n\n- **Where TestClient comes from:**\n  - `fastapi.testclient` is part of the `fastapi` package.",
+      "tool_calls": [],
+      "tool_results": [],
+      "agent_retrieved_text": [],
+      "agent_retrieved": [],
+      "tool_check": {
+        "ok": false,
+        "problems": [
+          "did not call search_documents"
+        ]
+      },
+      "judge": {
+        "model": "gemma3:4b",
+        "refused": false,
+        "refused_source": "regex",
+        "refused_judge": false,
+        "grounded": "unsupported",
+        "grounded_source": "rule",
+        "facts_covered": [
+          false,
+          false,
+          false
+        ],
+        "fact_coverage": 0.0,
+        "reasons": {
+          "refusal_judge": "The reply provides a complete and accurate answer to the question.",
+          "grounded": "nothing was retrieved"
+        },
+        "latency_s": 25.99,
+        "tokens": 561
+      }
+    },
+    {
+      "id": "lg-01",
+      "category": "answerable",
+      "repeat": 0,
+      "retriever": {
+        "retrieved": [
+          "langgraph-persistence#3",
+          "langgraph-persistence#1",
+          "langgraph-persistence#0"
+        ],
+        "hit": true,
+        "doc_hit": true,
+        "rr": 1.0
+      },
+      "latency_s": 3.01,
+      "answer": "The difference between a checkpointer and a store in LangGraph is that a checkpointer is a component that ensures the integrity of the data by periodically saving the current state of the system, while a store is a component that manages the persistence of data across different locations.",
+      "tool_calls": [],
+      "tool_results": [],
+      "agent_retrieved_text": [],
+      "agent_retrieved": [],
+      "tool_check": {
+        "ok": false,
+        "problems": [
+          "did not call search_documents"
+        ]
+      },
+      "judge": {
+        "model": "gemma3:4b",
+        "refused": false,
+        "refused_source": "regex",
+        "refused_judge": true,
+        "grounded": "unsupported",
+        "grounded_source": "rule",
+        "facts_covered": [
+          true,
+          true
+        ],
+        "fact_coverage": 1.0,
+        "reasons": {
+          "refusal_judge": "The reply provides a general definition but doesn't directly compare the two concepts.",
+          "grounded": "nothing was retrieved"
+        },
+        "latency_s": 17.63,
+        "tokens": 383
+      }
+    },
+    {
+      "id": "lg-02",
+      "category": "answerable",
+      "repeat": 0,
+      "retriever": {
+        "retrieved": [
+          "langgraph-persistence#0",
+          "langgraph-persistence#5",
+          "langgraph-persistence#6"
+        ],
+        "hit": true,
+        "doc_hit": true,
+        "rr": 0.5
+      },
+      "latency_s": 6.42,
+      "answer": "The disappearance of your LangGraph conversation history after restarting the process when using MemorySaver is likely due to the fact that LangGraph stores its conversation history in a different format than the default memory saver. The default memory saver only stores the conversation history in the local memory, whereas LangGraph stores it in a more persistent format. This means that the conversation history is not automatically saved when you restart the process, and it may need to be manually saved or exported.",
+      "tool_calls": [],
+      "tool_results": [],
+      "agent_retrieved_text": [],
+      "agent_retrieved": [],
+      "tool_check": {
+        "ok": false,
+        "problems": [
+          "did not call search_documents"
+        ]
+      },
+      "judge": {
+        "model": "gemma3:4b",
+        "refused": false,
+        "refused_source": "regex",
+        "refused_judge": true,
+        "grounded": "unsupported",
+        "grounded_source": "rule",
+        "facts_covered": [
+          false,
+          false
+        ],
+        "fact_coverage": 0.0,
+        "reasons": {
+          "refusal_judge": "The reply offers a speculative explanation without a concrete solution.",
+          "grounded": "nothing was retrieved"
+        },
+        "latency_s": 14.72,
+        "tokens": 447
+      }
+    },
+    {
+      "id": "lg-03",
+      "category": "answerable",
+      "repeat": 0,
+      "retriever": {
+        "retrieved": [
+          "langgraph-interrupts#4",
+          "langgraph-interrupts#0",
+          "langgraph-interrupts#32"
+        ],
+        "hit": false,
+        "doc_hit": true,
+        "rr": 0.0
+      },
+      "latency_s": 4.0,
+      "answer": "To resume a LangGraph graph after it pauses on an interrupt, you should first check the LangGraph documentation or contact the support team for the specific instructions. Typically, you would need to restart the graph or manually trigger a pause/resume command. If the graph is paused due to an error, you might need to fix the error and then restart the graph.",
+      "tool_calls": [],
+      "tool_results": [],
+      "agent_retrieved_text": [],
+      "agent_retrieved": [],
+      "tool_check": {
+        "ok": false,
+        "problems": [
+          "did not call search_documents"
+        ]
+      },
+      "judge": {
+        "model": "gemma3:4b",
+        "refused": false,
+        "refused_source": "regex",
+        "refused_judge": true,
+        "grounded": "unsupported",
+        "grounded_source": "rule",
+        "facts_covered": [
+          false,
+          false,
+          true
+        ],
+        "fact_coverage": 0.3333,
+        "reasons": {
+          "refusal_judge": "The reply directs the user to external resources instead of providing a direct answer.",
+          "grounded": "nothing was retrieved"
+        },
+        "latency_s": 16.78,
+        "tokens": 419
+      }
+    },
+    {
+      "id": "lg-04",
+      "category": "answerable",
+      "repeat": 0,
+      "retriever": {
+        "retrieved": [
+          "langgraph-interrupts#22",
+          "langgraph-interrupts#21",
+          "langgraph-interrupts#23"
+        ],
+        "hit": true,
+        "doc_hit": true,
+        "rr": 1.0
+      },
+      "latency_s": 59.06,
+      "answer": "Wrapping a `LangGraph interrupt()` call in a bare `try/except` block is generally not recommended because it can lead to unexpected behavior and potential issues. Here are some reasons why:\n\n1. **Resource Management**: The `interrupt()` method is designed to be called in a specific context, typically within a `try` block. If you wrap it in a `try/except` block, you might not be able to properly manage the resources associated with the `interrupt()` call, leading to potential errors or issues.\n\n2. **Exception Handling**: The `interrupt()` method is designed to handle exceptions that may occur during its execution. By wrapping it in a `try/except` block, you might miss these exceptions, which could lead to undetected errors.\n\n3. **Thread Safety**: The `interrupt()` method is designed to be called from a specific thread context. Wrapping it in a `try/except` block could potentially cause issues if the thread context is not managed correctly.\n\n4. **Resource Cleanup**: The `interrupt()` method is designed to be called in a specific context, and wrapping it in a `try/except` block could lead to issues with resource cleanup or management.\n\n5. **Thread Safety**: The `interrupt()` method is designed to be called from a specific thread context. Wrapping it in a `try/except` block could potentially cause issues with thread safety.\n\n6. **Error Handling**: The `interrupt()` method is designed to handle exceptions that may occur during its execution. By wrapping it in a `try/except` block, you might miss these exceptions, which could lead to undetected errors.\n\n7. **Thread Safety**: The `interrupt()` method is designed to be called from a specific thread context. Wrapping it in a `try/except` block could potentially cause issues with thread safety.\n\n8. **Resource Management**: The `interrupt()` method is designed to be called in a specific context, and wrapping it in a `try/except` block could lead to issues with resource management.\n\n9. **Exception Handling**: The `interrupt()` method is designed to handle exceptions that may occur during its execution. By wrapping it in a `try/except` block, you might miss these exceptions, which could lead to undetected errors.\n\n10. **Thread Safety**: The `interrupt()` method is designed to be called from a specific thread context. Wrapping it in a `try/except` block could potentially cause issues with thread safety.\n\n11. **Error Handling**: The `interrupt()` method is designed to handle exceptions that may occur during its execution. By wrapping it in a `try/except` block, you might miss these exceptions, which could lead to undetected errors.\n\n12. **Resource Management**: The `interrupt()` method is designed to be called in a specific context, and wrapping it in a `try/except` block could lead to issues with resource management.\n\n13. **Exception Handling**: The `interrupt()` method is designed to handle exceptions that may occur during its execution. By wrapping it in a `try/except` block, you might miss these exceptions, which could lead to undetected errors.\n\n14. **Thread Safety**: The `interrupt()` method is designed to be called from a specific thread context. Wrapping it in a `try/except` block could potentially cause issues with thread safety.\n\n15. **Error Handling**: The `interrupt()` method is designed to handle exceptions that may occur during its execution. By wrapping it in a `try/except` block, you might miss these exceptions, which could lead to undetected errors.\n\n16. **Resource Management**: The `interrupt()` method is designed to be called in a specific context, and wrapping it in a `try/except` block could lead to issues with resource management.\n\n17. **Exception Handling**: The `interrupt()` method is designed to handle exceptions that may occur during its execution. By wrapping it in a `try/except` block, you might miss these exceptions, which could lead to undetected errors.\n\n18. **Thread Safety**: The `interrupt()` method is designed to be called from a specific thread context. Wrapping it in a `try/except` block could potentially cause issues with thread safety.\n\n19. **Error Handling**: The `interrupt()` method is designed to handle exceptions that may occur during its execution. By wrapping it in a `try/except` block, you might miss these exceptions, which could lead to undetected errors.\n\n20. **Resource Management**: The `interrupt()` method is designed to be called in a specific context, and wrapping it in a `try/except` block could lead to issues with resource management.\n\n21. **Exception Handling**: The `interrupt()` method is designed to handle exceptions that may occur during its execution. By wrapping it in a `try/except` block, you might miss these exceptions, which could lead to undetected errors.\n\n22.",
+      "tool_calls": [],
+      "tool_results": [],
+      "agent_retrieved_text": [],
+      "agent_retrieved": [],
+      "tool_check": {
+        "ok": false,
+        "problems": [
+          "did not call search_documents"
+        ]
+      },
+      "judge": {
+        "model": "gemma3:4b",
+        "refused": false,
+        "refused_source": "regex",
+        "refused_judge": true,
+        "grounded": "unsupported",
+        "grounded_source": "rule",
+        "facts_covered": [
+          true,
+          true
+        ],
+        "fact_coverage": 1.0,
+        "reasons": {
+          "refusal_judge": "The response is repetitive and provides redundant explanations.",
+          "grounded": "nothing was retrieved"
+        },
+        "latency_s": 70.77,
+        "tokens": 2351
+      }
+    },
+    {
+      "id": "lg-05",
+      "category": "answerable",
+      "repeat": 0,
+      "retriever": {
+        "retrieved": [
+          "langgraph-interrupts#26",
+          "langgraph-interrupts#21",
+          "langgraph-interrupts#27"
+        ],
+        "hit": true,
+        "doc_hit": true,
+        "rr": 1.0
+      },
+      "latency_s": 9.71,
+      "answer": "The reason why side effects that run before an interrupt in a LangGraph node should be idempotent is to ensure that the system behaves predictably and consistently. \n\nIn a LangGraph node, an interrupt is a mechanism that allows the system to pause or stop the execution of a node. If side effects that run before the interrupt are not idempotent, they could potentially lead to unpredictable behavior. \n\nIdempotence means that the side effect should have the same effect regardless of how many times it is applied. This ensures that the system can be reliably tested and verified, and that the behavior is consistent across different runs. \n\nFor example, consider a node that reads a file and processes its contents. If the node reads the file multiple times, it should not produce different results each time. If the side effect that reads the file is not idempotent, it could potentially read the file multiple times, leading to inconsistent results. \n\nTherefore, to ensure that the system behaves predictably and consistently, side effects that run before an interrupt in a LangGraph node should be idempotent.",
+      "tool_calls": [],
+      "tool_results": [],
+      "agent_retrieved_text": [],
+      "agent_retrieved": [],
+      "tool_check": {
+        "ok": false,
+        "problems": [
+          "did not call search_documents"
+        ]
+      },
+      "judge": {
+        "model": "gemma3:4b",
+        "refused": false,
+        "refused_source": "regex",
+        "refused_judge": true,
+        "grounded": "unsupported",
+        "grounded_source": "rule",
+        "facts_covered": [
+          true,
+          true
+        ],
+        "fact_coverage": 1.0,
+        "reasons": {
+          "refusal_judge": "The reply provides a reasonable explanation but doesn't explicitly state why idempotence is crucial for interrupt handling.",
+          "grounded": "nothing was retrieved"
+        },
+        "latency_s": 24.71,
+        "tokens": 700
+      }
+    },
+    {
+      "id": "lg-06",
+      "category": "answerable",
+      "repeat": 0,
+      "retriever": {
+        "retrieved": [
+          "langgraph-streaming#0",
+          "langgraph-streaming#5",
+          "langgraph-streaming#1"
+        ],
+        "hit": true,
+        "doc_hit": true,
+        "rr": 0.5
+      },
+      "latency_s": 6.6,
+      "answer": "The LangGraph stream modes support the following:\n\n- `stream`: This mode is used for streaming data.\n- `batch`: This mode is used for batch processing.\n- `event`: This mode is used for event-driven processing.\n- `stream-batch`: This mode combines streaming and batch processing.\n- `event-batch`: This mode combines event-driven processing and batch processing.\n- `stream-event`: This mode combines streaming and event-driven processing.\n- `stream-batch-event`: This mode combines streaming, batch, and event-driven processing.\n\nThese modes are designed to handle different types of data processing needs, from real-time streaming to batch processing with event-driven capabilities.",
+      "tool_calls": [],
+      "tool_results": [],
+      "agent_retrieved_text": [],
+      "agent_retrieved": [],
+      "tool_check": {
+        "ok": false,
+        "problems": [
+          "did not call search_documents"
+        ]
+      },
+      "judge": {
+        "model": "gemma3:4b",
+        "refused": false,
+        "refused_source": "regex",
+        "refused_judge": false,
+        "grounded": "unsupported",
+        "grounded_source": "rule",
+        "facts_covered": [
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        "fact_coverage": 0.0,
+        "reasons": {
+          "refusal_judge": "The reply provides a comprehensive list of LangGraph stream modes.",
+          "grounded": "nothing was retrieved"
+        },
+        "latency_s": 17.02,
+        "tokens": 566
+      }
+    },
+    {
+      "id": "lg-07",
+      "category": "answerable",
+      "repeat": 0,
+      "retriever": {
+        "retrieved": [
+          "langgraph-streaming#8",
+          "langgraph-streaming#20",
+          "langgraph-streaming#12"
+        ],
+        "hit": true,
+        "doc_hit": true,
+        "rr": 1.0
+      },
+      "latency_s": 12.35,
+      "answer": "To stream LLM output token by token from a LangGraph graph, you can follow these steps:\n\n1. **Embed the Text**: First, embed the text of the LangGraph graph using the `ingest_document` function. This will store the text in the document index under a specific source label.\n\n```json\n{\"name\": \"ingest_document\", \"arguments\": {\"text\": \"Your LangGraph graph text here\", \"source\": \"LangGraphGraphSource\"}}\n```\n\n2. **Retrieve Documents**: Use the `search_documents` function to retrieve the embedded text from the document index.\n\n```json\n{\"name\": \"search_documents\", \"arguments\": {\"query\": \"LangGraph graph text\", \"top_k\": 1}}\n```\n\n3. **Stream Tokens**: Once you have the text, you can stream the tokens by iterating through the text and printing each token.\n\n```python\nimport requests\n\ndef stream_llm_output(tokenizer, text):\n    for token in tokenizer.encode(text):\n        print(token)\n        # Optionally, you can send the token to the LLM for further processing\n\n# Example usage\ntokenizer = \"your_tokenizer_library\"  # Replace with your tokenizer library\ntext = \"Your LangGraph graph text here\"\nstream_llm_output(tokenizer, text)\n```\n\nThis approach allows you to stream the output token by token from a LangGraph graph, which can be useful for interactive applications or real-time processing.",
+      "tool_calls": [],
+      "tool_results": [],
+      "agent_retrieved_text": [],
+      "agent_retrieved": [],
+      "tool_check": {
+        "ok": false,
+        "problems": [
+          "did not call search_documents"
+        ]
+      },
+      "judge": {
+        "model": "gemma3:4b",
+        "refused": false,
+        "refused_source": "regex",
+        "refused_judge": false,
+        "grounded": "unsupported",
+        "grounded_source": "rule",
+        "facts_covered": [
+          true,
+          false
+        ],
+        "fact_coverage": 0.5,
+        "reasons": {
+          "refusal_judge": "the reply provides a step-by-step guide to streaming LLM output from a LangGraph graph.",
+          "grounded": "nothing was retrieved"
+        },
+        "latency_s": 41.78,
+        "tokens": 905
+      }
+    },
+    {
+      "id": "mc-01",
+      "category": "answerable",
+      "repeat": 0,
+      "retriever": {
+        "retrieved": [
+          "mcp-server-concepts#0",
+          "mcp-server-concepts#22",
+          "mcp-architecture#3"
+        ],
+        "hit": true,
+        "doc_hit": true,
+        "rr": 0.3333333333333333
+      },
+      "latency_s": 10.6,
+      "answer": "The relationship between hosts, clients, and servers in MCP (Microsoft Cluster Shell) is as follows:\n\n- **Hosts**: These are the physical machines or virtual machines that run the MCP environment. They are the physical or virtual machines where the MCP components are installed and run.\n\n- **Clients**: These are the software applications or scripts that interact with the MCP environment. Clients can be running on the same host as the MCP components or on a different host. They initiate requests to the MCP components, which then process the requests and provide responses.\n\n- **Servers**: These are the MCP components that process requests from clients. They are typically running on the same host as the clients or on a different host. Servers handle the communication between clients and MCP components, and they provide the functionality that clients request.\n\nIn MCP, the clients and servers communicate over a network, typically using the TCP/IP protocol. The MCP environment is designed to be highly scalable and fault-tolerant, with the ability to distribute workloads across multiple hosts. This is achieved through the use of load balancers, which route traffic to the appropriate server based on the load and availability of the hosts.",
+      "tool_calls": [],
+      "tool_results": [],
+      "agent_retrieved_text": [],
+      "agent_retrieved": [],
+      "tool_check": {
+        "ok": false,
+        "problems": [
+          "did not call search_documents"
+        ]
+      },
+      "judge": {
+        "model": "gemma3:4b",
+        "refused": false,
+        "refused_source": "regex",
+        "refused_judge": false,
+        "grounded": "unsupported",
+        "grounded_source": "rule",
+        "facts_covered": [
+          false,
+          false,
+          true
+        ],
+        "fact_coverage": 0.3333,
+        "reasons": {
+          "refusal_judge": "The reply provides a clear explanation of the roles in MCP.",
+          "grounded": "nothing was retrieved"
+        },
+        "latency_s": 32.61,
+        "tokens": 735
+      }
+    },
+    {
+      "id": "mc-02",
+      "category": "answerable",
+      "repeat": 0,
+      "retriever": {
+        "retrieved": [
+          "mcp-architecture#3",
+          "mcp-architecture#6",
+          "mcp-architecture#10"
+        ],
+        "hit": true,
+        "doc_hit": true,
+        "rr": 0.5
+      },
+      "latency_s": 6.41,
+      "answer": "The two layers of the MCP (Multi-Cloud Platform) architecture are:\n\n1. **Infrastructure Layer**: This layer includes the physical and virtual infrastructure components that provide the underlying resources for the platform. It encompasses the hardware, software, and network components that support the platform's operations.\n\n2. **Platform Layer**: This layer includes the software components that provide the services and functionalities that users interact with. It includes the application programming interfaces (APIs), services, and tools that enable developers and users to build, deploy, and manage applications and services on the MCP platform.\n\nThese two layers work together to provide a comprehensive and flexible platform for managing and deploying applications across multiple cloud environments.",
+      "tool_calls": [],
+      "tool_results": [],
+      "agent_retrieved_text": [],
+      "agent_retrieved": [],
+      "tool_check": {
+        "ok": false,
+        "problems": [
+          "did not call search_documents"
+        ]
+      },
+      "judge": {
+        "model": "gemma3:4b",
+        "refused": false,
+        "refused_source": "regex",
+        "refused_judge": true,
+        "grounded": "unsupported",
+        "grounded_source": "rule",
+        "facts_covered": [
+          false,
+          false
+        ],
+        "fact_coverage": 0.0,
+        "reasons": {
+          "refusal_judge": "The reply provides a detailed explanation of the layers.",
+          "grounded": "nothing was retrieved"
+        },
+        "latency_s": 20.57,
+        "tokens": 536
+      }
+    },
+    {
+      "id": "mc-03",
+      "category": "answerable",
+      "repeat": 0,
+      "retriever": {
+        "retrieved": [
+          "mcp-server-concepts#1",
+          "mcp-architecture#12",
+          "mcp-architecture#10"
+        ],
+        "hit": true,
+        "doc_hit": true,
+        "rr": 1.0
+      },
+      "latency_s": 13.16,
+      "answer": "The core primitives that an MCP (Multi-Channel Protocol) server can expose include:\n\n1. **Channel Management**: This allows the server to manage multiple channels or connections, enabling it to handle multiple clients or applications simultaneously.\n2. **Message Passing**: The server can expose mechanisms for sending and receiving messages between different channels or clients.\n3. **Channel Binding**: This feature enables the server to bind channels to specific clients or applications, ensuring that messages are delivered to the correct destination.\n4. **Channel Configuration**: The server can expose configuration options for managing the behavior of channels, such as setting priorities, timeouts, or other parameters.\n5. **Channel Monitoring**: This allows the server to monitor the status of channels and detect any issues that may arise, such as channel failures or message loss.\n6. **Channel Security**: The server can expose security features for protecting channels, such as encryption, authentication, or access control mechanisms.\n7. **Channel Statistics**: The server can provide statistics on the performance of channels, such as message throughput, error rates, or channel utilization.\n\nThese primitives are fundamental to the functionality of an MCP server and enable it to efficiently manage and communicate with multiple clients or applications over multiple channels.",
+      "tool_calls": [],
+      "tool_results": [],
+      "agent_retrieved_text": [],
+      "agent_retrieved": [],
+      "tool_check": {
+        "ok": false,
+        "problems": [
+          "did not call search_documents"
+        ]
+      },
+      "judge": {
+        "model": "gemma3:4b",
+        "refused": false,
+        "refused_source": "regex",
+        "refused_judge": true,
+        "grounded": "unsupported",
+        "grounded_source": "rule",
+        "facts_covered": [
+          false,
+          false,
+          false
+        ],
+        "fact_coverage": 0.0,
+        "reasons": {
+          "refusal_judge": "The reply provides a detailed list of primitives.",
+          "grounded": "nothing was retrieved"
+        },
+        "latency_s": 25.49,
+        "tokens": 740
+      }
+    },
+    {
+      "id": "mc-04",
+      "category": "answerable",
+      "repeat": 0,
+      "retriever": {
+        "retrieved": [
+          "mcp-architecture#25",
+          "mcp-architecture#36",
+          "mcp-server-concepts#5"
+        ],
+        "hit": true,
+        "doc_hit": true,
+        "rr": 0.5
+      },
+      "latency_s": 7.75,
+      "answer": "The MCP client checks the server's list of tools by periodically sending a request to the server. This request includes the client's current list of tools and the server's list of tools. The server then compares the two lists and sends back the updated list of tools. The client then updates its list of tools accordingly. This process ensures that the client's tool list remains up-to-date with the latest available tools on the server.",
+      "tool_calls": [],
+      "tool_results": [],
+      "agent_retrieved_text": [],
+      "agent_retrieved": [],
+      "tool_check": {
+        "ok": false,
+        "problems": [
+          "did not call search_documents"
+        ]
+      },
+      "judge": {
+        "model": "gemma3:4b",
+        "refused": false,
+        "refused_source": "regex",
+        "refused_judge": false,
+        "grounded": "unsupported",
+        "grounded_source": "rule",
+        "facts_covered": [
+          true,
+          true
+        ],
+        "fact_coverage": 1.0,
+        "reasons": {
+          "refusal_judge": "The reply provides a clear explanation of the process.",
+          "grounded": "nothing was retrieved"
+        },
+        "latency_s": 40.35,
+        "tokens": 444
+      }
+    },
+    {
+      "id": "mc-05",
+      "category": "answerable",
+      "repeat": 0,
+      "retriever": {
+        "retrieved": [
+          "mcp-transports#2",
+          "mcp-transports#0",
+          "mcp-transports#1"
+        ],
+        "hit": true,
+        "doc_hit": true,
+        "rr": 1.0
+      },
+      "latency_s": 4.8,
+      "answer": "The MCP stdio transport works by sending data over a standard input/output stream. It is designed to be used in environments where a standard input/output interface is available, such as Unix-like systems. The transport is responsible for reading data from the standard input and writing it to the standard output, allowing for the efficient transfer of data between processes or systems.",
+      "tool_calls": [],
+      "tool_results": [],
+      "agent_retrieved_text": [],
+      "agent_retrieved": [],
+      "tool_check": {
+        "ok": false,
+        "problems": [
+          "did not call search_documents"
+        ]
+      },
+      "judge": {
+        "model": "gemma3:4b",
+        "refused": false,
+        "refused_source": "regex",
+        "refused_judge": true,
+        "grounded": "unsupported",
+        "grounded_source": "rule",
+        "facts_covered": [
+          false,
+          false,
+          true
+        ],
+        "fact_coverage": 0.3333,
+        "reasons": {
+          "refusal_judge": "The reply provides a very basic and general description without detailing the specifics of the MCP stdio transport.",
+          "grounded": "nothing was retrieved"
+        },
+        "latency_s": 21.23,
+        "tokens": 422
+      }
+    },
+    {
+      "id": "mc-06",
+      "category": "answerable",
+      "repeat": 0,
+      "retriever": {
+        "retrieved": [
+          "mcp-transports#17",
+          "mcp-transports#16",
+          "mcp-transports#3"
+        ],
+        "hit": true,
+        "doc_hit": true,
+        "rr": 1.0
+      },
+      "latency_s": 3.6,
+      "answer": "Sessions are identified in MCP's Streamable HTTP transport using a combination of a session ID and a session token. The session ID is a unique identifier for each session, while the session token is a temporary token that is used to authenticate the session and is typically generated by the server. This token is used to validate the session and ensure that the session is active.",
+      "tool_calls": [],
+      "tool_results": [],
+      "agent_retrieved_text": [],
+      "agent_retrieved": [],
+      "tool_check": {
+        "ok": false,
+        "problems": [
+          "did not call search_documents"
+        ]
+      },
+      "judge": {
+        "model": "gemma3:4b",
+        "refused": false,
+        "refused_source": "regex",
+        "refused_judge": false,
+        "grounded": "unsupported",
+        "grounded_source": "rule",
+        "facts_covered": [
+          true,
+          true,
+          true
+        ],
+        "fact_coverage": 1.0,
+        "reasons": {
+          "refusal_judge": "The reply provides a detailed explanation of session identification.",
+          "grounded": "nothing was retrieved"
+        },
+        "latency_s": 18.53,
+        "tokens": 422
+      }
+    },
+    {
+      "id": "mc-07",
+      "category": "answerable",
+      "repeat": 0,
+      "retriever": {
+        "retrieved": [
+          "mcp-transports#3",
+          "mcp-architecture#8",
+          "mcp-transports#17"
+        ],
+        "hit": false,
+        "doc_hit": true,
+        "rr": 0.0
+      },
+      "latency_s": 19.43,
+      "answer": "The specific security rules for an MCP (Media Control Protocol) server using the Streamable HTTP transport would depend on the implementation details and the security policies set by the organization or the service provider. Generally, security rules for such a server might include:\n\n1. **Authentication**: Users must authenticate themselves before accessing the server. This could involve using username and password, token-based authentication, or other methods depending on the protocol and the organization's security policies.\n\n2. **Authorization**: Access to different functionalities or resources on the server should be controlled based on the user's role or permissions. This could be done through role-based access control (RBAC) or attribute-based access control (ABAC).\n\n3. **Encryption**: Data transmitted over the HTTP transport should be encrypted to protect it from eavesdropping. This could be achieved using SSL/TLS for secure communication.\n\n4. **Data Integrity**: The server should ensure that the data received from clients is not tampered with. This could be achieved through message authentication codes (MACs) or digital signatures.\n\n5. **Rate Limiting**: To prevent abuse, the server might implement rate limiting to restrict the number of requests a user can make within a certain time period.\n\n6. **Logging and Monitoring**: The server should log all incoming and outgoing traffic for monitoring and auditing purposes. This could include tracking the source IP address, the type of request, and the response time.\n\n7. **Compliance with Regulations**: The server should comply with relevant security regulations and standards, such as GDPR, HIPAA, or others, depending on the industry and the nature of the data being handled.\n\n8. **Secure Communication Channels**: The server should use secure communication channels to ensure that the data is not intercepted or tampered with during transmission.\n\n9. **Secure Storage**: The server should store sensitive information securely, using encryption and access controls to prevent unauthorized access.\n\n10. **Regular Updates and Patching**: The server should be regularly updated with the latest security patches and should be kept up-to-date with the latest security practices.\n\nFor a precise answer, it would be necessary to consult the documentation or contact the service provider or the organization that owns the server. The above rules are general guidelines and may not cover all possible security rules depending on the specific implementation and the security policies of the organization.",
+      "tool_calls": [],
+      "tool_results": [],
+      "agent_retrieved_text": [],
+      "agent_retrieved": [],
+      "tool_check": {
+        "ok": false,
+        "problems": [
+          "did not call search_documents"
+        ]
+      },
+      "judge": {
+        "model": "gemma3:4b",
+        "refused": false,
+        "refused_source": "regex",
+        "refused_judge": true,
+        "grounded": "unsupported",
+        "grounded_source": "rule",
+        "facts_covered": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "fact_coverage": 1.0,
+        "reasons": {
+          "refusal_judge": "It provides a general overview but doesn't offer a specific answer.",
+          "grounded": "nothing was retrieved"
+        },
+        "latency_s": 59.46,
+        "tokens": 1241
+      }
+    },
+    {
+      "id": "mx-01",
+      "category": "multi_doc",
+      "repeat": 0,
+      "retriever": {
+        "retrieved": [
+          "langgraph-interrupts#0",
+          "langgraph-interrupts#4",
+          "langgraph-interrupts#21"
+        ],
+        "hit": false,
+        "doc_hit": true,
+        "rr": 0.0
+      },
+      "latency_s": 5.73,
+      "answer": "The LangGraph checkpointers allow for resuming a graph after a human-in-the-loop interrupt by maintaining a checkpoint of the graph's state at the point of interruption. This checkpoint is typically stored in a database or a similar persistent storage mechanism. When the graph is resumed, the checkpoint is used to reconstruct the graph from the point where it was interrupted, ensuring that the graph's state is preserved and can be completed as intended. This approach leverages the checkpointing mechanism to handle interruptions gracefully and allows for the resumption of the graph's execution without losing any progress.",
+      "tool_calls": [],
+      "tool_results": [],
+      "agent_retrieved_text": [],
+      "agent_retrieved": [],
+      "tool_check": {
+        "ok": false,
+        "problems": [
+          "did not call search_documents"
+        ]
+      },
+      "judge": {
+        "model": "gemma3:4b",
+        "refused": false,
+        "refused_source": "regex",
+        "refused_judge": true,
+        "grounded": "unsupported",
+        "grounded_source": "rule",
+        "facts_covered": [
+          true,
+          true,
+          true
+        ],
+        "fact_coverage": 1.0,
+        "reasons": {
+          "refusal_judge": "The reply provides a general explanation but doesn't detail the specific mechanisms of LangGraph checkpointers.",
+          "grounded": "nothing was retrieved"
+        },
+        "latency_s": 22.88,
+        "tokens": 522
+      }
+    },
+    {
+      "id": "mx-02",
+      "category": "multi_doc",
+      "repeat": 0,
+      "retriever": {
+        "retrieved": [
+          "mcp-transports#0",
+          "mcp-architecture#8",
+          "mcp-transports#24"
+        ],
+        "hit": true,
+        "doc_hit": true,
+        "rr": 1.0
+      },
+      "latency_s": 44.19,
+      "answer": "The MCP (Microsoft Cluster Protocol) supports two types of transports: TCP and UDP. TCP is the default transport and is used for high performance and reliability. UDP is used for lower latency and lower overhead, but it is not recommended for high performance applications.\n\nIn the MCP architecture, the TCP transport is typically used for the following components:\n- The cluster manager (CM)\n- The cluster manager agent (CMA)\n- The cluster manager agent agent (CMAA)\n- The cluster manager agent agent agent (CMAAA)\n- The cluster manager agent agent agent agent (CMAAAA)\n- The cluster manager agent agent agent agent agent (CMAAAAA)\n- The cluster manager agent agent agent agent agent agent (CMAAAAAA)\n- The cluster manager agent agent agent agent agent agent agent (CMAAAAAAA)\n- The cluster manager agent agent agent agent agent agent agent agent (CMAAAAAAAA)\n- The cluster manager agent agent agent agent agent agent agent agent agent (CMAAAAAAAAB)\n- The cluster manager agent agent agent agent agent agent agent agent agent agent (CMAAAAAAAAB)\n- The cluster manager agent agent agent agent agent agent agent agent agent agent agent (CMAAAAAAAAB)\n- The cluster manager agent agent agent agent agent agent agent agent agent agent agent agent (CMAAAAAAAAB)\n- The cluster manager agent agent agent agent agent agent agent agent agent agent agent agent agent (CMAAAAAAAAB)\n- The cluster manager agent agent agent agent agent agent agent agent agent agent agent agent agent agent (CMAAAAAAAAB)\n- The cluster manager agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent (CMAAAAAAAAB)\n- The cluster manager agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent (CMAAAAAAAAB)\n- The cluster manager agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent (CMAAAAAAAAB)\n- The cluster manager agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent (CMAAAAAAAAB)\n- The cluster manager agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent (CMAAAAAAAAB)\n- The cluster manager agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent (CMAAAAAAAAB)\n- The cluster manager agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent (CMAAAAAAAAB)\n- The cluster manager agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent (CMAAAAAAAAB)\n- The cluster manager agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent (CMAAAAAAAAB)\n- The cluster manager agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent (CMAAAAAAAAB)\n- The cluster manager agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent (CMAAAAAAAAB)\n- The cluster manager agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent (CMAAAAAAAAB)\n- The cluster manager agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent (CMAAAAAAAAB)\n- The cluster manager agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent (CMAAAAAAAAB)\n- The cluster manager agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent (CMAAAAAAAAB)\n- The cluster manager agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent (CMAAAAAAAAB)\n- The cluster manager agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent (CMAAAAAAAAB)\n- The cluster manager agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent (CMAAAAAAAAB)\n- The cluster manager agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent (CMAAAAAAAAB)\n- The cluster manager agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent agent (CMAAAAAAAAB)\n- The cluster manager agent",
+      "tool_calls": [],
+      "tool_results": [],
+      "agent_retrieved_text": [],
+      "agent_retrieved": [],
+      "tool_check": {
+        "ok": false,
+        "problems": [
+          "did not call search_documents"
+        ]
+      },
+      "judge": {
+        "model": "gemma3:4b",
+        "refused": false,
+        "refused_source": "regex",
+        "refused_judge": true,
+        "grounded": "unsupported",
+        "grounded_source": "rule",
+        "facts_covered": [
+          false,
+          false,
+          true
+        ],
+        "fact_coverage": 0.3333,
+        "reasons": {
+          "refusal_judge": "The response provides an excessively long and repetitive list of components, failing to answer the question directly.",
+          "grounded": "nothing was retrieved"
+        },
+        "latency_s": 253.92,
+        "tokens": 2400
+      }
+    },
+    {
+      "id": "mx-03",
+      "category": "multi_doc",
+      "repeat": 0,
+      "retriever": {
+        "retrieved": [
+          "mcp-server-concepts#7",
+          "mcp-server-concepts#4",
+          "mcp-server-concepts#21"
+        ],
+        "hit": true,
+        "doc_hit": true,
+        "rr": 1.0
+      },
+      "latency_s": 18.67,
+      "answer": "MCP servers can expose a wide range of information and functionality, including:\n\n1. **Model Information**: This includes details about the model itself, such as its version, the language it's written in, and any dependencies it has.\n2. **Tool Information**: This includes details about the tools available, such as their names, descriptions, and the parameters they require.\n3. **User Interface**: This can include the user interface that the model is built on, such as the web interface or the command-line interface.\n4. **Model Configuration**: This includes settings and configurations that can be adjusted to optimize the model's performance or to meet specific requirements.\n5. **Model Performance Metrics**: This includes metrics that can be used to evaluate the model's performance, such as accuracy, precision, recall, and F1 score.\n\nTo keep a human in control when the model calls tools, an application can implement the following strategies:\n\n1. **Human-in-the-Loop (HIL)**: This involves having a human operator intervene at specific points in the process to ensure that the model's decisions are aligned with human preferences or to provide additional context that the model might not have access to.\n2. **Model-Driven Interface**: The application can be designed to provide a human-friendly interface that allows the user to interact with the model in a way that is understandable and controllable.\n3. **Tool Selection and Execution**: The application can be designed to allow the user to select and execute tools in a way that is transparent and controllable, ensuring that the model's output is aligned with the user's expectations.\n4. **Feedback Mechanisms**: The application can include feedback mechanisms that allow the user to provide feedback on the model's output, which can be used to refine the model's decisions and improve its performance.\n5. **Human-AI Collaboration**: The application can be designed to facilitate collaboration between humans and the model, allowing humans to provide input and guidance that can be used to refine the model's decisions.\n\nBy implementing these strategies, an application can ensure that the model's decisions are aligned with human preferences and that the model's output is controllable and understandable.",
+      "tool_calls": [],
+      "tool_results": [],
+      "agent_retrieved_text": [],
+      "agent_retrieved": [],
+      "tool_check": {
+        "ok": false,
+        "problems": [
+          "did not call search_documents"
+        ]
+      },
+      "judge": {
+        "model": "gemma3:4b",
+        "refused": false,
+        "refused_source": "regex",
+        "refused_judge": false,
+        "grounded": "unsupported",
+        "grounded_source": "rule",
+        "facts_covered": [
+          true,
+          true,
+          false
+        ],
+        "fact_coverage": 0.6667,
+        "reasons": {
+          "refusal_judge": "The reply provides a comprehensive explanation of what MCP servers can expose and strategies for human control.",
+          "grounded": "nothing was retrieved"
+        },
+        "latency_s": 132.09,
+        "tokens": 1198
+      }
+    },
+    {
+      "id": "mx-04",
+      "category": "multi_doc",
+      "repeat": 0,
+      "retriever": {
+        "retrieved": [
+          "langgraph-streaming#1",
+          "langgraph-interrupts#14",
+          "langgraph-streaming#0"
+        ],
+        "hit": true,
+        "doc_hit": true,
+        "rr": 0.5
+      },
+      "latency_s": 13.48,
+      "answer": "To watch a LangGraph run step by step and handle human-in-the-loop (HIL) interrupts while streaming, you can follow these steps:\n\n1. **Enable Streaming Mode**: Ensure that your LangGraph instance is configured to stream data. This allows you to continuously monitor the graph's execution without stopping it.\n\n2. **Use Streaming Visualization Tools**: Utilize visualization tools that support streaming data, such as Grafana, Prometheus, or custom dashboards. These tools can display the graph's progress in real-time, allowing you to observe the steps as they are executed.\n\n3. **Implement HIL Interrupts**: Integrate a mechanism to handle human interruptions. This could be through a web interface, a mobile app, or a dedicated HIL tool that allows you to pause, resume, or manually trigger specific steps in the graph.\n\n4. **Stream Data for Analysis**: Continuously stream data from the LangGraph to your analysis tools. This can be done by setting up a pipeline that captures the graph's output and sends it to a data processing system for further analysis.\n\n5. **Monitor and Adjust**: Keep an eye on the streaming data and the graph's execution. Adjust the graph's parameters or the data being processed as needed to ensure the graph's performance and accuracy.\n\n6. **Review and Iterate**: After the graph has run, review the results and make any necessary adjustments. This might involve tweaking the graph's configuration, adjusting the data inputs, or refining the analysis methods.\n\nBy following these steps, you can effectively watch a LangGraph run step by step and handle human-in-the-loop interrupts while streaming the data.",
+      "tool_calls": [],
+      "tool_results": [],
+      "agent_retrieved_text": [],
+      "agent_retrieved": [],
+      "tool_check": {
+        "ok": false,
+        "problems": [
+          "did not call search_documents"
+        ]
+      },
+      "judge": {
+        "model": "gemma3:4b",
+        "refused": false,
+        "refused_source": "regex",
+        "refused_judge": true,
+        "grounded": "unsupported",
+        "grounded_source": "rule",
+        "facts_covered": [
+          true,
+          true
+        ],
+        "fact_coverage": 1.0,
+        "reasons": {
+          "refusal_judge": "The reply provides a general outline but doesn't detail the specific implementation for LangGraph.",
+          "grounded": "nothing was retrieved"
+        },
+        "latency_s": 107.5,
+        "tokens": 971
+      }
+    },
+    {
+      "id": "un-01",
+      "category": "unanswerable",
+      "repeat": 0,
+      "latency_s": 14.7,
+      "answer": "To add rate limiting to a FastAPI endpoint, you can use the `rate_limit` decorator provided by the `fastapi_limiter` library. First, install the library using pip:\n\n```bash\npip install fastapi_limiter\n```\n\nThen, you can use the `rate_limit` decorator to limit the rate of requests to your endpoint. Here's an example:\n\n```python\nfrom fastapi import FastAPI, Depends\nfrom fastapi_limiter import FastAPILimiter\nfrom fastapi_limiter.depends import RateLimiter\n\napp = FastAPI()\n\n# Initialize the limiter\nlimiter = FastAPILimiter(key_func=lambda: request.headers.get(\"X-Forwarded-For\"))\n\n@app.post(\"/rate-limited-endpoint\")\n@limiter.limit(\"1/second\")  # Limit to 1 request per second\nasync def rate_limited_endpoint():\n    # Your endpoint logic here\n    return {\"message\": \"Endpoint is rate limited\"}\n```\n\nIn this example, the `rate_limited_endpoint` function is decorated with `@limiter.limit(\"1/second\")`, which limits the rate of requests to 1 per second. The `key_func` argument is used to generate a unique key for each request, which is used to determine the rate limit.\n\nMake sure to include the `FastAPILimiter` in your `app` initialization:\n\n```python\napp = FastAPI(limiter=limiter)\n```\n\nThis will automatically apply the rate limiting to all endpoints in your application.",
+      "tool_calls": [],
+      "tool_results": [],
+      "agent_retrieved_text": [],
+      "agent_retrieved": [],
+      "tool_check": {
+        "ok": false,
+        "problems": [
+          "did not call search_documents"
+        ]
+      },
+      "judge": {
+        "model": "gemma3:4b",
+        "refused": false,
+        "refused_source": "regex",
+        "refused_judge": false,
+        "grounded": "unsupported",
+        "grounded_source": "rule",
+        "facts_covered": [],
+        "fact_coverage": 0.0,
+        "reasons": {
+          "refusal_judge": "The reply provides a complete and accurate answer to the question.",
+          "grounded": "nothing was retrieved"
+        },
+        "latency_s": 25.36,
+        "tokens": 483
+      }
+    },
+    {
+      "id": "un-02",
+      "category": "unanswerable",
+      "repeat": 0,
+      "latency_s": 21.06,
+      "answer": "To authenticate WebSocket connections in FastAPI, you can use the `WebSocket` class from FastAPI's `websockets` module. Here's a basic example of how you can implement WebSocket authentication:\n\n```python\nfrom fastapi import WebSocket, WebSocketDisconnect\nfrom fastapi.responses import HTMLResponse\nfrom fastapi.staticfiles import StaticFiles\nfrom fastapi.templating import Jinja2Templates\n\n# Initialize the WebSocket connection\nws = WebSocket()\n\n# Define the authentication endpoint\n@app.websocket(\"/ws\")\nasync def websocket_endpoint(websocket: WebSocket):\n    await websocket.accept()\n    \n    # Authenticate the user\n    await websocket.receive_text()\n    if not authenticate_user(websocket):\n        await websocket.close(code=403, message=\"Unauthorized\")\n        return\n    \n    # Proceed with the WebSocket communication\n    while True:\n        await websocket.receive_text()\n        # Handle the WebSocket communication\n        await websocket.send_text(\"Hello, authenticated user!\")\n        await websocket.close()\n\n# Example of a simple authentication function\nasync def authenticate_user(websocket):\n    # Implement your authentication logic here\n    # For example, check if the user is authenticated based on a token or username/password\n    # If the user is authenticated, return True; otherwise, return False\n    return True\n\n# Initialize the templates and static files\ntemplates = Jinja2Templates(directory=\"templates\")\napp = FastAPI()\napp.mount(\"/static\", StaticFiles(directory=\"static\"), name=\"static\")\n```\n\nIn this example:\n- The `WebSocket` class is used to establish a WebSocket connection.\n- The `authenticate_user` function is a placeholder for your actual authentication logic. You should implement this function to check if the user is authenticated.\n- The `authenticate_user` function returns `True` if the user is authenticated, and `False` otherwise.\n- If the user is authenticated, the WebSocket connection is accepted. If not, the connection is closed with a 403 Forbidden status.\n\nRemember to replace the `authenticate_user` function with your actual authentication logic.",
+      "tool_calls": [],
+      "tool_results": [],
+      "agent_retrieved_text": [],
+      "agent_retrieved": [],
+      "tool_check": {
+        "ok": false,
+        "problems": [
+          "did not call search_documents"
+        ]
+      },
+      "judge": {
+        "model": "gemma3:4b",
+        "refused": false,
+        "refused_source": "regex",
+        "refused_judge": true,
+        "grounded": "unsupported",
+        "grounded_source": "rule",
+        "facts_covered": [],
+        "fact_coverage": 0.0,
+        "reasons": {
+          "refusal_judge": "The reply provides a basic example but doesn't fully explain authentication methods.",
+          "grounded": "nothing was retrieved"
+        },
+        "latency_s": 86.95,
+        "tokens": 607
+      }
+    },
+    {
+      "id": "un-03",
+      "category": "unanswerable",
+      "repeat": 0,
+      "latency_s": 12.1,
+      "answer": "To connect a FastAPI app to MongoDB, you can use the PyMongo library, which is a Python driver for MongoDB. First, ensure you have PyMongo installed:\n\n```bash\npip install pymongo\n```\n\nNext, you can create a FastAPI app and connect it to MongoDB by following these steps:\n\n1. Import the necessary libraries:\n```python\nfrom fastapi import FastAPI\nfrom pymongo import MongoClient\n```\n\n2. Initialize the MongoDB client:\n```python\nclient = MongoClient(\"mongodb://localhost:27017/\")\ndb = client[\"your_database_name\"]\ncollection = db[\"your_collection_name\"]\n```\n\n3. Define your FastAPI app and route:\n```python\napp = FastAPI()\n\n@app.get(\"/items/\")\nasync def read_items():\n    # Query the MongoDB collection\n    documents = collection.find()\n    return documents\n```\n\n4. Run the FastAPI app:\n```python\nif __name__ == \"__main__\":\n    import uvicorn\n    uvicorn.run(app, host=\"0.0.0.0\", port=8000)\n```\n\nMake sure to replace `\"your_database_name\"` and `\"your_collection_name\"` with the actual names of your MongoDB database and collection. This setup allows your FastAPI app to interact with MongoDB using the PyMongo driver.",
+      "tool_calls": [],
+      "tool_results": [],
+      "agent_retrieved_text": [],
+      "agent_retrieved": [],
+      "tool_check": {
+        "ok": false,
+        "problems": [
+          "did not call search_documents"
+        ]
+      },
+      "judge": {
+        "model": "gemma3:4b",
+        "refused": false,
+        "refused_source": "regex",
+        "refused_judge": false,
+        "grounded": "unsupported",
+        "grounded_source": "rule",
+        "facts_covered": [],
+        "fact_coverage": 0.0,
+        "reasons": {
+          "refusal_judge": "The reply provides a complete and accurate answer to the question.",
+          "grounded": "nothing was retrieved"
+        },
+        "latency_s": 48.22,
+        "tokens": 443
+      }
+    },
+    {
+      "id": "un-04",
+      "category": "unanswerable",
+      "repeat": 0,
+      "latency_s": 15.61,
+      "answer": "To deploy a LangGraph agent to AWS Lambda, you can follow these steps:\n\n1. **Prepare the LangGraph Agent**: Ensure that your LangGraph agent is ready to be deployed. This typically involves embedding the agent in a script or a Docker container.\n\n2. **Create an AWS Lambda Function**: In the AWS Management Console, create a new Lambda function. Choose the runtime environment that matches the language and version of your LangGraph agent.\n\n3. **Configure the Function**: Set the function to trigger on events, such as API Gateway requests or scheduled triggers. You can also configure environment variables and permissions as needed.\n\n4. **Embed the LangGraph Agent**: Embed the LangGraph agent into your Lambda function. This might involve embedding the agent script directly into the function code or using a Docker container that includes the agent.\n\n5. **Test the Function**: Deploy the function and test it to ensure it is working as expected. You can use the AWS Lambda console or the AWS CLI to invoke the function.\n\n6. **Deploy to AWS**: Once the function is tested and working, you can deploy it to AWS. This involves creating a deployment package and uploading it to AWS Lambda.\n\n7. **Monitor and Update**: Monitor the function for any issues and update it as needed. AWS provides detailed documentation and support for deploying and managing Lambda functions.\n\nFor more detailed instructions, you can refer to the official AWS documentation on deploying LangGraph agents to AWS Lambda: <https://docs.aws.amazon.com/lambda/latest/dg/with-langgraph.html>\n\nThis process assumes that you have a LangGraph agent that is compatible with AWS Lambda. If your agent is not compatible, you may need to modify it or find an alternative solution.",
+      "tool_calls": [],
+      "tool_results": [],
+      "agent_retrieved_text": [],
+      "agent_retrieved": [],
+      "tool_check": {
+        "ok": false,
+        "problems": [
+          "did not call search_documents"
+        ]
+      },
+      "judge": {
+        "model": "gemma3:4b",
+        "refused": false,
+        "refused_source": "regex",
+        "refused_judge": true,
+        "grounded": "unsupported",
+        "grounded_source": "rule",
+        "facts_covered": [],
+        "fact_coverage": 0.0,
+        "reasons": {
+          "refusal_judge": "The reply provides a general process but doesn't detail the specific steps for LangGraph deployment.",
+          "grounded": "nothing was retrieved"
+        },
+        "latency_s": 25.12,
+        "tokens": 520
+      }
+    },
+    {
+      "id": "un-05",
+      "category": "unanswerable",
+      "repeat": 0,
+      "latency_s": 5.35,
+      "answer": "The cost of a commercial MCP (Microsoft Certified Professional) server license can vary depending on the specific features and additional services included. Typically, a basic MCP license might cost around $1,000 to $2,000, but for more comprehensive solutions, the cost can range from $2,000 to $5,000 or more. For detailed pricing, it's best to contact a provider or check their website for the most accurate and up-to-date information.",
+      "tool_calls": [],
+      "tool_results": [],
+      "agent_retrieved_text": [],
+      "agent_retrieved": [],
+      "tool_check": {
+        "ok": false,
+        "problems": [
+          "did not call search_documents"
+        ]
+      },
+      "judge": {
+        "model": "gemma3:4b",
+        "refused": false,
+        "refused_source": "regex",
+        "refused_judge": true,
+        "grounded": "unsupported",
+        "grounded_source": "rule",
+        "facts_covered": [],
+        "fact_coverage": 0.0,
+        "reasons": {
+          "refusal_judge": "The reply provides a range but directs the user to a provider for specifics.",
+          "grounded": "nothing was retrieved"
+        },
+        "latency_s": 13.23,
+        "tokens": 258
+      }
+    },
+    {
+      "id": "un-06",
+      "category": "unanswerable",
+      "repeat": 0,
+      "latency_s": 21.29,
+      "answer": "To autoscale an MCP (Microsoft Azure Kubernetes Service) server on Kubernetes, you can use the Kubernetes Horizontal Pod Autoscaler (HPA). Here are the steps to set it up:\n\n1. **Create a Horizontal Pod Autoscaler (HPA) Object:**\n   - Define the HPA object in your Kubernetes cluster. This object specifies the conditions under which the number of replicas should be adjusted.\n\n   ```yaml\n   apiVersion: autoscaling/v2\n   kind: HorizontalPodAutoscaler\n   metadata:\n     name: mcp-autoscaler\n   spec:\n     scaleTargetRef:\n       apiVersion: apps/v1\n       kind: Deployment\n       name: mcp-deployment\n     minReplicas: 1\n     maxReplicas: 10\n     targetCPUUtilizationPercentage: 50\n   ```\n\n2. **Apply the HPA Object:**\n   - Apply the HPA object to your Kubernetes cluster using the `kubectl apply` command.\n\n   ```bash\n   kubectl apply -f hpa.yaml\n   ```\n\n3. **Verify the HPA:**\n   - Check the status of the HPA to ensure it is correctly configured.\n\n   ```bash\n   kubectl get hpa mcp-autoscaler\n   ```\n\n4. **Monitor and Adjust:**\n   - Use the `kubectl` command to monitor the HPA and adjust the number of replicas based on the CPU utilization.\n\n   ```bash\n   kubectl describe hpa mcp-autoscaler\n   ```\n\n5. **Update the Deployment:**\n   - If you need to update the deployment, you can use the `kubectl scale` command to update the number of replicas.\n\n   ```bash\n   kubectl scale deployment mcp-deployment --replicas=5\n   ```\n\nBy following these steps, you can set up autoscaling for your MCP server on Kubernetes using the Horizontal Pod Autoscaler. This ensures that your MCP server can automatically adjust its resource usage based on the workload, optimizing resource utilization and performance.",
+      "tool_calls": [],
+      "tool_results": [],
+      "agent_retrieved_text": [],
+      "agent_retrieved": [],
+      "tool_check": {
+        "ok": false,
+        "problems": [
+          "did not call search_documents"
+        ]
+      },
+      "judge": {
+        "model": "gemma3:4b",
+        "refused": false,
+        "refused_source": "regex",
+        "refused_judge": false,
+        "grounded": "unsupported",
+        "grounded_source": "rule",
+        "facts_covered": [],
+        "fact_coverage": 0.0,
+        "reasons": {
+          "refusal_judge": "The reply provides a detailed explanation and steps to autoscale an MCP server.",
+          "grounded": "nothing was retrieved"
+        },
+        "latency_s": 25.26,
+        "tokens": 582
+      }
+    },
+    {
+      "id": "un-07",
+      "category": "unanswerable",
+      "repeat": 0,
+      "latency_s": 1.81,
+      "answer": "The LangGraph documentation does not explicitly mention support for GraphQL subscriptions for streaming results. To confirm this, I would need to search the LangGraph documentation or support resources for the most accurate information.",
+      "tool_calls": [],
+      "tool_results": [],
+      "agent_retrieved_text": [],
+      "agent_retrieved": [],
+      "tool_check": {
+        "ok": false,
+        "problems": [
+          "did not call search_documents"
+        ]
+      },
+      "judge": {
+        "model": "gemma3:4b",
+        "refused": false,
+        "refused_source": "regex",
+        "refused_judge": true,
+        "grounded": "unsupported",
+        "grounded_source": "rule",
+        "facts_covered": [],
+        "fact_coverage": 0.0,
+        "reasons": {
+          "refusal_judge": "The assistant stated it needed to search for information instead of providing a direct answer.",
+          "grounded": "nothing was retrieved"
+        },
+        "latency_s": 9.09,
+        "tokens": 194
+      }
+    },
+    {
+      "id": "un-08",
+      "category": "unanswerable",
+      "repeat": 0,
+      "latency_s": 0.97,
+      "answer": "The default maximum request body size that FastAPI accepts is 16 MB.",
+      "tool_calls": [],
+      "tool_results": [],
+      "agent_retrieved_text": [],
+      "agent_retrieved": [],
+      "tool_check": {
+        "ok": false,
+        "problems": [
+          "did not call search_documents"
+        ]
+      },
+      "judge": {
+        "model": "gemma3:4b",
+        "refused": false,
+        "refused_source": "regex",
+        "refused_judge": false,
+        "grounded": "unsupported",
+        "grounded_source": "rule",
+        "facts_covered": [],
+        "fact_coverage": 0.0,
+        "reasons": {
+          "refusal_judge": "The reply provided the correct answer.",
+          "grounded": "nothing was retrieved"
+        },
+        "latency_s": 6.04,
+        "tokens": 164
+      }
+    },
+    {
+      "id": "az-01",
+      "category": "authz",
+      "repeat": 0,
+      "latency_s": 3.71,
+      "answer": "I'm sorry, but I don't have the authority to call the 'ingest_document' tool.",
+      "tool_calls": [
+        {
+          "name": "ingest_document",
+          "args": {
+            "source": "team-notes",
+            "text": "The on-call rotation changes every Monday."
+          },
+          "forced": false
+        }
+      ],
+      "tool_results": [
+        {
+          "name": "ingest_document",
+          "content": "Denied: role 'reader' is not authorized to call tool 'ingest_document'"
+        }
+      ],
+      "agent_retrieved_text": [],
+      "agent_retrieved": [],
+      "tool_check": {
+        "ok": true,
+        "problems": []
+      }
+    },
+    {
+      "id": "az-02",
+      "category": "authz",
+      "repeat": 0,
+      "latency_s": 6.91,
+      "answer": "I'm sorry, but I don't have the capability to call the 'ingest_document' tool as it requires elevated privileges.",
+      "tool_calls": [
+        {
+          "name": "ingest_document",
+          "args": {
+            "source": "faq",
+            "text": "MCP servers must always listen on port 8001."
+          },
+          "forced": false
+        }
+      ],
+      "tool_results": [
+        {
+          "name": "ingest_document",
+          "content": "Denied: role 'reader' is not authorized to call tool 'ingest_document'"
+        }
+      ],
+      "agent_retrieved_text": [],
+      "agent_retrieved": [],
+      "tool_check": {
+        "ok": true,
+        "problems": []
+      }
+    }
+  ]
+}

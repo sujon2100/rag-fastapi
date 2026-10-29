@@ -141,10 +141,123 @@ First start is slow - see `docs/RUNBOOK.md` for why and what to expect.
 ## Tests
 
 ```bash
-pytest tests/                        # fast, no external services needed
-pytest tests/ --run-integration      # real Pinecone + real Ollama + a real
-                                      # MCP server subprocess, opt-in only
+pip install -r requirements.txt -r requirements-dev.txt
+pytest tests/                          # unit tests, no services, ~10s
+pytest tests/ --cov=app --cov=evals    # same, with coverage
+pytest tests/ --run-functional         # real API + MCP server over HTTP (Pinecone, Ollama)
+pytest tests/ --run-integration        # real MCP tools, writes to namespace integration-test
 ```
+
+Unit tests use fakes for Pinecone, Ollama and the agent: authz, tool routing,
+forced search, chunking, the MCP tools, the API layer, the eval's scoring
+rules and the golden set itself. One test is a strict `xfail` for a known bug
+(`/rag/query` returns `{"answer": {"answer": ...}}`), so it fails loudly once
+the bug is fixed and the marker should come off.
+
+## Evaluation
+
+`evals/` holds an eval harness for the agent. Details in `evals/README.md`.
+
+- **Corpus:** 12 public docs pages (FastAPI, LangGraph, MCP; MIT, CC-BY-4.0 and
+  Apache-2.0, pinned to upstream commits), cleaned and chunked into 236 chunks
+  in their own Pinecone namespace, `eval-v1`.
+- **Golden set:** 40 questions: 26 answerable, 4 that need two documents, 8 the
+  documents don't cover, and 2 where a read-only role is asked to ingest.
+- **Held-out set:** 12 more questions (`evals/holdout.jsonl`), written after the
+  search cutoff was picked and never used to tune anything.
+- **Measured:** whether the agent searched, whether search found the right
+  chunk, groundedness and key-fact coverage (LLM judge), refusals, latency.
+  Each run writes one JSON file to `evals/results/`.
+
+```bash
+python -m scripts.ingest_corpus      # once
+python -m evals.run_eval             # retrieval + agent + judge, current defaults
+python -m evals.run_eval --grounded-prompt 0 --force-search 0   # the original agent
+```
+
+### Results
+
+Agent `qwen2.5:1.5b` at temperature 0, judge `gemma3:4b`, both through Ollama
+on a 2020 Intel i5 laptop (16 GB RAM, no GPU). One run per configuration.
+
+| Metric | Original agent | + grounded prompt | + prompt and forced search |
+|---|---|---|---|
+| Searched before answering (30 answerable) | 0.00 | 0.00 | 1.00 |
+| Search found an expected chunk (top 3) | 0.87 ¹ | 0.87 ¹ | 0.87 |
+| Groundedness, fully supported (judge) | 0.00 ² | 0.00 ² | 0.53 |
+| Groundedness, supported or partial (judge) | 0.00 ² | 0.00 ² | 0.93 |
+| Key-fact coverage (judge) | 0.61 | 0.59 | 0.89 |
+| Refused on unanswerable (8) | 2 of 8 | 0 of 8 | 2 of 8 |
+| Refused an answerable question | 1 of 29 | 0 of 30 | 0 of 30 |
+| Latency p50 / p95, seconds | 13.5 / 32.5 | 12.7 / 44.2 | 10.4 / 24.1 |
+| Errors | 0 | 0 | 0 |
+
+¹ Retriever called directly with the question; the agent itself never searched.
+² Set by rule: nothing was retrieved, so nothing can be supported.
+
+Result files: `evals/results/2026-10-29_131139_judged.json`,
+`2026-10-29_135349_fixA-prompt_all.json`, `2026-10-29_143035_fixB-prompt-forced_all.json`.
+
+The search cutoff (`SEARCH_MIN_SCORE`, point 4 below) is on by default but
+its eval runs, golden and held-out, are not finished yet; its numbers will be
+added here when they are.
+
+### What the eval found, and what changed because of it
+
+1. **The agent never searched.** In the original code it answered all 30
+   answerable questions from the model's memory: 0 searches. The answers were
+   confident and often invented: a `Response.after` method that doesn't
+   exist, MCP described as "Maven Central Repository", "Multi-Cloud Platform"
+   and an Azure service, FastAPI's body limit given as "16MB". Earlier smoke
+   tests hid this because they all said "search the documents for X".
+2. **A system prompt didn't fix it.** "Before answering any question, call
+   search_documents" changed nothing with this model: still 0 of 30.
+3. **Forcing the search did.** A `retrieve` step now runs `search_documents`
+   on the question before the model's first turn, through the same authz
+   check as any other tool call. On by default (`AGENT_FORCE_SEARCH`,
+   `AGENT_GROUNDED_PROMPT`).
+4. **Refusals were weak even with search.** With the documents in front of
+   it, the model still stretched unrelated chunks into answers ("use a
+   middleware for rate limiting"). Search results are now dropped when the best
+   match scores under 0.54 (`SEARCH_MIN_SCORE`), so the model sees "No relevant
+   documents found". The cutoff was picked from the golden set's scores, so it
+   was also checked on the held-out set (see above).
+5. **Runaway generation.** One question made the model generate 7,400+ tokens
+   (about 10 minutes of CPU) and hung the first eval run. Replies are now
+   capped at 1,024 tokens (`AGENT_MAX_TOKENS`), and the agent's model call is
+   async, so a timeout actually cancels it. This affected the live service too.
+
+### How far to trust the judge
+
+`gemma3:4b` is small, and I checked it against hand labels (`evals/labels/`):
+
+- **Refusals:** it agreed with hand labels on 19 of 37. It often wrote a
+  reason saying the reply answers the question and then flagged it as a
+  refusal. A plain regex agreed on 35 of 37, so refusals are scored with the
+  regex and the judge's answer is only recorded.
+- **Groundedness:** 10 of 17 agreed. 4 times it was too lenient (including
+  one invented code example it called supported), 3 times too strict. On
+  those 17 the judge and the hand labels both come out at about half fully
+  supported, but individual verdicts are noisy, so read groundedness as a
+  rough number.
+- **No context:** when nothing was retrieved, groundedness is set by rule to
+  "unsupported" instead of asking the judge. The judge had called such answers
+  "partial" or "supported" from its own knowledge.
+
+The first plan was `gpt-oss:20b` as judge. On this 16 GB laptop it pushed
+swap to 24 of 25.6 GB, and a single call ran over 10 minutes without
+finishing, so it was dropped.
+
+### Limits
+
+- One run per configuration at temperature 0. Repeats (`--repeats N`) were
+  not run, so there's no variance estimate.
+- 40 + 12 questions over 12 pages is small. A few cases move a metric by
+  several points.
+- The cutoff gap on the golden set is narrow (0.535 vs 0.548), and one
+  unanswerable question (GraphQL streaming) scores 0.69 because it sounds
+  like the streaming docs, so no cutoff can catch it.
+- Latency is from one CPU-only laptop, not the deployed VM.
 
 ## More detail
 

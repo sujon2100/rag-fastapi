@@ -1,0 +1,51 @@
+name: eval
+
+# Full eval (retrieval + agent + judge) on demand. Installs Ollama on the
+# runner and pulls the models, so it is slow; run it by hand, not on push.
+# Not yet run on GitHub-hosted runners - runtime and memory there are unmeasured.
+
+on:
+  workflow_dispatch:
+    inputs:
+      judge_model:
+        description: Ollama model used as judge
+        default: gpt-oss:20b
+      repeats:
+        description: Times to run each case through the agent
+        default: "1"
+
+jobs:
+  eval:
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    env:
+      PINECONE_API_KEY: ${{ secrets.PINECONE_API_KEY }}
+      OLLAMA_BASE_URL: http://localhost:11434
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - run: pip install torch==2.2.2 --index-url https://download.pytorch.org/whl/cpu
+      - run: pip install -r requirements.txt
+      - name: Install and start Ollama
+        run: |
+          curl -fsSL https://ollama.com/install.sh | sh
+          (ollama serve > ollama.log 2>&1 &)
+          until curl -sf http://localhost:11434/api/tags > /dev/null; do sleep 1; done
+      - run: ollama pull qwen2.5:1.5b
+      - run: ollama pull ${{ inputs.judge_model }}
+      - name: Run eval
+        run: >
+          python -m evals.run_eval --phase all
+          --judge-model ${{ inputs.judge_model }}
+          --repeats ${{ inputs.repeats }}
+          --gate evals/thresholds.json
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eval-results
+          path: |
+            evals/results/*.json
+            ollama.log

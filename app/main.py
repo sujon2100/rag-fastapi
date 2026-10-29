@@ -3,7 +3,7 @@ import os
 import requests
 from fastapi import FastAPI, HTTPException
 from app.routes import agent_router, router
-from app.services.vectorstore import index
+from app.services.vectorstore import get_index
 
 app = FastAPI(title="RAG FastAPI Service")
 app.include_router(router)
@@ -27,7 +27,7 @@ def health_live():
 def health_ready():
     """Checks the actual dependencies the /rag/query path needs."""
     try:
-        index.describe_index_stats()
+        get_index().describe_index_stats()
     except Exception as exc:
         raise HTTPException(status_code=503, detail=f"pinecone not ready: {exc}")
 

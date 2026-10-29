@@ -37,6 +37,9 @@ class StubLLM:
     def invoke(self, messages):
         return self._script.pop(0)
 
+    async def ainvoke(self, messages):
+        return self.invoke(messages)
+
 
 def _run(coro):
     return asyncio.get_event_loop().run_until_complete(coro)
@@ -91,3 +94,37 @@ def test_unauthorized_tool_call_is_denied_not_executed():
     assert ingest_tool.calls == []
     tool_message = result["messages"][-2]
     assert "Denied" in tool_message.content
+
+
+def test_forced_search_runs_before_the_model_with_the_question():
+    search_tool = StubTool("search_documents", "[doc#1, score=0.9] text")
+    llm = StubLLM([AIMessage(content="answer from doc#1")])
+    app = build_agent([search_tool], llm, force_search=True)
+
+    result = _run(
+        app.ainvoke(
+            {"messages": [HumanMessage(content="what is a checkpointer?")], "role": "reader"},
+            config={"configurable": {"thread_id": "t3"}},
+        )
+    )
+
+    assert search_tool.calls == [{"query": "what is a checkpointer?"}]
+    # the model's single scripted turn came after the tool result
+    assert result["messages"][-2].content == "[doc#1, score=0.9] text"
+    assert result["messages"][-1].content == "answer from doc#1"
+
+
+def test_forced_search_still_goes_through_authz():
+    search_tool = StubTool("search_documents", "should never see this")
+    llm = StubLLM([AIMessage(content="final")])
+    app = build_agent([search_tool], llm, force_search=True)
+
+    result = _run(
+        app.ainvoke(
+            {"messages": [HumanMessage(content="q")], "role": "unknown_role"},
+            config={"configurable": {"thread_id": "t4"}},
+        )
+    )
+
+    assert search_tool.calls == []
+    assert result["messages"][-2].content.startswith("Denied")

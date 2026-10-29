@@ -1,0 +1,10 @@
+{
+  "retriever_hit_at_k": {"min": 0.8},
+  "retriever_doc_hit_at_k": {"min": 0.9},
+  "agent_searched_rate": {"min": 0.9},
+  "tool_call_correctness": {"min": 0.9},
+  "groundedness": {"min": 0.4},
+  "answer_fact_coverage": {"min": 0.75},
+  "false_refusal_rate": {"max": 0.1},
+  "errors": {"max": 1}
+}

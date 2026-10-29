@@ -1,0 +1,38 @@
+{"id": "fa-01", "refused": false, "note": "gives a substantive answer", "answer_sha": "ea7dd584c369", "results_file": "2026-10-29_131139_agent.json"}
+{"id": "fa-02", "refused": false, "note": "gives a substantive answer", "answer_sha": "04c2050829a9", "results_file": "2026-10-29_131139_agent.json"}
+{"id": "fa-03", "refused": false, "note": "gives a substantive answer", "answer_sha": "a984e87181de", "results_file": "2026-10-29_131139_agent.json"}
+{"id": "fa-04", "refused": false, "note": "gives a substantive answer", "answer_sha": "10c76bc7cdeb", "results_file": "2026-10-29_131139_agent.json"}
+{"id": "fa-05", "refused": false, "note": "gives a substantive answer", "answer_sha": "589de220ce46", "results_file": "2026-10-29_131139_agent.json"}
+{"id": "fa-06", "refused": false, "note": "gives a substantive answer", "answer_sha": "4138e3797d17", "results_file": "2026-10-29_131139_agent.json"}
+{"id": "fa-07", "refused": false, "note": "gives a substantive answer", "answer_sha": "1cd1480c7304", "results_file": "2026-10-29_131139_agent.json"}
+{"id": "fa-08", "refused": false, "note": "gives a substantive answer", "answer_sha": "bde084461ea3", "results_file": "2026-10-29_131139_agent.json"}
+{"id": "fa-09", "refused": false, "note": "gives a substantive answer", "answer_sha": "a2bd3f21f8c2", "results_file": "2026-10-29_131139_agent.json"}
+{"id": "fa-10", "refused": false, "note": "gives a substantive answer", "answer_sha": "96e31d84b25c", "results_file": "2026-10-29_131139_agent.json"}
+{"id": "fa-11", "refused": false, "note": "gives a substantive answer", "answer_sha": "0bc8350c5003", "results_file": "2026-10-29_131139_agent.json"}
+{"id": "fa-12", "refused": false, "note": "gives a substantive answer", "answer_sha": "e1fe316d49e4", "results_file": "2026-10-29_131139_agent.json"}
+{"id": "lg-01", "refused": false, "note": "gives a substantive answer", "answer_sha": "ec2072b54dc4", "results_file": "2026-10-29_131139_agent.json"}
+{"id": "lg-02", "refused": true, "note": "asks the user for more details instead of answering", "answer_sha": "107210a5c87f", "results_file": "2026-10-29_131139_agent.json"}
+{"id": "lg-03", "refused": false, "note": "gives a substantive answer", "answer_sha": "c18757452e5c", "results_file": "2026-10-29_131139_agent.json"}
+{"id": "lg-04", "refused": false, "note": "gives a substantive answer", "answer_sha": "7ac0b72a27b8", "results_file": "2026-10-29_131139_agent.json"}
+{"id": "lg-05", "refused": false, "note": "gives a substantive answer", "answer_sha": "1acdfc9e209c", "results_file": "2026-10-29_131139_agent.json"}
+{"id": "lg-06", "refused": true, "note": "says it has no access to the LangGraph docs", "answer_sha": "efb460c2b8f5", "results_file": "2026-10-29_131139_agent.json"}
+{"id": "lg-07", "refused": false, "note": "gives a substantive answer", "answer_sha": "b95f6010852a", "results_file": "2026-10-29_131139_agent.json"}
+{"id": "mc-01", "refused": false, "note": "gives a substantive answer", "answer_sha": "804345d10a06", "results_file": "2026-10-29_131139_agent.json"}
+{"id": "mc-02", "refused": false, "note": "gives a substantive answer", "answer_sha": "85bf72098567", "results_file": "2026-10-29_131139_agent.json"}
+{"id": "mc-03", "refused": false, "note": "gives a substantive answer", "answer_sha": "17b091e2c2cd", "results_file": "2026-10-29_131139_agent.json"}
+{"id": "mc-04", "refused": false, "note": "gives a substantive answer", "answer_sha": "c0ca7cf298c8", "results_file": "2026-10-29_131139_agent.json"}
+{"id": "mc-05", "refused": false, "note": "gives a substantive answer", "answer_sha": "8b5fe688752a", "results_file": "2026-10-29_131139_agent.json"}
+{"id": "mc-06", "refused": false, "note": "gives a substantive answer", "answer_sha": "f34975e60882", "results_file": "2026-10-29_131139_agent.json"}
+{"id": "mc-07", "refused": true, "note": "says it would need to consult the official documentation", "answer_sha": "0c66c34b0fa5", "results_file": "2026-10-29_131139_agent.json"}
+{"id": "mx-01", "refused": false, "note": "gives a substantive answer", "answer_sha": "8471191b786a", "results_file": "2026-10-29_131139_agent.json"}
+{"id": "mx-02", "refused": false, "note": "gives a substantive answer", "answer_sha": "12635ad04706", "results_file": "2026-10-29_131139_agent.json"}
+{"id": "mx-03", "refused": false, "note": "gives a substantive answer", "answer_sha": "603bfd77c13a", "results_file": "2026-10-29_131139_agent.json"}
+{"id": "mx-04", "refused": false, "note": "gives a substantive answer", "answer_sha": "ca2601af7a40", "results_file": "2026-10-29_131139_agent.json"}
+{"id": "un-01", "refused": false, "note": "gives a substantive answer", "answer_sha": "fb9c58d87077", "results_file": "2026-10-29_131139_agent.json"}
+{"id": "un-02", "refused": false, "note": "gives a substantive answer", "answer_sha": "a097ec3f78f9", "results_file": "2026-10-29_131139_agent.json"}
+{"id": "un-03", "refused": false, "note": "gives a substantive answer", "answer_sha": "6314477c9d2a", "results_file": "2026-10-29_131139_agent.json"}
+{"id": "un-04", "refused": false, "note": "gives a substantive answer", "answer_sha": "ba7bd62668f4", "results_file": "2026-10-29_131139_agent.json"}
+{"id": "un-05", "refused": true, "note": "says it cannot provide the license cost", "answer_sha": "66d514265b4b", "results_file": "2026-10-29_131139_agent.json"}
+{"id": "un-06", "refused": false, "note": "gives a substantive answer", "answer_sha": "027205264916", "results_file": "2026-10-29_131139_agent.json"}
+{"id": "un-07", "refused": true, "note": "says it has no information about the feature", "answer_sha": "6af619e4dd4b", "results_file": "2026-10-29_131139_agent.json"}
+{"id": "un-08", "refused": false, "note": "gives a substantive answer", "answer_sha": "a8b93b4f0ca3", "results_file": "2026-10-29_131139_agent.json"}

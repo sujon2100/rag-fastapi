@@ -1,0 +1,1659 @@
+{
+  "namespace": "eval-v1",
+  "max_chars": 800,
+  "chunk_count": 236,
+  "chunks": [
+    {
+      "chunk_id": "fastapi-background-tasks#0",
+      "doc_id": "fastapi-background-tasks",
+      "section": "Background Tasks",
+      "chars": 740,
+      "sha1": "1e4aa7996ff8"
+    },
+    {
+      "chunk_id": "fastapi-background-tasks#1",
+      "doc_id": "fastapi-background-tasks",
+      "section": "Using `BackgroundTasks`",
+      "chars": 279,
+      "sha1": "423a8787cc0a"
+    },
+    {
+      "chunk_id": "fastapi-background-tasks#2",
+      "doc_id": "fastapi-background-tasks",
+      "section": "Create a task function",
+      "chars": 445,
+      "sha1": "25569d314121"
+    },
+    {
+      "chunk_id": "fastapi-background-tasks#3",
+      "doc_id": "fastapi-background-tasks",
+      "section": "Add the background task",
+      "chars": 473,
+      "sha1": "5644a3aeb962"
+    },
+    {
+      "chunk_id": "fastapi-background-tasks#4",
+      "doc_id": "fastapi-background-tasks",
+      "section": "Dependency Injection",
+      "chars": 768,
+      "sha1": "145c6717d969"
+    },
+    {
+      "chunk_id": "fastapi-background-tasks#5",
+      "doc_id": "fastapi-background-tasks",
+      "section": "Technical Details",
+      "chars": 785,
+      "sha1": "c09d79d09516"
+    },
+    {
+      "chunk_id": "fastapi-background-tasks#6",
+      "doc_id": "fastapi-background-tasks",
+      "section": "Caveat",
+      "chars": 680,
+      "sha1": "af277efe632f"
+    },
+    {
+      "chunk_id": "fastapi-background-tasks#7",
+      "doc_id": "fastapi-background-tasks",
+      "section": "Recap",
+      "chars": 146,
+      "sha1": "1390d20b32f0"
+    },
+    {
+      "chunk_id": "fastapi-cors#0",
+      "doc_id": "fastapi-cors",
+      "section": "CORS (Cross-Origin Resource Sharing)",
+      "chars": 255,
+      "sha1": "0e6a6cbae7fd"
+    },
+    {
+      "chunk_id": "fastapi-cors#1",
+      "doc_id": "fastapi-cors",
+      "section": "Origin",
+      "chars": 418,
+      "sha1": "2d3b47fa2d81"
+    },
+    {
+      "chunk_id": "fastapi-cors#2",
+      "doc_id": "fastapi-cors",
+      "section": "Steps",
+      "chars": 804,
+      "sha1": "ec885d5d86ff"
+    },
+    {
+      "chunk_id": "fastapi-cors#3",
+      "doc_id": "fastapi-cors",
+      "section": "Wildcards",
+      "chars": 413,
+      "sha1": "6bee06a2d17d"
+    },
+    {
+      "chunk_id": "fastapi-cors#4",
+      "doc_id": "fastapi-cors",
+      "section": "Use `CORSMiddleware`",
+      "chars": 817,
+      "sha1": "52d4b8c327ee"
+    },
+    {
+      "chunk_id": "fastapi-cors#5",
+      "doc_id": "fastapi-cors",
+      "section": "Use `CORSMiddleware`",
+      "chars": 780,
+      "sha1": "fc72ad3b7317"
+    },
+    {
+      "chunk_id": "fastapi-cors#6",
+      "doc_id": "fastapi-cors",
+      "section": "Use `CORSMiddleware`",
+      "chars": 752,
+      "sha1": "3b035aa64a66"
+    },
+    {
+      "chunk_id": "fastapi-cors#7",
+      "doc_id": "fastapi-cors",
+      "section": "CORS preflight requests",
+      "chars": 327,
+      "sha1": "b9a7e395c17c"
+    },
+    {
+      "chunk_id": "fastapi-cors#8",
+      "doc_id": "fastapi-cors",
+      "section": "Simple requests",
+      "chars": 220,
+      "sha1": "cbefc7fa4110"
+    },
+    {
+      "chunk_id": "fastapi-cors#9",
+      "doc_id": "fastapi-cors",
+      "section": "More info",
+      "chars": 404,
+      "sha1": "fe3486d0abbd"
+    },
+    {
+      "chunk_id": "fastapi-dependencies#0",
+      "doc_id": "fastapi-dependencies",
+      "section": "Dependencies",
+      "chars": 225,
+      "sha1": "8b2572aefa8f"
+    },
+    {
+      "chunk_id": "fastapi-dependencies#1",
+      "doc_id": "fastapi-dependencies",
+      "section": "What is \"Dependency Injection\"",
+      "chars": 682,
+      "sha1": "cfdde735aa72"
+    },
+    {
+      "chunk_id": "fastapi-dependencies#2",
+      "doc_id": "fastapi-dependencies",
+      "section": "First Steps",
+      "chars": 195,
+      "sha1": "e65408ac28a6"
+    },
+    {
+      "chunk_id": "fastapi-dependencies#3",
+      "doc_id": "fastapi-dependencies",
+      "section": "Create a dependency, or \"dependable\"",
+      "chars": 782,
+      "sha1": "6e71d039f0e8"
+    },
+    {
+      "chunk_id": "fastapi-dependencies#4",
+      "doc_id": "fastapi-dependencies",
+      "section": "Create a dependency, or \"dependable\"",
+      "chars": 326,
+      "sha1": "d07179e3d555"
+    },
+    {
+      "chunk_id": "fastapi-dependencies#5",
+      "doc_id": "fastapi-dependencies",
+      "section": "Declare the dependency, in the \"dependant\"",
+      "chars": 812,
+      "sha1": "2bdf118b8d81"
+    },
+    {
+      "chunk_id": "fastapi-dependencies#6",
+      "doc_id": "fastapi-dependencies",
+      "section": "Declare the dependency, in the \"dependant\"",
+      "chars": 633,
+      "sha1": "94054d0916e9"
+    },
+    {
+      "chunk_id": "fastapi-dependencies#7",
+      "doc_id": "fastapi-dependencies",
+      "section": "Share `Annotated` dependencies",
+      "chars": 623,
+      "sha1": "3efa68efce62"
+    },
+    {
+      "chunk_id": "fastapi-dependencies#8",
+      "doc_id": "fastapi-dependencies",
+      "section": "Share `Annotated` dependencies",
+      "chars": 488,
+      "sha1": "b8e48bb9fede"
+    },
+    {
+      "chunk_id": "fastapi-dependencies#9",
+      "doc_id": "fastapi-dependencies",
+      "section": "To `async` or not to `async`",
+      "chars": 584,
+      "sha1": "bf68f07b721e"
+    },
+    {
+      "chunk_id": "fastapi-dependencies#10",
+      "doc_id": "fastapi-dependencies",
+      "section": "Integrated with OpenAPI",
+      "chars": 274,
+      "sha1": "9e23d22eb210"
+    },
+    {
+      "chunk_id": "fastapi-dependencies#11",
+      "doc_id": "fastapi-dependencies",
+      "section": "Simple usage",
+      "chars": 786,
+      "sha1": "59e01877dfba"
+    },
+    {
+      "chunk_id": "fastapi-dependencies#12",
+      "doc_id": "fastapi-dependencies",
+      "section": "Simple usage",
+      "chars": 160,
+      "sha1": "ac9ddfb211c9"
+    },
+    {
+      "chunk_id": "fastapi-dependencies#13",
+      "doc_id": "fastapi-dependencies",
+      "section": "**FastAPI** plug-ins",
+      "chars": 666,
+      "sha1": "db58ddbf5ae0"
+    },
+    {
+      "chunk_id": "fastapi-dependencies#14",
+      "doc_id": "fastapi-dependencies",
+      "section": "**FastAPI** compatibility",
+      "chars": 327,
+      "sha1": "0e36aaa5edec"
+    },
+    {
+      "chunk_id": "fastapi-dependencies#15",
+      "doc_id": "fastapi-dependencies",
+      "section": "Simple and Powerful",
+      "chars": 732,
+      "sha1": "c10b0e5678eb"
+    },
+    {
+      "chunk_id": "fastapi-dependencies#16",
+      "doc_id": "fastapi-dependencies",
+      "section": "Integrated with **OpenAPI**",
+      "chars": 299,
+      "sha1": "5b7158d1b107"
+    },
+    {
+      "chunk_id": "fastapi-handling-errors#0",
+      "doc_id": "fastapi-handling-errors",
+      "section": "Handling Errors",
+      "chars": 769,
+      "sha1": "94f0a2fcab01"
+    },
+    {
+      "chunk_id": "fastapi-handling-errors#1",
+      "doc_id": "fastapi-handling-errors",
+      "section": "Handling Errors",
+      "chars": 156,
+      "sha1": "01637eb96cb2"
+    },
+    {
+      "chunk_id": "fastapi-handling-errors#2",
+      "doc_id": "fastapi-handling-errors",
+      "section": "Use `HTTPException`",
+      "chars": 114,
+      "sha1": "99e76c2da5be"
+    },
+    {
+      "chunk_id": "fastapi-handling-errors#3",
+      "doc_id": "fastapi-handling-errors",
+      "section": "Raise an `HTTPException` in your code",
+      "chars": 839,
+      "sha1": "8165cb92d026"
+    },
+    {
+      "chunk_id": "fastapi-handling-errors#4",
+      "doc_id": "fastapi-handling-errors",
+      "section": "The resulting response",
+      "chars": 647,
+      "sha1": "97038d8f2dfb"
+    },
+    {
+      "chunk_id": "fastapi-handling-errors#5",
+      "doc_id": "fastapi-handling-errors",
+      "section": "Add custom headers",
+      "chars": 313,
+      "sha1": "3976ee72bd67"
+    },
+    {
+      "chunk_id": "fastapi-handling-errors#6",
+      "doc_id": "fastapi-handling-errors",
+      "section": "Install custom exception handlers",
+      "chars": 775,
+      "sha1": "474cb2e70994"
+    },
+    {
+      "chunk_id": "fastapi-handling-errors#7",
+      "doc_id": "fastapi-handling-errors",
+      "section": "Install custom exception handlers",
+      "chars": 382,
+      "sha1": "db04fea4e913"
+    },
+    {
+      "chunk_id": "fastapi-handling-errors#8",
+      "doc_id": "fastapi-handling-errors",
+      "section": "Override the default exception handlers",
+      "chars": 310,
+      "sha1": "251707f79d46"
+    },
+    {
+      "chunk_id": "fastapi-handling-errors#9",
+      "doc_id": "fastapi-handling-errors",
+      "section": "Override request validation exceptions",
+      "chars": 548,
+      "sha1": "c32dbc3633dd"
+    },
+    {
+      "chunk_id": "fastapi-handling-errors#10",
+      "doc_id": "fastapi-handling-errors",
+      "section": "Override the `HTTPException` error handler",
+      "chars": 742,
+      "sha1": "0fe7581c5f44"
+    },
+    {
+      "chunk_id": "fastapi-handling-errors#11",
+      "doc_id": "fastapi-handling-errors",
+      "section": "Override the `HTTPException` error handler",
+      "chars": 507,
+      "sha1": "77f034f86580"
+    },
+    {
+      "chunk_id": "fastapi-handling-errors#12",
+      "doc_id": "fastapi-handling-errors",
+      "section": "Use the `RequestValidationError` body",
+      "chars": 373,
+      "sha1": "e695f42799a7"
+    },
+    {
+      "chunk_id": "fastapi-handling-errors#13",
+      "doc_id": "fastapi-handling-errors",
+      "section": "FastAPI's `HTTPException` vs Starlette's `HTTPException`",
+      "chars": 750,
+      "sha1": "7a5187e96c12"
+    },
+    {
+      "chunk_id": "fastapi-handling-errors#14",
+      "doc_id": "fastapi-handling-errors",
+      "section": "FastAPI's `HTTPException` vs Starlette's `HTTPException`",
+      "chars": 390,
+      "sha1": "cbb922f0372c"
+    },
+    {
+      "chunk_id": "fastapi-handling-errors#15",
+      "doc_id": "fastapi-handling-errors",
+      "section": "Reuse **FastAPI**'s exception handlers",
+      "chars": 428,
+      "sha1": "90f3d8a31737"
+    },
+    {
+      "chunk_id": "fastapi-middleware#0",
+      "doc_id": "fastapi-middleware",
+      "section": "Middleware",
+      "chars": 788,
+      "sha1": "56074e90261a"
+    },
+    {
+      "chunk_id": "fastapi-middleware#1",
+      "doc_id": "fastapi-middleware",
+      "section": "Middleware",
+      "chars": 246,
+      "sha1": "3eea31256c4a"
+    },
+    {
+      "chunk_id": "fastapi-middleware#2",
+      "doc_id": "fastapi-middleware",
+      "section": "Create a middleware",
+      "chars": 832,
+      "sha1": "aba6d52eb347"
+    },
+    {
+      "chunk_id": "fastapi-middleware#3",
+      "doc_id": "fastapi-middleware",
+      "section": "Create a middleware",
+      "chars": 238,
+      "sha1": "d9a189d31046"
+    },
+    {
+      "chunk_id": "fastapi-middleware#4",
+      "doc_id": "fastapi-middleware",
+      "section": "Before and after the `response`",
+      "chars": 481,
+      "sha1": "61f7b70e40c0"
+    },
+    {
+      "chunk_id": "fastapi-middleware#5",
+      "doc_id": "fastapi-middleware",
+      "section": "Multiple middleware execution order",
+      "chars": 664,
+      "sha1": "acd1531229cd"
+    },
+    {
+      "chunk_id": "fastapi-middleware#6",
+      "doc_id": "fastapi-middleware",
+      "section": "Other middlewares",
+      "chars": 207,
+      "sha1": "47b4900b189d"
+    },
+    {
+      "chunk_id": "fastapi-testing#0",
+      "doc_id": "fastapi-testing",
+      "section": "Testing",
+      "chars": 246,
+      "sha1": "ab38e162021a"
+    },
+    {
+      "chunk_id": "fastapi-testing#1",
+      "doc_id": "fastapi-testing",
+      "section": "Using `TestClient`",
+      "chars": 807,
+      "sha1": "e91fb981b854"
+    },
+    {
+      "chunk_id": "fastapi-testing#2",
+      "doc_id": "fastapi-testing",
+      "section": "Using `TestClient`",
+      "chars": 482,
+      "sha1": "ef9ce42eace2"
+    },
+    {
+      "chunk_id": "fastapi-testing#3",
+      "doc_id": "fastapi-testing",
+      "section": "Separating tests",
+      "chars": 194,
+      "sha1": "7bdcf918cecc"
+    },
+    {
+      "chunk_id": "fastapi-testing#4",
+      "doc_id": "fastapi-testing",
+      "section": "**FastAPI** app file",
+      "chars": 158,
+      "sha1": "6b569440b8dd"
+    },
+    {
+      "chunk_id": "fastapi-testing#5",
+      "doc_id": "fastapi-testing",
+      "section": "Testing file",
+      "chars": 360,
+      "sha1": "01f5bc85170a"
+    },
+    {
+      "chunk_id": "fastapi-testing#6",
+      "doc_id": "fastapi-testing",
+      "section": "Testing: extended example",
+      "chars": 123,
+      "sha1": "4c6288ad5300"
+    },
+    {
+      "chunk_id": "fastapi-testing#7",
+      "doc_id": "fastapi-testing",
+      "section": "Extended **FastAPI** app file",
+      "chars": 364,
+      "sha1": "453370b69001"
+    },
+    {
+      "chunk_id": "fastapi-testing#8",
+      "doc_id": "fastapi-testing",
+      "section": "Extended testing file",
+      "chars": 724,
+      "sha1": "d04cccd64243"
+    },
+    {
+      "chunk_id": "fastapi-testing#9",
+      "doc_id": "fastapi-testing",
+      "section": "Extended testing file",
+      "chars": 802,
+      "sha1": "3f9521d082d0"
+    },
+    {
+      "chunk_id": "fastapi-testing#10",
+      "doc_id": "fastapi-testing",
+      "section": "Run it",
+      "chars": 211,
+      "sha1": "a75ec5371b1d"
+    },
+    {
+      "chunk_id": "langgraph-interrupts#0",
+      "doc_id": "langgraph-interrupts",
+      "section": "Interrupts",
+      "chars": 697,
+      "sha1": "e3fa153f56b1"
+    },
+    {
+      "chunk_id": "langgraph-interrupts#1",
+      "doc_id": "langgraph-interrupts",
+      "section": "Interrupts",
+      "chars": 557,
+      "sha1": "3584b20eed26"
+    },
+    {
+      "chunk_id": "langgraph-interrupts#2",
+      "doc_id": "langgraph-interrupts",
+      "section": "Interrupts",
+      "chars": 741,
+      "sha1": "cf1581cb3377"
+    },
+    {
+      "chunk_id": "langgraph-interrupts#3",
+      "doc_id": "langgraph-interrupts",
+      "section": "Interrupts",
+      "chars": 715,
+      "sha1": "c83979c06834"
+    },
+    {
+      "chunk_id": "langgraph-interrupts#4",
+      "doc_id": "langgraph-interrupts",
+      "section": "Pause using `interrupt`",
+      "chars": 590,
+      "sha1": "c7372e15bba2"
+    },
+    {
+      "chunk_id": "langgraph-interrupts#5",
+      "doc_id": "langgraph-interrupts",
+      "section": "Pause using `interrupt`",
+      "chars": 783,
+      "sha1": "b336e5accecb"
+    },
+    {
+      "chunk_id": "langgraph-interrupts#6",
+      "doc_id": "langgraph-interrupts",
+      "section": "Resuming interrupts",
+      "chars": 733,
+      "sha1": "707c4ec231cf"
+    },
+    {
+      "chunk_id": "langgraph-interrupts#7",
+      "doc_id": "langgraph-interrupts",
+      "section": "Resuming interrupts",
+      "chars": 525,
+      "sha1": "85a8691bb43c"
+    },
+    {
+      "chunk_id": "langgraph-interrupts#8",
+      "doc_id": "langgraph-interrupts",
+      "section": "Resuming interrupts",
+      "chars": 832,
+      "sha1": "c585bf5965a0"
+    },
+    {
+      "chunk_id": "langgraph-interrupts#9",
+      "doc_id": "langgraph-interrupts",
+      "section": "Define an interrupt response schema",
+      "chars": 685,
+      "sha1": "c711182b600b"
+    },
+    {
+      "chunk_id": "langgraph-interrupts#10",
+      "doc_id": "langgraph-interrupts",
+      "section": "Define an interrupt response schema",
+      "chars": 721,
+      "sha1": "23649f62a321"
+    },
+    {
+      "chunk_id": "langgraph-interrupts#11",
+      "doc_id": "langgraph-interrupts",
+      "section": "Define an interrupt response schema",
+      "chars": 614,
+      "sha1": "ea2fdeef09da"
+    },
+    {
+      "chunk_id": "langgraph-interrupts#12",
+      "doc_id": "langgraph-interrupts",
+      "section": "Common patterns",
+      "chars": 726,
+      "sha1": "e34d34052829"
+    },
+    {
+      "chunk_id": "langgraph-interrupts#13",
+      "doc_id": "langgraph-interrupts",
+      "section": "Stream with human-in-the-loop (HITL) interrupts",
+      "chars": 690,
+      "sha1": "4f0d9c32e535"
+    },
+    {
+      "chunk_id": "langgraph-interrupts#14",
+      "doc_id": "langgraph-interrupts",
+      "section": "Stream with human-in-the-loop (HITL) interrupts",
+      "chars": 574,
+      "sha1": "8e20f1d64b04"
+    },
+    {
+      "chunk_id": "langgraph-interrupts#15",
+      "doc_id": "langgraph-interrupts",
+      "section": "Handling multiple interrupts",
+      "chars": 407,
+      "sha1": "0b0c2b69b51c"
+    },
+    {
+      "chunk_id": "langgraph-interrupts#16",
+      "doc_id": "langgraph-interrupts",
+      "section": "Approve or reject",
+      "chars": 324,
+      "sha1": "0c7ce19257af"
+    },
+    {
+      "chunk_id": "langgraph-interrupts#17",
+      "doc_id": "langgraph-interrupts",
+      "section": "Review and edit state",
+      "chars": 259,
+      "sha1": "e40c9e4f5ff9"
+    },
+    {
+      "chunk_id": "langgraph-interrupts#18",
+      "doc_id": "langgraph-interrupts",
+      "section": "Interrupts in tools",
+      "chars": 592,
+      "sha1": "b60335f3404e"
+    },
+    {
+      "chunk_id": "langgraph-interrupts#19",
+      "doc_id": "langgraph-interrupts",
+      "section": "Validating human input",
+      "chars": 703,
+      "sha1": "c9217e72985a"
+    },
+    {
+      "chunk_id": "langgraph-interrupts#20",
+      "doc_id": "langgraph-interrupts",
+      "section": "Validating human input",
+      "chars": 751,
+      "sha1": "ccb2a756e108"
+    },
+    {
+      "chunk_id": "langgraph-interrupts#21",
+      "doc_id": "langgraph-interrupts",
+      "section": "Rules of interrupts",
+      "chars": 707,
+      "sha1": "3b63d8faec3a"
+    },
+    {
+      "chunk_id": "langgraph-interrupts#22",
+      "doc_id": "langgraph-interrupts",
+      "section": "Do not wrap `interrupt` calls in try/except",
+      "chars": 471,
+      "sha1": "2b79fbd49812"
+    },
+    {
+      "chunk_id": "langgraph-interrupts#23",
+      "doc_id": "langgraph-interrupts",
+      "section": "Do not reorder `interrupt` calls within a node",
+      "chars": 650,
+      "sha1": "8e5d1f5df60b"
+    },
+    {
+      "chunk_id": "langgraph-interrupts#24",
+      "doc_id": "langgraph-interrupts",
+      "section": "Do not reorder `interrupt` calls within a node",
+      "chars": 375,
+      "sha1": "df6e8dd79a27"
+    },
+    {
+      "chunk_id": "langgraph-interrupts#25",
+      "doc_id": "langgraph-interrupts",
+      "section": "Do not return complex values in `interrupt` calls",
+      "chars": 495,
+      "sha1": "5ca31921bf88"
+    },
+    {
+      "chunk_id": "langgraph-interrupts#26",
+      "doc_id": "langgraph-interrupts",
+      "section": "Side effects called before `interrupt` must be idempotent",
+      "chars": 776,
+      "sha1": "c45c69526259"
+    },
+    {
+      "chunk_id": "langgraph-interrupts#27",
+      "doc_id": "langgraph-interrupts",
+      "section": "Side effects called before `interrupt` must be idempotent",
+      "chars": 353,
+      "sha1": "1401f998056d"
+    },
+    {
+      "chunk_id": "langgraph-interrupts#28",
+      "doc_id": "langgraph-interrupts",
+      "section": "Using with subgraphs called as functions",
+      "chars": 340,
+      "sha1": "7f849d04452c"
+    },
+    {
+      "chunk_id": "langgraph-interrupts#29",
+      "doc_id": "langgraph-interrupts",
+      "section": "Debugging with interrupts",
+      "chars": 470,
+      "sha1": "637842d14f1d"
+    },
+    {
+      "chunk_id": "langgraph-interrupts#30",
+      "doc_id": "langgraph-interrupts",
+      "section": "Debugging with interrupts",
+      "chars": 667,
+      "sha1": "1cfd4d8f6314"
+    },
+    {
+      "chunk_id": "langgraph-interrupts#31",
+      "doc_id": "langgraph-interrupts",
+      "section": "Debugging with interrupts",
+      "chars": 648,
+      "sha1": "16b29d275abe"
+    },
+    {
+      "chunk_id": "langgraph-interrupts#32",
+      "doc_id": "langgraph-interrupts",
+      "section": "Using LangSmith Studio",
+      "chars": 230,
+      "sha1": "2ef725c45be7"
+    },
+    {
+      "chunk_id": "langgraph-persistence#0",
+      "doc_id": "langgraph-persistence",
+      "section": "Persistence",
+      "chars": 706,
+      "sha1": "5bc0c735a9ba"
+    },
+    {
+      "chunk_id": "langgraph-persistence#1",
+      "doc_id": "langgraph-persistence",
+      "section": "Persistence",
+      "chars": 527,
+      "sha1": "e5b363e77fed"
+    },
+    {
+      "chunk_id": "langgraph-persistence#2",
+      "doc_id": "langgraph-persistence",
+      "section": "Quickstart",
+      "chars": 305,
+      "sha1": "2295fb888fdb"
+    },
+    {
+      "chunk_id": "langgraph-persistence#3",
+      "doc_id": "langgraph-persistence",
+      "section": "Checkpointer vs. store",
+      "chars": 579,
+      "sha1": "db3b596ad152"
+    },
+    {
+      "chunk_id": "langgraph-persistence#4",
+      "doc_id": "langgraph-persistence",
+      "section": "PostgresSaver: `thread_id` too long",
+      "chars": 345,
+      "sha1": "64084b58c43f"
+    },
+    {
+      "chunk_id": "langgraph-persistence#5",
+      "doc_id": "langgraph-persistence",
+      "section": "`MemorySaver` does not persist between restarts",
+      "chars": 339,
+      "sha1": "1ddb75f844d4"
+    },
+    {
+      "chunk_id": "langgraph-persistence#6",
+      "doc_id": "langgraph-persistence",
+      "section": "Checkpoints growing unboundedly",
+      "chars": 212,
+      "sha1": "d01d3fd940a5"
+    },
+    {
+      "chunk_id": "langgraph-persistence#7",
+      "doc_id": "langgraph-persistence",
+      "section": "State access from parent graph to subgraph",
+      "chars": 356,
+      "sha1": "78c5a1bf40e1"
+    },
+    {
+      "chunk_id": "langgraph-persistence#8",
+      "doc_id": "langgraph-persistence",
+      "section": "Next steps",
+      "chars": 135,
+      "sha1": "2487b440c2fd"
+    },
+    {
+      "chunk_id": "langgraph-streaming#0",
+      "doc_id": "langgraph-streaming",
+      "section": "Streaming",
+      "chars": 572,
+      "sha1": "fd32a3595f9d"
+    },
+    {
+      "chunk_id": "langgraph-streaming#1",
+      "doc_id": "langgraph-streaming",
+      "section": "Basic usage",
+      "chars": 374,
+      "sha1": "12dfda3d1aea"
+    },
+    {
+      "chunk_id": "langgraph-streaming#2",
+      "doc_id": "langgraph-streaming",
+      "section": "Stream output format (v2)",
+      "chars": 709,
+      "sha1": "7b21d3f8b8e1"
+    },
+    {
+      "chunk_id": "langgraph-streaming#3",
+      "doc_id": "langgraph-streaming",
+      "section": "Stream output format (v2)",
+      "chars": 660,
+      "sha1": "bee2facc1d91"
+    },
+    {
+      "chunk_id": "langgraph-streaming#4",
+      "doc_id": "langgraph-streaming",
+      "section": "Stream output format (v2)",
+      "chars": 479,
+      "sha1": "abddecfb0517"
+    },
+    {
+      "chunk_id": "langgraph-streaming#5",
+      "doc_id": "langgraph-streaming",
+      "section": "Stream modes",
+      "chars": 175,
+      "sha1": "8ce162edecfa"
+    },
+    {
+      "chunk_id": "langgraph-streaming#6",
+      "doc_id": "langgraph-streaming",
+      "section": "Stream modes",
+      "chars": 785,
+      "sha1": "3b7ca6195493"
+    },
+    {
+      "chunk_id": "langgraph-streaming#7",
+      "doc_id": "langgraph-streaming",
+      "section": "Graph state",
+      "chars": 506,
+      "sha1": "906e73062c53"
+    },
+    {
+      "chunk_id": "langgraph-streaming#8",
+      "doc_id": "langgraph-streaming",
+      "section": "LLM tokens",
+      "chars": 583,
+      "sha1": "47cb925f2d43"
+    },
+    {
+      "chunk_id": "langgraph-streaming#9",
+      "doc_id": "langgraph-streaming",
+      "section": "LLM tokens",
+      "chars": 423,
+      "sha1": "191b5328f413"
+    },
+    {
+      "chunk_id": "langgraph-streaming#10",
+      "doc_id": "langgraph-streaming",
+      "section": "Filter by LLM invocation",
+      "chars": 132,
+      "sha1": "c2d75d655d80"
+    },
+    {
+      "chunk_id": "langgraph-streaming#11",
+      "doc_id": "langgraph-streaming",
+      "section": "Omit messages from the stream",
+      "chars": 529,
+      "sha1": "b1c16588400e"
+    },
+    {
+      "chunk_id": "langgraph-streaming#12",
+      "doc_id": "langgraph-streaming",
+      "section": "Filter by node",
+      "chars": 178,
+      "sha1": "39477e987fa2"
+    },
+    {
+      "chunk_id": "langgraph-streaming#13",
+      "doc_id": "langgraph-streaming",
+      "section": "Custom data",
+      "chars": 663,
+      "sha1": "b61f6011aa43"
+    },
+    {
+      "chunk_id": "langgraph-streaming#14",
+      "doc_id": "langgraph-streaming",
+      "section": "Subgraph outputs",
+      "chars": 530,
+      "sha1": "8f4abef66446"
+    },
+    {
+      "chunk_id": "langgraph-streaming#15",
+      "doc_id": "langgraph-streaming",
+      "section": "Subgraph outputs",
+      "chars": 692,
+      "sha1": "6269b37195af"
+    },
+    {
+      "chunk_id": "langgraph-streaming#16",
+      "doc_id": "langgraph-streaming",
+      "section": "Checkpoints",
+      "chars": 212,
+      "sha1": "e71549c899de"
+    },
+    {
+      "chunk_id": "langgraph-streaming#17",
+      "doc_id": "langgraph-streaming",
+      "section": "Tasks",
+      "chars": 227,
+      "sha1": "984b4b1bea6b"
+    },
+    {
+      "chunk_id": "langgraph-streaming#18",
+      "doc_id": "langgraph-streaming",
+      "section": "Debug",
+      "chars": 383,
+      "sha1": "91c982afb019"
+    },
+    {
+      "chunk_id": "langgraph-streaming#19",
+      "doc_id": "langgraph-streaming",
+      "section": "Multiple modes at once",
+      "chars": 228,
+      "sha1": "65a0845afbe2"
+    },
+    {
+      "chunk_id": "langgraph-streaming#20",
+      "doc_id": "langgraph-streaming",
+      "section": "Use with any LLM",
+      "chars": 406,
+      "sha1": "8826623cbf63"
+    },
+    {
+      "chunk_id": "langgraph-streaming#21",
+      "doc_id": "langgraph-streaming",
+      "section": "Disable streaming for specific chat models",
+      "chars": 474,
+      "sha1": "1943ea369da2"
+    },
+    {
+      "chunk_id": "langgraph-streaming#22",
+      "doc_id": "langgraph-streaming",
+      "section": "Migrate to v2",
+      "chars": 172,
+      "sha1": "fa366cd7acaf"
+    },
+    {
+      "chunk_id": "langgraph-streaming#23",
+      "doc_id": "langgraph-streaming",
+      "section": "Migrate to v2",
+      "chars": 827,
+      "sha1": "acfbf23c9e3f"
+    },
+    {
+      "chunk_id": "langgraph-streaming#24",
+      "doc_id": "langgraph-streaming",
+      "section": "Migrate to v2",
+      "chars": 80,
+      "sha1": "10a3c34945c6"
+    },
+    {
+      "chunk_id": "langgraph-streaming#25",
+      "doc_id": "langgraph-streaming",
+      "section": "v2 invoke format",
+      "chars": 705,
+      "sha1": "788d22366103"
+    },
+    {
+      "chunk_id": "langgraph-streaming#26",
+      "doc_id": "langgraph-streaming",
+      "section": "Pydantic and dataclass state coercion",
+      "chars": 173,
+      "sha1": "84c6a10c7161"
+    },
+    {
+      "chunk_id": "langgraph-streaming#27",
+      "doc_id": "langgraph-streaming",
+      "section": "Async with Python < 3.11",
+      "chars": 495,
+      "sha1": "2ae21b4f6347"
+    },
+    {
+      "chunk_id": "mcp-architecture#0",
+      "doc_id": "mcp-architecture",
+      "section": "Architecture overview",
+      "chars": 478,
+      "sha1": "766d7d0f267d"
+    },
+    {
+      "chunk_id": "mcp-architecture#1",
+      "doc_id": "mcp-architecture",
+      "section": "Scope",
+      "chars": 604,
+      "sha1": "824034484454"
+    },
+    {
+      "chunk_id": "mcp-architecture#2",
+      "doc_id": "mcp-architecture",
+      "section": "Participants",
+      "chars": 609,
+      "sha1": "9b4f1f9189aa"
+    },
+    {
+      "chunk_id": "mcp-architecture#3",
+      "doc_id": "mcp-architecture",
+      "section": "Participants",
+      "chars": 383,
+      "sha1": "69dfab97880a"
+    },
+    {
+      "chunk_id": "mcp-architecture#4",
+      "doc_id": "mcp-architecture",
+      "section": "Participants",
+      "chars": 820,
+      "sha1": "97a18a1ad690"
+    },
+    {
+      "chunk_id": "mcp-architecture#5",
+      "doc_id": "mcp-architecture",
+      "section": "Participants",
+      "chars": 539,
+      "sha1": "2a65eb9ec663"
+    },
+    {
+      "chunk_id": "mcp-architecture#6",
+      "doc_id": "mcp-architecture",
+      "section": "Layers",
+      "chars": 579,
+      "sha1": "b08975b55dad"
+    },
+    {
+      "chunk_id": "mcp-architecture#7",
+      "doc_id": "mcp-architecture",
+      "section": "Data layer",
+      "chars": 781,
+      "sha1": "f48c0bdaf3a2"
+    },
+    {
+      "chunk_id": "mcp-architecture#8",
+      "doc_id": "mcp-architecture",
+      "section": "Transport layer",
+      "chars": 832,
+      "sha1": "90ecd834b86b"
+    },
+    {
+      "chunk_id": "mcp-architecture#9",
+      "doc_id": "mcp-architecture",
+      "section": "Transport layer",
+      "chars": 744,
+      "sha1": "2835a37ae16d"
+    },
+    {
+      "chunk_id": "mcp-architecture#10",
+      "doc_id": "mcp-architecture",
+      "section": "Data Layer Protocol",
+      "chars": 550,
+      "sha1": "5e7285f817e1"
+    },
+    {
+      "chunk_id": "mcp-architecture#11",
+      "doc_id": "mcp-architecture",
+      "section": "Statelessness and discovery",
+      "chars": 620,
+      "sha1": "cbd1f0f86b8a"
+    },
+    {
+      "chunk_id": "mcp-architecture#12",
+      "doc_id": "mcp-architecture",
+      "section": "Primitives",
+      "chars": 772,
+      "sha1": "208b5ec10fe3"
+    },
+    {
+      "chunk_id": "mcp-architecture#13",
+      "doc_id": "mcp-architecture",
+      "section": "Primitives",
+      "chars": 793,
+      "sha1": "a9626770f594"
+    },
+    {
+      "chunk_id": "mcp-architecture#14",
+      "doc_id": "mcp-architecture",
+      "section": "Primitives",
+      "chars": 711,
+      "sha1": "4574100d55b2"
+    },
+    {
+      "chunk_id": "mcp-architecture#15",
+      "doc_id": "mcp-architecture",
+      "section": "Primitives",
+      "chars": 711,
+      "sha1": "7e228c820404"
+    },
+    {
+      "chunk_id": "mcp-architecture#16",
+      "doc_id": "mcp-architecture",
+      "section": "Primitives",
+      "chars": 787,
+      "sha1": "be98eb701da6"
+    },
+    {
+      "chunk_id": "mcp-architecture#17",
+      "doc_id": "mcp-architecture",
+      "section": "Primitives",
+      "chars": 749,
+      "sha1": "320dc61b9a0d"
+    },
+    {
+      "chunk_id": "mcp-architecture#18",
+      "doc_id": "mcp-architecture",
+      "section": "Primitives",
+      "chars": 370,
+      "sha1": "865f02579152"
+    },
+    {
+      "chunk_id": "mcp-architecture#19",
+      "doc_id": "mcp-architecture",
+      "section": "Notifications",
+      "chars": 669,
+      "sha1": "4a7f9bc02187"
+    },
+    {
+      "chunk_id": "mcp-architecture#20",
+      "doc_id": "mcp-architecture",
+      "section": "Data Layer",
+      "chars": 752,
+      "sha1": "f9aece54ab83"
+    },
+    {
+      "chunk_id": "mcp-architecture#21",
+      "doc_id": "mcp-architecture",
+      "section": "Understanding the Discovery Exchange",
+      "chars": 581,
+      "sha1": "81529b48ce20"
+    },
+    {
+      "chunk_id": "mcp-architecture#22",
+      "doc_id": "mcp-architecture",
+      "section": "Understanding the Discovery Exchange",
+      "chars": 824,
+      "sha1": "699208d76b33"
+    },
+    {
+      "chunk_id": "mcp-architecture#23",
+      "doc_id": "mcp-architecture",
+      "section": "Understanding the Discovery Exchange",
+      "chars": 611,
+      "sha1": "ed7469bbf8e9"
+    },
+    {
+      "chunk_id": "mcp-architecture#24",
+      "doc_id": "mcp-architecture",
+      "section": "Understanding the Discovery Exchange",
+      "chars": 748,
+      "sha1": "0c9dd54b1f8f"
+    },
+    {
+      "chunk_id": "mcp-architecture#25",
+      "doc_id": "mcp-architecture",
+      "section": "How This Works in AI Applications",
+      "chars": 724,
+      "sha1": "5e8499f21afb"
+    },
+    {
+      "chunk_id": "mcp-architecture#26",
+      "doc_id": "mcp-architecture",
+      "section": "Understanding the Tool Discovery Request",
+      "chars": 276,
+      "sha1": "ac5c2ffa3b94"
+    },
+    {
+      "chunk_id": "mcp-architecture#27",
+      "doc_id": "mcp-architecture",
+      "section": "Understanding the Tool Discovery Response",
+      "chars": 383,
+      "sha1": "0bf7e2a8e006"
+    },
+    {
+      "chunk_id": "mcp-architecture#28",
+      "doc_id": "mcp-architecture",
+      "section": "Understanding the Tool Discovery Response",
+      "chars": 708,
+      "sha1": "f965b4ce8474"
+    },
+    {
+      "chunk_id": "mcp-architecture#29",
+      "doc_id": "mcp-architecture",
+      "section": "Understanding the Tool Discovery Response",
+      "chars": 352,
+      "sha1": "e6458ba4d0d5"
+    },
+    {
+      "chunk_id": "mcp-architecture#30",
+      "doc_id": "mcp-architecture",
+      "section": "How This Works in AI Applications",
+      "chars": 680,
+      "sha1": "7892aa57898f"
+    },
+    {
+      "chunk_id": "mcp-architecture#31",
+      "doc_id": "mcp-architecture",
+      "section": "Understanding the Tool Execution Request",
+      "chars": 316,
+      "sha1": "dbf42e15711c"
+    },
+    {
+      "chunk_id": "mcp-architecture#32",
+      "doc_id": "mcp-architecture",
+      "section": "Key Elements of Tool Execution",
+      "chars": 754,
+      "sha1": "490a17144a4e"
+    },
+    {
+      "chunk_id": "mcp-architecture#33",
+      "doc_id": "mcp-architecture",
+      "section": "Key Elements of Tool Execution",
+      "chars": 390,
+      "sha1": "519f671b72c0"
+    },
+    {
+      "chunk_id": "mcp-architecture#34",
+      "doc_id": "mcp-architecture",
+      "section": "Understanding the Tool Execution Response",
+      "chars": 799,
+      "sha1": "ffa801a542d8"
+    },
+    {
+      "chunk_id": "mcp-architecture#35",
+      "doc_id": "mcp-architecture",
+      "section": "How This Works in AI Applications",
+      "chars": 615,
+      "sha1": "91369f925e61"
+    },
+    {
+      "chunk_id": "mcp-architecture#36",
+      "doc_id": "mcp-architecture",
+      "section": "Subscribing to Changes",
+      "chars": 576,
+      "sha1": "fcade3be7808"
+    },
+    {
+      "chunk_id": "mcp-architecture#37",
+      "doc_id": "mcp-architecture",
+      "section": "Subscribing to Changes",
+      "chars": 702,
+      "sha1": "f50a4ea8e8bc"
+    },
+    {
+      "chunk_id": "mcp-architecture#38",
+      "doc_id": "mcp-architecture",
+      "section": "Understanding Tool List Change Notifications",
+      "chars": 314,
+      "sha1": "a47d5da48f57"
+    },
+    {
+      "chunk_id": "mcp-architecture#39",
+      "doc_id": "mcp-architecture",
+      "section": "Key Features of MCP Notifications",
+      "chars": 816,
+      "sha1": "c2459cd9e7c2"
+    },
+    {
+      "chunk_id": "mcp-architecture#40",
+      "doc_id": "mcp-architecture",
+      "section": "Key Features of MCP Notifications",
+      "chars": 735,
+      "sha1": "833249737ee5"
+    },
+    {
+      "chunk_id": "mcp-architecture#41",
+      "doc_id": "mcp-architecture",
+      "section": "Client Response to Notifications",
+      "chars": 251,
+      "sha1": "101318717a9c"
+    },
+    {
+      "chunk_id": "mcp-architecture#42",
+      "doc_id": "mcp-architecture",
+      "section": "Why Notifications Matter",
+      "chars": 678,
+      "sha1": "ebce446943d3"
+    },
+    {
+      "chunk_id": "mcp-architecture#43",
+      "doc_id": "mcp-architecture",
+      "section": "How This Works in AI Applications",
+      "chars": 422,
+      "sha1": "6dd8dc6a3c94"
+    },
+    {
+      "chunk_id": "mcp-server-concepts#0",
+      "doc_id": "mcp-server-concepts",
+      "section": "Understanding MCP servers",
+      "chars": 358,
+      "sha1": "d0d97f2db776"
+    },
+    {
+      "chunk_id": "mcp-server-concepts#1",
+      "doc_id": "mcp-server-concepts",
+      "section": "Core Server Features",
+      "chars": 110,
+      "sha1": "c7d30392fdd2"
+    },
+    {
+      "chunk_id": "mcp-server-concepts#2",
+      "doc_id": "mcp-server-concepts",
+      "section": "Core Server Features",
+      "chars": 833,
+      "sha1": "afe84db30cb1"
+    },
+    {
+      "chunk_id": "mcp-server-concepts#3",
+      "doc_id": "mcp-server-concepts",
+      "section": "Core Server Features",
+      "chars": 678,
+      "sha1": "45ed32251531"
+    },
+    {
+      "chunk_id": "mcp-server-concepts#4",
+      "doc_id": "mcp-server-concepts",
+      "section": "Tools",
+      "chars": 199,
+      "sha1": "8f0d7e3141ba"
+    },
+    {
+      "chunk_id": "mcp-server-concepts#5",
+      "doc_id": "mcp-server-concepts",
+      "section": "How Tools Work",
+      "chars": 737,
+      "sha1": "0c5ac376efab"
+    },
+    {
+      "chunk_id": "mcp-server-concepts#6",
+      "doc_id": "mcp-server-concepts",
+      "section": "Example: Travel Booking",
+      "chars": 456,
+      "sha1": "9c099bde3d4c"
+    },
+    {
+      "chunk_id": "mcp-server-concepts#7",
+      "doc_id": "mcp-server-concepts",
+      "section": "User Interaction Model",
+      "chars": 619,
+      "sha1": "eda63c14a4cb"
+    },
+    {
+      "chunk_id": "mcp-server-concepts#8",
+      "doc_id": "mcp-server-concepts",
+      "section": "Resources",
+      "chars": 160,
+      "sha1": "fce719e1b50c"
+    },
+    {
+      "chunk_id": "mcp-server-concepts#9",
+      "doc_id": "mcp-server-concepts",
+      "section": "How Resources Work",
+      "chars": 512,
+      "sha1": "3758acfed8ee"
+    },
+    {
+      "chunk_id": "mcp-server-concepts#10",
+      "doc_id": "mcp-server-concepts",
+      "section": "How Resources Work",
+      "chars": 644,
+      "sha1": "a03f7334c520"
+    },
+    {
+      "chunk_id": "mcp-server-concepts#11",
+      "doc_id": "mcp-server-concepts",
+      "section": "How Resources Work",
+      "chars": 709,
+      "sha1": "37f591e7e4d3"
+    },
+    {
+      "chunk_id": "mcp-server-concepts#12",
+      "doc_id": "mcp-server-concepts",
+      "section": "How Resources Work",
+      "chars": 320,
+      "sha1": "5930a3828f32"
+    },
+    {
+      "chunk_id": "mcp-server-concepts#13",
+      "doc_id": "mcp-server-concepts",
+      "section": "Example: Getting Travel Planning Context",
+      "chars": 854,
+      "sha1": "e029020167c6"
+    },
+    {
+      "chunk_id": "mcp-server-concepts#14",
+      "doc_id": "mcp-server-concepts",
+      "section": "Example: Getting Travel Planning Context",
+      "chars": 651,
+      "sha1": "7773a7991eaf"
+    },
+    {
+      "chunk_id": "mcp-server-concepts#15",
+      "doc_id": "mcp-server-concepts",
+      "section": "Parameter Completion",
+      "chars": 386,
+      "sha1": "0c67261f6be0"
+    },
+    {
+      "chunk_id": "mcp-server-concepts#16",
+      "doc_id": "mcp-server-concepts",
+      "section": "User Interaction Model",
+      "chars": 518,
+      "sha1": "2110737893af"
+    },
+    {
+      "chunk_id": "mcp-server-concepts#17",
+      "doc_id": "mcp-server-concepts",
+      "section": "User Interaction Model",
+      "chars": 746,
+      "sha1": "14502202b741"
+    },
+    {
+      "chunk_id": "mcp-server-concepts#18",
+      "doc_id": "mcp-server-concepts",
+      "section": "Prompts",
+      "chars": 193,
+      "sha1": "dd9a1906ea2e"
+    },
+    {
+      "chunk_id": "mcp-server-concepts#19",
+      "doc_id": "mcp-server-concepts",
+      "section": "How Prompts Work",
+      "chars": 813,
+      "sha1": "87a1d21ad8a9"
+    },
+    {
+      "chunk_id": "mcp-server-concepts#20",
+      "doc_id": "mcp-server-concepts",
+      "section": "Example: Streamlined Workflows",
+      "chars": 440,
+      "sha1": "416bcfcbb420"
+    },
+    {
+      "chunk_id": "mcp-server-concepts#21",
+      "doc_id": "mcp-server-concepts",
+      "section": "User Interaction Model",
+      "chars": 714,
+      "sha1": "5721e5cd802a"
+    },
+    {
+      "chunk_id": "mcp-server-concepts#22",
+      "doc_id": "mcp-server-concepts",
+      "section": "Bringing Servers Together",
+      "chars": 191,
+      "sha1": "cc23425a6222"
+    },
+    {
+      "chunk_id": "mcp-server-concepts#23",
+      "doc_id": "mcp-server-concepts",
+      "section": "Example: Multi-Server Travel Planning",
+      "chars": 341,
+      "sha1": "c3982cd10725"
+    },
+    {
+      "chunk_id": "mcp-server-concepts#24",
+      "doc_id": "mcp-server-concepts",
+      "section": "The Complete Flow",
+      "chars": 600,
+      "sha1": "b3a6ffb9fea5"
+    },
+    {
+      "chunk_id": "mcp-server-concepts#25",
+      "doc_id": "mcp-server-concepts",
+      "section": "The Complete Flow",
+      "chars": 781,
+      "sha1": "b0df3148de49"
+    },
+    {
+      "chunk_id": "mcp-server-concepts#26",
+      "doc_id": "mcp-server-concepts",
+      "section": "The Complete Flow",
+      "chars": 500,
+      "sha1": "aa4ca44aae0f"
+    },
+    {
+      "chunk_id": "mcp-server-concepts#27",
+      "doc_id": "mcp-server-concepts",
+      "section": "The Complete Flow",
+      "chars": 800,
+      "sha1": "ae0f86bee859"
+    },
+    {
+      "chunk_id": "mcp-transports#0",
+      "doc_id": "mcp-transports",
+      "section": "Transports",
+      "chars": 424,
+      "sha1": "136fa2d0f0e8"
+    },
+    {
+      "chunk_id": "mcp-transports#1",
+      "doc_id": "mcp-transports",
+      "section": "stdio",
+      "chars": 778,
+      "sha1": "46f69b2ab4f4"
+    },
+    {
+      "chunk_id": "mcp-transports#2",
+      "doc_id": "mcp-transports",
+      "section": "stdio",
+      "chars": 119,
+      "sha1": "b5f760b0276e"
+    },
+    {
+      "chunk_id": "mcp-transports#3",
+      "doc_id": "mcp-transports",
+      "section": "Streamable HTTP",
+      "chars": 768,
+      "sha1": "9cb65876e10c"
+    },
+    {
+      "chunk_id": "mcp-transports#4",
+      "doc_id": "mcp-transports",
+      "section": "Security Warning",
+      "chars": 695,
+      "sha1": "ba3ec2be6a96"
+    },
+    {
+      "chunk_id": "mcp-transports#5",
+      "doc_id": "mcp-transports",
+      "section": "Sending Messages to the Server",
+      "chars": 145,
+      "sha1": "15e5ac09c267"
+    },
+    {
+      "chunk_id": "mcp-transports#6",
+      "doc_id": "mcp-transports",
+      "section": "Sending Messages to the Server",
+      "chars": 754,
+      "sha1": "50eaf19a84a4"
+    },
+    {
+      "chunk_id": "mcp-transports#7",
+      "doc_id": "mcp-transports",
+      "section": "Sending Messages to the Server",
+      "chars": 769,
+      "sha1": "3b993ab6ac56"
+    },
+    {
+      "chunk_id": "mcp-transports#8",
+      "doc_id": "mcp-transports",
+      "section": "Sending Messages to the Server",
+      "chars": 822,
+      "sha1": "eead2b76376f"
+    },
+    {
+      "chunk_id": "mcp-transports#9",
+      "doc_id": "mcp-transports",
+      "section": "Sending Messages to the Server",
+      "chars": 503,
+      "sha1": "37d2c202320c"
+    },
+    {
+      "chunk_id": "mcp-transports#10",
+      "doc_id": "mcp-transports",
+      "section": "Listening for Messages from the Server",
+      "chars": 834,
+      "sha1": "b112617d9267"
+    },
+    {
+      "chunk_id": "mcp-transports#11",
+      "doc_id": "mcp-transports",
+      "section": "Listening for Messages from the Server",
+      "chars": 536,
+      "sha1": "74f739061bce"
+    },
+    {
+      "chunk_id": "mcp-transports#12",
+      "doc_id": "mcp-transports",
+      "section": "Multiple Connections",
+      "chars": 377,
+      "sha1": "bca77491a556"
+    },
+    {
+      "chunk_id": "mcp-transports#13",
+      "doc_id": "mcp-transports",
+      "section": "Resumability and Redelivery",
+      "chars": 137,
+      "sha1": "aa2b21f3b081"
+    },
+    {
+      "chunk_id": "mcp-transports#14",
+      "doc_id": "mcp-transports",
+      "section": "Resumability and Redelivery",
+      "chars": 749,
+      "sha1": "3f4e56a58cf1"
+    },
+    {
+      "chunk_id": "mcp-transports#15",
+      "doc_id": "mcp-transports",
+      "section": "Resumability and Redelivery",
+      "chars": 635,
+      "sha1": "44eb0b2e070e"
+    },
+    {
+      "chunk_id": "mcp-transports#16",
+      "doc_id": "mcp-transports",
+      "section": "Session Management",
+      "chars": 226,
+      "sha1": "09642876beab"
+    },
+    {
+      "chunk_id": "mcp-transports#17",
+      "doc_id": "mcp-transports",
+      "section": "Session Management",
+      "chars": 820,
+      "sha1": "d3c7fef089b3"
+    },
+    {
+      "chunk_id": "mcp-transports#18",
+      "doc_id": "mcp-transports",
+      "section": "Session Management",
+      "chars": 787,
+      "sha1": "ba59b8ced100"
+    },
+    {
+      "chunk_id": "mcp-transports#19",
+      "doc_id": "mcp-transports",
+      "section": "Session Management",
+      "chars": 189,
+      "sha1": "e8e05a51571b"
+    },
+    {
+      "chunk_id": "mcp-transports#20",
+      "doc_id": "mcp-transports",
+      "section": "Protocol Version Header",
+      "chars": 821,
+      "sha1": "febe239ebe38"
+    },
+    {
+      "chunk_id": "mcp-transports#21",
+      "doc_id": "mcp-transports",
+      "section": "Backwards Compatibility",
+      "chars": 571,
+      "sha1": "ae92f2111ae8"
+    },
+    {
+      "chunk_id": "mcp-transports#22",
+      "doc_id": "mcp-transports",
+      "section": "Backwards Compatibility",
+      "chars": 703,
+      "sha1": "313a4aff729d"
+    },
+    {
+      "chunk_id": "mcp-transports#23",
+      "doc_id": "mcp-transports",
+      "section": "Backwards Compatibility",
+      "chars": 227,
+      "sha1": "c53364a2d19e"
+    },
+    {
+      "chunk_id": "mcp-transports#24",
+      "doc_id": "mcp-transports",
+      "section": "Custom Transports",
+      "chars": 561,
+      "sha1": "7d49f79d20c1"
+    }
+  ]
+}

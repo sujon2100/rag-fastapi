@@ -1,11 +1,8 @@
 import os
 
 import requests
-from sentence_transformers import SentenceTransformer
-from app.services.vectorstore import query_vectors
-
-# Embedding model
-embedder = SentenceTransformer("all-MiniLM-L6-v2")
+from app.services.embeddings import embed
+from app.services.vectorstore import query_vectors, relevant_matches
 
 # Ollama config
 OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
@@ -27,11 +24,11 @@ def generate_with_ollama(prompt: str) -> str:
 
 def query_llm(user_query: str):
     # 1. Embed query
-    query_embedding = embedder.encode(user_query).tolist()
+    query_embedding = embed(user_query)
 
     # 2. Retrieve context
     results = query_vectors(query_embedding, top_k=3)
-    matches = results.get("matches", [])
+    matches = relevant_matches(results)
 
     if not matches:
         return {"answer": "No relevant documents found."}

@@ -25,7 +25,7 @@ import operator
 import os
 from typing import Annotated, TypedDict
 
-from langchain_core.messages import AIMessage, BaseMessage, HumanMessage, ToolMessage
+from langchain_core.messages import AIMessage, BaseMessage, HumanMessage, SystemMessage, ToolMessage
 from langchain_mcp_adapters.client import MultiServerMCPClient
 from langchain_ollama import ChatOllama
 from langgraph.checkpoint.memory import MemorySaver
@@ -36,6 +36,31 @@ from app.agent.authz import ToolNotAuthorized, check_tool_authorized
 MCP_SERVER_URL = os.getenv("MCP_SERVER_URL", "http://127.0.0.1:8001/mcp")
 OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
 OLLAMA_MODEL = os.getenv("AGENT_OLLAMA_MODEL", "qwen2.5:1.5b")
+# Hard cap on tokens per model reply. Without it qwen2.5:1.5b occasionally
+# loops and keeps generating - one eval case reached 7,400+ tokens (~10 min
+# of CPU) before it was killed. Applies to the live service too.
+AGENT_MAX_TOKENS = int(os.getenv("AGENT_MAX_TOKENS", "1024"))
+
+# The baseline eval (evals/results/2026-10-29_131139_*) showed the agent never
+# calling search_documents on its own for a plain question - 0 of 30 - and
+# answering from the model's memory instead, often wrongly. Two fixes, each
+# switchable so the eval can measure them separately. Measured on the same 40
+# cases: the prompt alone changed nothing (still 0/30 searches); prompt +
+# forced search took groundedness from 0 to 0.53 (judge), so both are on by
+# default. Set either to 0 to get the old behavior.
+#   AGENT_GROUNDED_PROMPT  - system prompt: search first, answer only from results
+#   AGENT_FORCE_SEARCH     - run search_documents on the question before the
+#                            model's first turn, so searching is not optional
+AGENT_GROUNDED_PROMPT = os.getenv("AGENT_GROUNDED_PROMPT", "1") == "1"
+AGENT_FORCE_SEARCH = os.getenv("AGENT_FORCE_SEARCH", "1") == "1"
+
+GROUNDED_SYSTEM_PROMPT = """You answer questions using a document search tool, not your own memory.
+
+Rules:
+1. Before answering any question, call search_documents with a short search query.
+2. Answer only with information found in the search results. Do not add facts from memory.
+3. If the search results do not contain the answer, say: "The documents I can search do not cover this." Do not guess.
+4. Keep answers short and mention which source the answer came from."""
 
 
 class AgentState(TypedDict):
@@ -72,16 +97,21 @@ async def get_mcp_tools(url: str = MCP_SERVER_URL) -> list:
     return await client.get_tools()
 
 
-def build_agent(tools: list, llm: ChatOllama):
+def build_agent(tools: list, llm: ChatOllama, force_search: bool = False):
     """
     Graph structure: START -> agent -> [tools | END] -> agent -> ...
+    With force_search: START -> retrieve -> tools -> agent -> ...
     tool_map is used by tools_node to dispatch calls the LLM decided to make.
+    The forced search goes through tools_node too, so it gets the same authz
+    check as any other call (a role without search gets "Denied").
     """
     tool_map = {t.name: t for t in tools}
     llm_with_tools = llm.bind_tools(tools)
 
-    def agent_node(state: AgentState) -> dict:
-        response = llm_with_tools.invoke(state["messages"])
+    async def agent_node(state: AgentState) -> dict:
+        # async so a timeout around the run actually cancels the Ollama
+        # request; with the sync invoke() it kept running in a worker thread
+        response = await llm_with_tools.ainvoke(state["messages"])
         return {"messages": [response]}
 
     async def tools_node(state: AgentState) -> dict:
@@ -102,6 +132,11 @@ def build_agent(tools: list, llm: ChatOllama):
 
         return {"messages": results}
 
+    def retrieve_node(state: AgentState) -> dict:
+        question = next(m.content for m in state["messages"] if isinstance(m, HumanMessage))
+        call = {"name": "search_documents", "args": {"query": question}, "id": "forced-search"}
+        return {"messages": [AIMessage(content="", tool_calls=[call])]}
+
     def should_continue(state: AgentState) -> str:
         last = state["messages"][-1]
         if isinstance(last, AIMessage) and last.tool_calls:
@@ -111,22 +146,66 @@ def build_agent(tools: list, llm: ChatOllama):
     graph = StateGraph(AgentState)
     graph.add_node("agent", agent_node)
     graph.add_node("tools", tools_node)
-    graph.add_edge(START, "agent")
+    if force_search:
+        graph.add_node("retrieve", retrieve_node)
+        graph.add_edge(START, "retrieve")
+        graph.add_edge("retrieve", "tools")
+    else:
+        graph.add_edge(START, "agent")
     graph.add_conditional_edges("agent", should_continue, {"tools": "tools", END: END})
     graph.add_edge("tools", "agent")
 
     return graph.compile(checkpointer=MemorySaver())
 
 
-async def run_query(question: str, role: str = "reader", thread_id: str = "default") -> str:
+async def run_query_traced(
+    question: str,
+    role: str = "reader",
+    thread_id: str = "default",
+    temperature: float | None = None,
+    llm_timeout: float | None = None,
+    grounded_prompt: bool | None = None,
+    force_search: bool | None = None,
+) -> dict:
+    """
+    Same run as run_query, but also returns what happened along the way:
+    every tool call the model asked for and what each one returned. The eval
+    harness needs this - the HTTP endpoint only returns the final answer.
+    temperature=None keeps Ollama's default (what the service uses).
+    llm_timeout is the HTTP timeout per Ollama call (a safety net; it does
+    not catch a model that keeps streaming tokens - AGENT_MAX_TOKENS does).
+    grounded_prompt / force_search default to the AGENT_* env settings.
+    """
+    grounded_prompt = AGENT_GROUNDED_PROMPT if grounded_prompt is None else grounded_prompt
+    force_search = AGENT_FORCE_SEARCH if force_search is None else force_search
     tools = await get_mcp_tools()
-    llm = ChatOllama(model=OLLAMA_MODEL, base_url=OLLAMA_BASE_URL)
-    app = build_agent(tools, llm)
+    llm_kwargs = {"num_predict": AGENT_MAX_TOKENS}
+    if temperature is not None:
+        llm_kwargs["temperature"] = temperature
+    if llm_timeout is not None:
+        llm_kwargs["client_kwargs"] = {"timeout": llm_timeout}
+    llm = ChatOllama(model=OLLAMA_MODEL, base_url=OLLAMA_BASE_URL, **llm_kwargs)
+    app = build_agent(tools, llm, force_search=force_search)
+    start = [SystemMessage(content=GROUNDED_SYSTEM_PROMPT)] if grounded_prompt else []
     result = await app.ainvoke(
-        {"messages": [HumanMessage(content=question)], "role": role},
+        {"messages": start + [HumanMessage(content=question)], "role": role},
         config={"configurable": {"thread_id": thread_id}, "recursion_limit": 10},
     )
-    return result["messages"][-1].content
+    messages = result["messages"]
+    tool_calls = [
+        {"name": tc["name"], "args": tc["args"], "forced": tc["id"] == "forced-search"}
+        for m in messages
+        if isinstance(m, AIMessage)
+        for tc in m.tool_calls
+    ]
+    tool_results = [
+        {"name": m.name, "content": m.content} for m in messages if isinstance(m, ToolMessage)
+    ]
+    return {"answer": messages[-1].content, "tool_calls": tool_calls, "tool_results": tool_results}
+
+
+async def run_query(question: str, role: str = "reader", thread_id: str = "default") -> str:
+    return (await run_query_traced(question, role=role, thread_id=thread_id))["answer"]
 
 
 async def _main():

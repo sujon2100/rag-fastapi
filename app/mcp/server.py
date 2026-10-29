@@ -1,8 +1,8 @@
 """
 MCP server exposing the RAG service's retrieval and ingestion as tools.
 
-Wraps the same Pinecone-backed vector store and embedder already used by
-app/services/llm_inference.py and app/services/vectorstore.py - no mock
+Wraps the same Pinecone-backed vector store and embedder used by
+app/services/llm_inference.py (app/services/vectorstore.py, embeddings.py) - no mock
 tools, no toy demo data. A separate process from the FastAPI app (same
 pattern as any other MCP tool server: agents connect to it over HTTP).
 
@@ -15,8 +15,8 @@ import uuid
 
 from mcp.server.fastmcp import FastMCP
 
-from app.services.llm_inference import embedder
-from app.services.vectorstore import query_vectors, upsert_vectors
+from app.services.embeddings import embed
+from app.services.vectorstore import query_vectors, relevant_matches, upsert_vectors
 
 MCP_SERVER_HOST = os.getenv("MCP_SERVER_HOST", "127.0.0.1")
 MCP_SERVER_PORT = int(os.getenv("MCP_SERVER_PORT", "8001"))
@@ -31,9 +31,9 @@ def search_documents(query: str, top_k: int = 3) -> str:
     Use this to retrieve grounding context before answering a question
     about previously ingested documents.
     """
-    query_embedding = embedder.encode(query).tolist()
+    query_embedding = embed(query)
     results = query_vectors(query_embedding, top_k=top_k)
-    matches = results.get("matches", [])
+    matches = relevant_matches(results)
 
     if not matches:
         return "No relevant documents found."
@@ -42,7 +42,8 @@ def search_documents(query: str, top_k: int = 3) -> str:
     for match in matches:
         metadata = match.get("metadata", {}) or {}
         text = metadata.get("text", "")
-        source = metadata.get("source", "unknown")
+        # eval corpus chunks carry a chunk_id ("fastapi-cors#3"); older vectors only have source
+        source = metadata.get("chunk_id") or metadata.get("source", "unknown")
         score = match.get("score", 0.0)
         lines.append(f"[{source}, score={score:.4f}] {text}")
     return "\n".join(lines)
@@ -58,7 +59,7 @@ def ingest_document(text: str, source: str) -> str:
         return "Error: text is empty, nothing to ingest."
 
     doc_id = str(uuid.uuid4())
-    vector = embedder.encode(text).tolist()
+    vector = embed(text)
     upsert_vectors(
         [
             {
