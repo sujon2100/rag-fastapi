@@ -1,0 +1,799 @@
+{
+  "meta": {
+    "started": "2026-10-29T18:26:39",
+    "phase": "all",
+    "git_sha": "a709d19",
+    "git_dirty": true,
+    "namespace": "eval-v1",
+    "top_k": 3,
+    "agent_model": "qwen2.5:1.5b",
+    "agent_temperature": 0.0,
+    "judge_model": "gemma3:4b",
+    "repeats": 1,
+    "cases": 12,
+    "golden": "evals/holdout.jsonl",
+    "host": "Darwin x86_64 i386",
+    "case_timeout_s": 300.0,
+    "grounded_prompt": true,
+    "force_search": true,
+    "no_context_refusal": true,
+    "search_min_score": 0.54,
+    "agent_max_tokens": 1024,
+    "agent_phase_s": 81.2,
+    "judge_phase_s": 191.5
+  },
+  "summary": {
+    "per_repeat": [
+      {
+        "cases": 12,
+        "errors": 0,
+        "tool_call_correctness": 1.0,
+        "retriever_hit_at_k": 1.0,
+        "retriever_doc_hit_at_k": 1.0,
+        "retriever_mrr": 0.8095,
+        "agent_hit_rate": 1.0,
+        "agent_searched_rate": 1.0,
+        "model_initiated_search_rate": 0.0,
+        "latency_p50_s": 5.98,
+        "latency_p95_s": 7.83,
+        "groundedness": 0.7143,
+        "groundedness_incl_partial": 1.0,
+        "answer_fact_coverage": 0.9286,
+        "refusal_accuracy": 0.8,
+        "false_refusal_rate": 0.0,
+        "refusal_accuracy_regex": 0.8
+      }
+    ],
+    "mean": {
+      "cases": 12,
+      "errors": 0,
+      "tool_call_correctness": 1.0,
+      "retriever_hit_at_k": 1.0,
+      "retriever_doc_hit_at_k": 1.0,
+      "retriever_mrr": 0.8095,
+      "agent_hit_rate": 1.0,
+      "agent_searched_rate": 1.0,
+      "model_initiated_search_rate": 0.0,
+      "latency_p50_s": 5.98,
+      "latency_p95_s": 7.83,
+      "groundedness": 0.7143,
+      "groundedness_incl_partial": 1.0,
+      "answer_fact_coverage": 0.9286,
+      "refusal_accuracy": 0.8,
+      "false_refusal_rate": 0.0,
+      "refusal_accuracy_regex": 0.8
+    },
+    "grounding_vs_hand_labels": {
+      "compared": 0,
+      "agree": 0,
+      "agreement": null,
+      "disagreements": []
+    },
+    "refusal_vs_hand_labels": {
+      "regex (used for scoring)": {
+        "compared": 0,
+        "agree": 0,
+        "agreement": null,
+        "disagreements": []
+      },
+      "judge": {
+        "compared": 0,
+        "agree": 0,
+        "agreement": null,
+        "disagreements": []
+      }
+    }
+  },
+  "records": [
+    {
+      "id": "ho-01",
+      "category": "answerable",
+      "repeat": 0,
+      "retriever": {
+        "retrieved": [
+          "fastapi-cors#7",
+          "fastapi-cors#4",
+          "fastapi-cors#8"
+        ],
+        "hit": true,
+        "doc_hit": true,
+        "rr": 0.3333333333333333
+      },
+      "latency_s": 17.0,
+      "answer": "FastAPI's CORSMiddleware intercepts requests with an Origin header but not a preflight request. It responds with appropriate CORS headers and either a `200` or `400` response for informational purposes.",
+      "tool_calls": [
+        {
+          "name": "search_documents",
+          "args": {
+            "query": "What does FastAPI's CORSMiddleware do with a simple request that has an Origin header but is not a preflight?"
+          },
+          "forced": true
+        }
+      ],
+      "tool_results": [
+        {
+          "name": "search_documents",
+          "content": "[fastapi-cors#7, score=0.7347] CORS (Cross-Origin Resource Sharing) > CORS preflight requests\n\nThese are any `OPTIONS` request with `Origin` and `Access-Control-Request-Method` headers.\n\nIn this case the middleware will intercept the incoming request and respond with appropriate CORS headers, and either a `200` or `400` response for informational purposes.\n[fastapi-cors#4, score=0.7234] CORS (Cross-Origin Resource Sharing) > Use `CORSMiddleware`\n\nYou can configure it in your **FastAPI** application using the `CORSMiddleware`.\n\n* Import `CORSMiddleware`.\n* Create a list of allowed origins (as strings).\n* Add it as a \"middleware\" to your **FastAPI** application.\n\nYou can also specify whether your backend allows:\n\n* Credentials (Authorization headers, Cookies, etc).\n* Specific HTTP methods (`POST`, `PUT`) or all of them with the wildcard `\"*\"`.\n* Specific HTTP headers or all of them with the wildcard `\"*\"`.\n\nThe default parameters used by the `CORSMiddleware` implementation are restrictive by default, so you'll need to explicitly enable particular origins, methods, or headers, in order for browsers to be permitted to use them in a Cross-Domain context.\n\nThe following arguments are supported:\n[fastapi-cors#8, score=0.6825] CORS (Cross-Origin Resource Sharing) > Simple requests\n\nAny request with an `Origin` header. In this case the middleware will pass the request through as normal, but will include appropriate CORS headers on the response."
+        }
+      ],
+      "agent_retrieved_text": [
+        "[fastapi-cors#7, score=0.7347] CORS (Cross-Origin Resource Sharing) > CORS preflight requests\n\nThese are any `OPTIONS` request with `Origin` and `Access-Control-Request-Method` headers.\n\nIn this case the middleware will intercept the incoming request and respond with appropriate CORS headers, and either a `200` or `400` response for informational purposes.\n[fastapi-cors#4, score=0.7234] CORS (Cross-Origin Resource Sharing) > Use `CORSMiddleware`\n\nYou can configure it in your **FastAPI** application using the `CORSMiddleware`.\n\n* Import `CORSMiddleware`.\n* Create a list of allowed origins (as strings).\n* Add it as a \"middleware\" to your **FastAPI** application.\n\nYou can also specify whether your backend allows:\n\n* Credentials (Authorization headers, Cookies, etc).\n* Specific HTTP methods (`POST`, `PUT`) or all of them with the wildcard `\"*\"`.\n* Specific HTTP headers or all of them with the wildcard `\"*\"`.\n\nThe default parameters used by the `CORSMiddleware` implementation are restrictive by default, so you'll need to explicitly enable particular origins, methods, or headers, in order for browsers to be permitted to use them in a Cross-Domain context.\n\nThe following arguments are supported:\n[fastapi-cors#8, score=0.6825] CORS (Cross-Origin Resource Sharing) > Simple requests\n\nAny request with an `Origin` header. In this case the middleware will pass the request through as normal, but will include appropriate CORS headers on the response."
+      ],
+      "agent_retrieved": [
+        "fastapi-cors#7",
+        "fastapi-cors#4",
+        "fastapi-cors#8"
+      ],
+      "agent_retrieval": {
+        "hit": true,
+        "doc_hit": true,
+        "rr": 0.3333333333333333
+      },
+      "tool_check": {
+        "ok": true,
+        "problems": []
+      },
+      "judge": {
+        "model": "gemma3:4b",
+        "refused": false,
+        "refused_source": "regex",
+        "refused_judge": false,
+        "grounded": "partial",
+        "grounded_source": "judge",
+        "facts_covered": [
+          true,
+          true
+        ],
+        "fact_coverage": 1.0,
+        "reasons": {
+          "refusal_judge": "It explains the CORSMiddleware's action and response.",
+          "grounded": "The answer includes information about 400 responses which is not in the source text."
+        },
+        "latency_s": 24.05,
+        "tokens": 938
+      }
+    },
+    {
+      "id": "ho-02",
+      "category": "answerable",
+      "repeat": 0,
+      "retriever": {
+        "retrieved": [
+          "fastapi-handling-errors#15",
+          "fastapi-handling-errors#8",
+          "fastapi-handling-errors#13"
+        ],
+        "hit": true,
+        "doc_hit": true,
+        "rr": 1.0
+      },
+      "latency_s": 7.83,
+      "answer": "Yes, your custom FastAPI exception handler can still use FastAPI's default exception handlers. You can either:\n\n1. **Reuse the default exception handlers** by importing and using them directly.\n2. **Override the default exception handlers** by creating your own handlers that handle the same exceptions as FastAPI's default handlers.\n\nFor example, you can print the error message and handle it as you would with FastAPI's default exception handlers. Or, you can create custom exception handlers that handle the same exceptions as FastAPI's default handlers, but you need to register them for Starlette's `HTTPException` instead of FastAPI's `HTTPException`.\n\nThis way, your custom exception handlers can still be used alongside FastAPI's default exception handlers, providing a seamless integration.",
+      "tool_calls": [
+        {
+          "name": "search_documents",
+          "args": {
+            "query": "Can my custom FastAPI exception handler still use FastAPI's default exception handlers?"
+          },
+          "forced": true
+        }
+      ],
+      "tool_results": [
+        {
+          "name": "search_documents",
+          "content": "[fastapi-handling-errors#15, score=0.7636] Handling Errors > Reuse **FastAPI**'s exception handlers\n\nIf you want to use the exception along with the same default exception handlers from  **FastAPI**, you can import and reuse the default exception handlers from `fastapi.exception_handlers`:\n\nIn this example you are just printing the error with a very expressive message, but you get the idea. You can use the exception and then just reuse the default exception handlers.\n[fastapi-handling-errors#8, score=0.6998] Handling Errors > Override the default exception handlers\n\n**FastAPI** has some default exception handlers.\n\nThese handlers are in charge of returning the default JSON responses when you `raise` an `HTTPException` and when the request has invalid data.\n\nYou can override these exception handlers with your own.\n[fastapi-handling-errors#13, score=0.6589] Handling Errors > FastAPI's `HTTPException` vs Starlette's `HTTPException`\n\n**FastAPI** has its own `HTTPException`.\n\nAnd **FastAPI**'s `HTTPException` error class inherits from Starlette's `HTTPException` error class.\n\nThe only difference is that **FastAPI**'s `HTTPException` accepts any JSON-able data for the `detail` field, while Starlette's `HTTPException` only accepts strings for it.\n\nSo, you can keep raising **FastAPI**'s `HTTPException` as normally in your code.\n\nBut when you register an exception handler, you should register it for Starlette's `HTTPException`.\n\nThis way, if any part of Starlette's internal code, or a Starlette extension or plug-in, raises a Starlette `HTTPException`, your handler will be able to catch and handle it."
+        }
+      ],
+      "agent_retrieved_text": [
+        "[fastapi-handling-errors#15, score=0.7636] Handling Errors > Reuse **FastAPI**'s exception handlers\n\nIf you want to use the exception along with the same default exception handlers from  **FastAPI**, you can import and reuse the default exception handlers from `fastapi.exception_handlers`:\n\nIn this example you are just printing the error with a very expressive message, but you get the idea. You can use the exception and then just reuse the default exception handlers.\n[fastapi-handling-errors#8, score=0.6998] Handling Errors > Override the default exception handlers\n\n**FastAPI** has some default exception handlers.\n\nThese handlers are in charge of returning the default JSON responses when you `raise` an `HTTPException` and when the request has invalid data.\n\nYou can override these exception handlers with your own.\n[fastapi-handling-errors#13, score=0.6589] Handling Errors > FastAPI's `HTTPException` vs Starlette's `HTTPException`\n\n**FastAPI** has its own `HTTPException`.\n\nAnd **FastAPI**'s `HTTPException` error class inherits from Starlette's `HTTPException` error class.\n\nThe only difference is that **FastAPI**'s `HTTPException` accepts any JSON-able data for the `detail` field, while Starlette's `HTTPException` only accepts strings for it.\n\nSo, you can keep raising **FastAPI**'s `HTTPException` as normally in your code.\n\nBut when you register an exception handler, you should register it for Starlette's `HTTPException`.\n\nThis way, if any part of Starlette's internal code, or a Starlette extension or plug-in, raises a Starlette `HTTPException`, your handler will be able to catch and handle it."
+      ],
+      "agent_retrieved": [
+        "fastapi-handling-errors#15",
+        "fastapi-handling-errors#8",
+        "fastapi-handling-errors#13"
+      ],
+      "agent_retrieval": {
+        "hit": true,
+        "doc_hit": true,
+        "rr": 1.0
+      },
+      "tool_check": {
+        "ok": true,
+        "problems": []
+      },
+      "judge": {
+        "model": "gemma3:4b",
+        "refused": false,
+        "refused_source": "regex",
+        "refused_judge": false,
+        "grounded": "supported",
+        "grounded_source": "judge",
+        "facts_covered": [
+          true,
+          true
+        ],
+        "fact_coverage": 1.0,
+        "reasons": {
+          "refusal_judge": "The reply provides a clear and helpful answer to the question.",
+          "grounded": "All claims in the answer are directly supported by the source text."
+        },
+        "latency_s": 23.38,
+        "tokens": 1298
+      }
+    },
+    {
+      "id": "ho-03",
+      "category": "answerable",
+      "repeat": 0,
+      "retriever": {
+        "retrieved": [
+          "langgraph-persistence#6",
+          "langgraph-persistence#0",
+          "langgraph-streaming#1"
+        ],
+        "hit": true,
+        "doc_hit": true,
+        "rr": 1.0
+      },
+      "latency_s": 7.58,
+      "answer": "The LangGraph checkpoints issue you're experiencing is due to checkpoints growing unboundedly over long conversations. This can lead to increased latency and storage costs.\n\nTo address this issue, you should periodically prune old checkpoints or set a retention policy. This can be done by configuring LangGraph to delete checkpoints after a certain period or by setting a retention limit.\n\nAdditionally, LangGraph provides two persistence systems:\n1. **Checkpointers** are used for short-term, thread-scoped memory, including conversation continuity, human-in-the-loop workflows, time travel, and fault tolerance.\n2. **Stores** are used for long-term, cross-thread memory, including user preferences, facts, and shared knowledge.\n\nYou can use LangGraph's streaming capabilities to monitor and debug your conversations, inspect token-by-token LLM output, and monitor latency with LangSmith.",
+      "tool_calls": [
+        {
+          "name": "search_documents",
+          "args": {
+            "query": "My LangGraph checkpoints keep piling up over long conversations. What should I do about it?"
+          },
+          "forced": true
+        }
+      ],
+      "tool_results": [
+        {
+          "name": "search_documents",
+          "content": "[langgraph-persistence#6, score=0.6175] Persistence > Checkpoints growing unboundedly\n\nOver long conversations, checkpoints accumulate. This can increase latency and storage costs.\n\n**Fix:** Prune old checkpoints periodically or set a retention policy:\n[langgraph-persistence#0, score=0.4890] Persistence\n\nPersistence lets LangGraph applications keep useful information beyond a single graph run. It matters when an agent needs to continue a conversation, resume after an interruption, recover from a failure, or remember information across interactions.\n\nLangGraph provides two complementary persistence systems:\n\n- **Checkpointers** persist a thread's graph state as checkpoints. Use them for short-term, thread-scoped memory, including conversation continuity, human-in-the-loop workflows, time travel, and fault tolerance.\n- **Stores** persist application-defined data outside the graph state. Use them for long-term, cross-thread memory, including user preferences, facts, and shared knowledge.\n[langgraph-streaming#1, score=0.4576] Streaming > Basic usage\n\nLangGraph graphs expose the `stream`[Pregel.stream] (sync) and `astream`[Pregel.astream] (async) methods to yield streamed outputs as iterators. Pass one or more stream modes to control what data you receive.\n\nDebug streaming events, inspect token-by-token LLM output, and monitor latency with LangSmith. Follow the tracing quickstart to get set up."
+        }
+      ],
+      "agent_retrieved_text": [
+        "[langgraph-persistence#6, score=0.6175] Persistence > Checkpoints growing unboundedly\n\nOver long conversations, checkpoints accumulate. This can increase latency and storage costs.\n\n**Fix:** Prune old checkpoints periodically or set a retention policy:\n[langgraph-persistence#0, score=0.4890] Persistence\n\nPersistence lets LangGraph applications keep useful information beyond a single graph run. It matters when an agent needs to continue a conversation, resume after an interruption, recover from a failure, or remember information across interactions.\n\nLangGraph provides two complementary persistence systems:\n\n- **Checkpointers** persist a thread's graph state as checkpoints. Use them for short-term, thread-scoped memory, including conversation continuity, human-in-the-loop workflows, time travel, and fault tolerance.\n- **Stores** persist application-defined data outside the graph state. Use them for long-term, cross-thread memory, including user preferences, facts, and shared knowledge.\n[langgraph-streaming#1, score=0.4576] Streaming > Basic usage\n\nLangGraph graphs expose the `stream`[Pregel.stream] (sync) and `astream`[Pregel.astream] (async) methods to yield streamed outputs as iterators. Pass one or more stream modes to control what data you receive.\n\nDebug streaming events, inspect token-by-token LLM output, and monitor latency with LangSmith. Follow the tracing quickstart to get set up."
+      ],
+      "agent_retrieved": [
+        "langgraph-persistence#6",
+        "langgraph-persistence#0",
+        "langgraph-streaming#1"
+      ],
+      "agent_retrieval": {
+        "hit": true,
+        "doc_hit": true,
+        "rr": 1.0
+      },
+      "tool_check": {
+        "ok": true,
+        "problems": []
+      },
+      "judge": {
+        "model": "gemma3:4b",
+        "refused": false,
+        "refused_source": "regex",
+        "refused_judge": true,
+        "grounded": "supported",
+        "grounded_source": "judge",
+        "facts_covered": [
+          true,
+          true
+        ],
+        "fact_coverage": 1.0,
+        "reasons": {
+          "refusal_judge": "It offers general advice but doesn't directly address the user's question about pruning checkpoints.",
+          "grounded": "All claims are directly stated or logically derived from the source text."
+        },
+        "latency_s": 23.69,
+        "tokens": 1294
+      }
+    },
+    {
+      "id": "ho-04",
+      "category": "answerable",
+      "repeat": 0,
+      "retriever": {
+        "retrieved": [
+          "langgraph-streaming#21",
+          "langgraph-streaming#20",
+          "langgraph-streaming#12"
+        ],
+        "hit": true,
+        "doc_hit": true,
+        "rr": 1.0
+      },
+      "latency_s": 7.37,
+      "answer": "To turn off streaming in LangGraph for a chat model that does not support streaming, you can set the `streaming` parameter to `False` when initializing the model. If your model does not support the `streaming` parameter, you can use `disable_streaming=True` instead. This parameter is available on all chat models via the base class.\n\nAdditionally, you can use `stream_mode=\"custom\"` to stream data from any LLM API, even if that API does not implement the LangChain chat model interface. This allows you to integrate raw LLM clients or external services that provide their own streaming interfaces, making LangGraph highly flexible for custom setups.\n\nTo filter the streamed tokens by specific nodes, use `stream_mode=\"messages\"` and filter the outputs by the `langgraph_node` field in the streamed metadata.",
+      "tool_calls": [
+        {
+          "name": "search_documents",
+          "args": {
+            "query": "How do I turn off streaming in LangGraph for a chat model that does not support streaming?"
+          },
+          "forced": true
+        }
+      ],
+      "tool_results": [
+        {
+          "name": "search_documents",
+          "content": "[langgraph-streaming#21, score=0.7619] Streaming > Disable streaming for specific chat models\n\nIf your application mixes models that support streaming with those that do not, you may need to explicitly disable streaming for\nmodels that do not support it.\n\nSet `streaming=False` when initializing the model.\n\nNot all chat model integrations support the `streaming` parameter. If your model doesn't support it, use `disable_streaming=True` instead. This parameter is available on all chat models via the base class.\n[langgraph-streaming#20, score=0.5927] Streaming > Use with any LLM\n\nYou can use `stream_mode=\"custom\"` to stream data from **any LLM API**\u2014even if that API does **not** implement the LangChain chat model interface.\n\nThis lets you integrate raw LLM clients or external services that provide their own streaming interfaces, making LangGraph highly flexible for custom setups.\n\nLet's invoke the graph with an `AIMessage` that includes a tool call:\n[langgraph-streaming#12, score=0.5665] Streaming > Filter by node\n\nTo stream tokens only from specific nodes, use `stream_mode=\"messages\"` and filter the outputs by the `langgraph_node` field in the streamed metadata:"
+        }
+      ],
+      "agent_retrieved_text": [
+        "[langgraph-streaming#21, score=0.7619] Streaming > Disable streaming for specific chat models\n\nIf your application mixes models that support streaming with those that do not, you may need to explicitly disable streaming for\nmodels that do not support it.\n\nSet `streaming=False` when initializing the model.\n\nNot all chat model integrations support the `streaming` parameter. If your model doesn't support it, use `disable_streaming=True` instead. This parameter is available on all chat models via the base class.\n[langgraph-streaming#20, score=0.5927] Streaming > Use with any LLM\n\nYou can use `stream_mode=\"custom\"` to stream data from **any LLM API**\u2014even if that API does **not** implement the LangChain chat model interface.\n\nThis lets you integrate raw LLM clients or external services that provide their own streaming interfaces, making LangGraph highly flexible for custom setups.\n\nLet's invoke the graph with an `AIMessage` that includes a tool call:\n[langgraph-streaming#12, score=0.5665] Streaming > Filter by node\n\nTo stream tokens only from specific nodes, use `stream_mode=\"messages\"` and filter the outputs by the `langgraph_node` field in the streamed metadata:"
+      ],
+      "agent_retrieved": [
+        "langgraph-streaming#21",
+        "langgraph-streaming#20",
+        "langgraph-streaming#12"
+      ],
+      "agent_retrieval": {
+        "hit": true,
+        "doc_hit": true,
+        "rr": 1.0
+      },
+      "tool_check": {
+        "ok": true,
+        "problems": []
+      },
+      "judge": {
+        "model": "gemma3:4b",
+        "refused": false,
+        "refused_source": "regex",
+        "refused_judge": false,
+        "grounded": "supported",
+        "grounded_source": "judge",
+        "facts_covered": [
+          true,
+          true
+        ],
+        "fact_coverage": 1.0,
+        "reasons": {
+          "refusal_judge": "The reply provides instructions on how to disable streaming.",
+          "grounded": "All claims are directly stated in the source text."
+        },
+        "latency_s": 22.17,
+        "tokens": 1223
+      }
+    },
+    {
+      "id": "ho-05",
+      "category": "answerable",
+      "repeat": 0,
+      "retriever": {
+        "retrieved": [
+          "langgraph-interrupts#23",
+          "langgraph-interrupts#21",
+          "langgraph-interrupts#0"
+        ],
+        "hit": true,
+        "doc_hit": true,
+        "rr": 1.0
+      },
+      "latency_s": 5.93,
+      "answer": "Reordering interrupt calls inside a LangGraph node can lead to unexpected behavior due to the strict index-based matching of resume values. The order of interrupt calls within the node is important, and LangGraph does not resume execution from the exact line where the interrupt was called. This means any code that ran before the interrupt will execute again, which can cause issues if the order of execution is critical.",
+      "tool_calls": [
+        {
+          "name": "search_documents",
+          "args": {
+            "query": "Why is it risky to reorder interrupt calls inside a LangGraph node?"
+          },
+          "forced": true
+        }
+      ],
+      "tool_results": [
+        {
+          "name": "search_documents",
+          "content": "[langgraph-interrupts#23, score=0.8240] Interrupts > Do not reorder `interrupt` calls within a node\n\nIt's common to use multiple interrupts in a single node, however this can lead to unexpected behavior if not handled carefully.\n\nWhen a node contains multiple interrupt calls, LangGraph keeps a list of resume values specific to the task executing the node. Whenever execution resumes, it starts at the beginning of the node. For each interrupt encountered, LangGraph checks if a matching value exists in the task's resume list. Matching is **strictly index-based**, so the order of interrupt calls within the node is important.\n\n* \u2705 Keep `interrupt` calls consistent across node executions\n[langgraph-interrupts#21, score=0.7426] Interrupts > Rules of interrupts\n\nWhen you call `interrupt` within a node, LangGraph suspends execution by raising an exception that signals the runtime to pause. This exception propagates up through the call stack and is caught by the runtime, which notifies the graph to save the current state and wait for external input.\n\nWhen execution resumes (after you provide the requested input), the runtime restarts the entire node from the beginning\u2014it does not resume from the exact line where `interrupt` was called. This means any code that ran before the `interrupt` will execute again. Because of this, there's a few important rules to follow when working with interrupts to ensure they behave as expected.\n[langgraph-interrupts#0, score=0.6814] Interrupts\n\nInterrupts allow you to pause graph execution at specific points and wait for external input before continuing. This enables human-in-the-loop patterns where you need external input to proceed. When an interrupt is triggered, LangGraph saves the graph state using its persistence layer and waits indefinitely until you resume execution.\n\nInterrupts work by calling the `interrupt()` function at any point in your graph nodes. The function accepts any JSON-serializable value which is surfaced to the caller. When you're ready to continue, you resume execution by re-invoking the graph using `Command`, which then becomes the return value of the `interrupt()` call from inside the node."
+        }
+      ],
+      "agent_retrieved_text": [
+        "[langgraph-interrupts#23, score=0.8240] Interrupts > Do not reorder `interrupt` calls within a node\n\nIt's common to use multiple interrupts in a single node, however this can lead to unexpected behavior if not handled carefully.\n\nWhen a node contains multiple interrupt calls, LangGraph keeps a list of resume values specific to the task executing the node. Whenever execution resumes, it starts at the beginning of the node. For each interrupt encountered, LangGraph checks if a matching value exists in the task's resume list. Matching is **strictly index-based**, so the order of interrupt calls within the node is important.\n\n* \u2705 Keep `interrupt` calls consistent across node executions\n[langgraph-interrupts#21, score=0.7426] Interrupts > Rules of interrupts\n\nWhen you call `interrupt` within a node, LangGraph suspends execution by raising an exception that signals the runtime to pause. This exception propagates up through the call stack and is caught by the runtime, which notifies the graph to save the current state and wait for external input.\n\nWhen execution resumes (after you provide the requested input), the runtime restarts the entire node from the beginning\u2014it does not resume from the exact line where `interrupt` was called. This means any code that ran before the `interrupt` will execute again. Because of this, there's a few important rules to follow when working with interrupts to ensure they behave as expected.\n[langgraph-interrupts#0, score=0.6814] Interrupts\n\nInterrupts allow you to pause graph execution at specific points and wait for external input before continuing. This enables human-in-the-loop patterns where you need external input to proceed. When an interrupt is triggered, LangGraph saves the graph state using its persistence layer and waits indefinitely until you resume execution.\n\nInterrupts work by calling the `interrupt()` function at any point in your graph nodes. The function accepts any JSON-serializable value which is surfaced to the caller. When you're ready to continue, you resume execution by re-invoking the graph using `Command`, which then becomes the return value of the `interrupt()` call from inside the node."
+      ],
+      "agent_retrieved": [
+        "langgraph-interrupts#23",
+        "langgraph-interrupts#21",
+        "langgraph-interrupts#0"
+      ],
+      "agent_retrieval": {
+        "hit": true,
+        "doc_hit": true,
+        "rr": 1.0
+      },
+      "tool_check": {
+        "ok": true,
+        "problems": []
+      },
+      "judge": {
+        "model": "gemma3:4b",
+        "refused": false,
+        "refused_source": "regex",
+        "refused_judge": true,
+        "grounded": "supported",
+        "grounded_source": "judge",
+        "facts_covered": [
+          true,
+          false
+        ],
+        "fact_coverage": 0.5,
+        "reasons": {
+          "refusal_judge": "The reply provides a detailed explanation.",
+          "grounded": "All claims in the answer are directly stated in the source text."
+        },
+        "latency_s": 21.49,
+        "tokens": 1125
+      }
+    },
+    {
+      "id": "ho-06",
+      "category": "answerable",
+      "repeat": 0,
+      "retriever": {
+        "retrieved": [
+          "mcp-transports#20",
+          "mcp-transports#3",
+          "mcp-transports#6"
+        ],
+        "hit": true,
+        "doc_hit": true,
+        "rr": 1.0
+      },
+      "latency_s": 5.71,
+      "answer": "The HTTP header that an MCP client sends to the server so the server knows the protocol version is `MCP-Protocol-Version`.",
+      "tool_calls": [
+        {
+          "name": "search_documents",
+          "args": {
+            "query": "Which HTTP header does an MCP client send so the server knows the protocol version?"
+          },
+          "forced": true
+        }
+      ],
+      "tool_results": [
+        {
+          "name": "search_documents",
+          "content": "[mcp-transports#20, score=0.8181] Transports > Protocol Version Header\n\nIf using HTTP, the client **MUST** include the `MCP-Protocol-Version:\n<protocol-version>` HTTP header on all subsequent requests to the MCP\nserver, allowing the MCP server to respond based on the MCP protocol version.\n\nFor example: `MCP-Protocol-Version: 2025-11-25`\n\nThe protocol version sent by the client **SHOULD** be the one negotiated during\ninitialization.\n\nFor backwards compatibility, if the server does _not_ receive an `MCP-Protocol-Version`\nheader, and has no other way to identify the version - for example, by relying on the\nprotocol version negotiated during initialization - the server **SHOULD** assume protocol\nversion `2025-03-26`.\n\nIf the server receives a request with an invalid or unsupported\n`MCP-Protocol-Version`, it **MUST** respond with `400 Bad Request`.\n[mcp-transports#3, score=0.6127] Transports > Streamable HTTP\n\nThis replaces the HTTP+SSE\ntransport from\nprotocol version 2024-11-05. See the backwards compatibility\nguide below.\n\nIn the **Streamable HTTP** transport, the server operates as an independent process that\ncan handle multiple client connections. This transport uses HTTP POST and GET requests.\nServer can optionally make use of\nServer-Sent Events (SSE) to stream\nmultiple server messages. This permits basic MCP servers, as well as more feature-rich\nservers supporting streaming and server-to-client notifications and requests.\n\nThe server **MUST** provide a single HTTP endpoint path (hereafter referred to as the\n**MCP endpoint**) that supports both POST and GET methods. For example, this could be a\nURL like `https://example.com/mcp`.\n[mcp-transports#6, score=0.5955] Transports > Sending Messages to the Server\n\n1. The client **MUST** use HTTP POST to send JSON-RPC messages to the MCP endpoint. 2. The client **MUST** include an `Accept` header, listing both `application/json` and\n   `text/event-stream` as supported content types. 3. The body of the POST request **MUST** be a single JSON-RPC _request_, _notification_, or _response_. 4. If the input is a JSON-RPC _response_ or _notification_:\n   - If the server accepts the input, the server **MUST** return HTTP status code 202\n     Accepted with no body. - If the server cannot accept the input, it **MUST** return an HTTP error status code\n     (e.g., 400 Bad Request). The HTTP response body **MAY** comprise a JSON-RPC _error\n     response_ that has no `id`. 5."
+        }
+      ],
+      "agent_retrieved_text": [
+        "[mcp-transports#20, score=0.8181] Transports > Protocol Version Header\n\nIf using HTTP, the client **MUST** include the `MCP-Protocol-Version:\n<protocol-version>` HTTP header on all subsequent requests to the MCP\nserver, allowing the MCP server to respond based on the MCP protocol version.\n\nFor example: `MCP-Protocol-Version: 2025-11-25`\n\nThe protocol version sent by the client **SHOULD** be the one negotiated during\ninitialization.\n\nFor backwards compatibility, if the server does _not_ receive an `MCP-Protocol-Version`\nheader, and has no other way to identify the version - for example, by relying on the\nprotocol version negotiated during initialization - the server **SHOULD** assume protocol\nversion `2025-03-26`.\n\nIf the server receives a request with an invalid or unsupported\n`MCP-Protocol-Version`, it **MUST** respond with `400 Bad Request`.\n[mcp-transports#3, score=0.6127] Transports > Streamable HTTP\n\nThis replaces the HTTP+SSE\ntransport from\nprotocol version 2024-11-05. See the backwards compatibility\nguide below.\n\nIn the **Streamable HTTP** transport, the server operates as an independent process that\ncan handle multiple client connections. This transport uses HTTP POST and GET requests.\nServer can optionally make use of\nServer-Sent Events (SSE) to stream\nmultiple server messages. This permits basic MCP servers, as well as more feature-rich\nservers supporting streaming and server-to-client notifications and requests.\n\nThe server **MUST** provide a single HTTP endpoint path (hereafter referred to as the\n**MCP endpoint**) that supports both POST and GET methods. For example, this could be a\nURL like `https://example.com/mcp`.\n[mcp-transports#6, score=0.5955] Transports > Sending Messages to the Server\n\n1. The client **MUST** use HTTP POST to send JSON-RPC messages to the MCP endpoint. 2. The client **MUST** include an `Accept` header, listing both `application/json` and\n   `text/event-stream` as supported content types. 3. The body of the POST request **MUST** be a single JSON-RPC _request_, _notification_, or _response_. 4. If the input is a JSON-RPC _response_ or _notification_:\n   - If the server accepts the input, the server **MUST** return HTTP status code 202\n     Accepted with no body. - If the server cannot accept the input, it **MUST** return an HTTP error status code\n     (e.g., 400 Bad Request). The HTTP response body **MAY** comprise a JSON-RPC _error\n     response_ that has no `id`. 5."
+      ],
+      "agent_retrieved": [
+        "mcp-transports#20",
+        "mcp-transports#3",
+        "mcp-transports#6"
+      ],
+      "agent_retrieval": {
+        "hit": true,
+        "doc_hit": true,
+        "rr": 1.0
+      },
+      "tool_check": {
+        "ok": true,
+        "problems": []
+      },
+      "judge": {
+        "model": "gemma3:4b",
+        "refused": false,
+        "refused_source": "regex",
+        "refused_judge": true,
+        "grounded": "supported",
+        "grounded_source": "judge",
+        "facts_covered": [
+          true,
+          true
+        ],
+        "fact_coverage": 1.0,
+        "reasons": {
+          "refusal_judge": "The header `MCP-Protocol-Version` is not a standard HTTP header.",
+          "grounded": "All claims in the answer are directly stated in the source text."
+        },
+        "latency_s": 21.77,
+        "tokens": 1144
+      }
+    },
+    {
+      "id": "ho-07",
+      "category": "answerable",
+      "repeat": 0,
+      "retriever": {
+        "retrieved": [
+          "fastapi-background-tasks#5",
+          "fastapi-background-tasks#1",
+          "fastapi-background-tasks#4"
+        ],
+        "hit": true,
+        "doc_hit": true,
+        "rr": 0.3333333333333333
+      },
+      "latency_s": 5.98,
+      "answer": "Yes, you can declare `BackgroundTasks` inside a FastAPI dependency instead of the path operation function. This approach allows you to handle background tasks within the dependency, making your code cleaner and more maintainable. FastAPI will automatically create and manage the `BackgroundTasks` object for you, ensuring that all tasks are executed in the background and that they are properly integrated into your application's flow.",
+      "tool_calls": [
+        {
+          "name": "search_documents",
+          "args": {
+            "query": "Can I declare BackgroundTasks inside a FastAPI dependency instead of the path operation function?"
+          },
+          "forced": true
+        }
+      ],
+      "tool_results": [
+        {
+          "name": "search_documents",
+          "content": "[fastapi-background-tasks#5, score=0.8022] Background Tasks > Technical Details\n\nThe class `BackgroundTasks` comes directly from `starlette.background`.\n\nIt is imported/included directly into FastAPI so that you can import it from `fastapi` and avoid accidentally importing the alternative `BackgroundTask` (without the `s` at the end) from `starlette.background`.\n\nBy only using `BackgroundTasks` (and not `BackgroundTask`), it's then possible to use it as a *path operation function* parameter and have **FastAPI** handle the rest for you, just like when using the `Request` object directly.\n\nIt's still possible to use `BackgroundTask` alone in FastAPI, but you have to create the object in your code and return a Starlette `Response` including it.\n\nYou can see more details in Starlette's official docs for Background Tasks.\n[fastapi-background-tasks#1, score=0.7960] Background Tasks > Using `BackgroundTasks`\n\nFirst, import `BackgroundTasks` and define a parameter in your *path operation function* with a type declaration of `BackgroundTasks`:\n\n**FastAPI** will create the object of type `BackgroundTasks` for you and pass it as that parameter.\n[fastapi-background-tasks#4, score=0.6935] Background Tasks > Dependency Injection\n\nUsing `BackgroundTasks` also works with the dependency injection system, you can declare a parameter of type `BackgroundTasks` at multiple levels: in a *path operation function*, in a dependency (dependable), in a sub-dependency, etc.\n\n**FastAPI** knows what to do in each case and how to reuse the same object, so that all the background tasks are merged together and are run in the background afterwards:\n\nIn this example, the messages will be written to the `log.txt` file *after* the response is sent.\n\nIf there was a query in the request, it will be written to the log in a background task.\n\nAnd then another background task generated at the *path operation function* will write a message using the `email` path parameter."
+        }
+      ],
+      "agent_retrieved_text": [
+        "[fastapi-background-tasks#5, score=0.8022] Background Tasks > Technical Details\n\nThe class `BackgroundTasks` comes directly from `starlette.background`.\n\nIt is imported/included directly into FastAPI so that you can import it from `fastapi` and avoid accidentally importing the alternative `BackgroundTask` (without the `s` at the end) from `starlette.background`.\n\nBy only using `BackgroundTasks` (and not `BackgroundTask`), it's then possible to use it as a *path operation function* parameter and have **FastAPI** handle the rest for you, just like when using the `Request` object directly.\n\nIt's still possible to use `BackgroundTask` alone in FastAPI, but you have to create the object in your code and return a Starlette `Response` including it.\n\nYou can see more details in Starlette's official docs for Background Tasks.\n[fastapi-background-tasks#1, score=0.7960] Background Tasks > Using `BackgroundTasks`\n\nFirst, import `BackgroundTasks` and define a parameter in your *path operation function* with a type declaration of `BackgroundTasks`:\n\n**FastAPI** will create the object of type `BackgroundTasks` for you and pass it as that parameter.\n[fastapi-background-tasks#4, score=0.6935] Background Tasks > Dependency Injection\n\nUsing `BackgroundTasks` also works with the dependency injection system, you can declare a parameter of type `BackgroundTasks` at multiple levels: in a *path operation function*, in a dependency (dependable), in a sub-dependency, etc.\n\n**FastAPI** knows what to do in each case and how to reuse the same object, so that all the background tasks are merged together and are run in the background afterwards:\n\nIn this example, the messages will be written to the `log.txt` file *after* the response is sent.\n\nIf there was a query in the request, it will be written to the log in a background task.\n\nAnd then another background task generated at the *path operation function* will write a message using the `email` path parameter."
+      ],
+      "agent_retrieved": [
+        "fastapi-background-tasks#5",
+        "fastapi-background-tasks#1",
+        "fastapi-background-tasks#4"
+      ],
+      "agent_retrieval": {
+        "hit": true,
+        "doc_hit": true,
+        "rr": 0.3333333333333333
+      },
+      "tool_check": {
+        "ok": true,
+        "problems": []
+      },
+      "judge": {
+        "model": "gemma3:4b",
+        "refused": false,
+        "refused_source": "regex",
+        "refused_judge": true,
+        "grounded": "partial",
+        "grounded_source": "judge",
+        "facts_covered": [
+          true,
+          true
+        ],
+        "fact_coverage": 1.0,
+        "reasons": {
+          "refusal_judge": "The reply provides a positive answer and explanation.",
+          "grounded": "The answer mentions dependency injection but the source text primarily focuses on using `BackgroundTasks` in path operation functions."
+        },
+        "latency_s": 21.23,
+        "tokens": 1127
+      }
+    },
+    {
+      "id": "ho-u1",
+      "category": "unanswerable",
+      "repeat": 0,
+      "latency_s": 0.29,
+      "answer": "The documents I can search do not cover this.",
+      "tool_calls": [
+        {
+          "name": "search_documents",
+          "args": {
+            "query": "How do I enable HTTP/2 in FastAPI?"
+          },
+          "forced": true
+        }
+      ],
+      "tool_results": [
+        {
+          "name": "search_documents",
+          "content": "No relevant documents found."
+        }
+      ],
+      "agent_retrieved_text": [
+        "No relevant documents found."
+      ],
+      "agent_retrieved": [],
+      "tool_check": {
+        "ok": true,
+        "problems": []
+      },
+      "judge": {
+        "model": "gemma3:4b",
+        "refused": true,
+        "refused_source": "regex",
+        "refused_judge": true,
+        "grounded": "no_claims",
+        "grounded_source": "rule",
+        "facts_covered": [],
+        "fact_coverage": 0.0,
+        "reasons": {
+          "refusal_judge": "The assistant stated it couldn't find relevant documentation.",
+          "grounded": "reply declined"
+        },
+        "latency_s": 3.84,
+        "tokens": 161
+      }
+    },
+    {
+      "id": "ho-u2",
+      "category": "unanswerable",
+      "repeat": 0,
+      "latency_s": 0.31,
+      "answer": "The documents I can search do not cover this.",
+      "tool_calls": [
+        {
+          "name": "search_documents",
+          "args": {
+            "query": "How do I store LangGraph state in Neo4j?"
+          },
+          "forced": true
+        }
+      ],
+      "tool_results": [
+        {
+          "name": "search_documents",
+          "content": "No relevant documents found."
+        }
+      ],
+      "agent_retrieved_text": [
+        "No relevant documents found."
+      ],
+      "agent_retrieved": [],
+      "tool_check": {
+        "ok": true,
+        "problems": []
+      },
+      "judge": {
+        "model": "gemma3:4b",
+        "refused": true,
+        "refused_source": "regex",
+        "refused_judge": true,
+        "grounded": "no_claims",
+        "grounded_source": "rule",
+        "facts_covered": [],
+        "fact_coverage": 0.0,
+        "reasons": {
+          "refusal_judge": "The assistant admits it doesn't have the information to answer.",
+          "grounded": "reply declined"
+        },
+        "latency_s": 3.93,
+        "tokens": 165
+      }
+    },
+    {
+      "id": "ho-u3",
+      "category": "unanswerable",
+      "repeat": 0,
+      "latency_s": 0.25,
+      "answer": "The documents I can search do not cover this.",
+      "tool_calls": [
+        {
+          "name": "search_documents",
+          "args": {
+            "query": "How do I add gzip compression to FastAPI responses?"
+          },
+          "forced": true
+        }
+      ],
+      "tool_results": [
+        {
+          "name": "search_documents",
+          "content": "No relevant documents found."
+        }
+      ],
+      "agent_retrieved_text": [
+        "No relevant documents found."
+      ],
+      "agent_retrieved": [],
+      "tool_check": {
+        "ok": true,
+        "problems": []
+      },
+      "judge": {
+        "model": "gemma3:4b",
+        "refused": true,
+        "refused_source": "regex",
+        "refused_judge": true,
+        "grounded": "no_claims",
+        "grounded_source": "rule",
+        "facts_covered": [],
+        "fact_coverage": 0.0,
+        "reasons": {
+          "refusal_judge": "The assistant stated it couldn't find relevant documentation.",
+          "grounded": "reply declined"
+        },
+        "latency_s": 3.74,
+        "tokens": 161
+      }
+    },
+    {
+      "id": "ho-u4",
+      "category": "unanswerable",
+      "repeat": 0,
+      "latency_s": 0.26,
+      "answer": "The documents I can search do not cover this.",
+      "tool_calls": [
+        {
+          "name": "search_documents",
+          "args": {
+            "query": "How do I cache FastAPI responses in Redis?"
+          },
+          "forced": true
+        }
+      ],
+      "tool_results": [
+        {
+          "name": "search_documents",
+          "content": "No relevant documents found."
+        }
+      ],
+      "agent_retrieved_text": [
+        "No relevant documents found."
+      ],
+      "agent_retrieved": [],
+      "tool_check": {
+        "ok": true,
+        "problems": []
+      },
+      "judge": {
+        "model": "gemma3:4b",
+        "refused": true,
+        "refused_source": "regex",
+        "refused_judge": true,
+        "grounded": "no_claims",
+        "grounded_source": "rule",
+        "facts_covered": [],
+        "fact_coverage": 0.0,
+        "reasons": {
+          "refusal_judge": "The assistant stated it couldn't find relevant documentation.",
+          "grounded": "reply declined"
+        },
+        "latency_s": 3.83,
+        "tokens": 160
+      }
+    },
+    {
+      "id": "ho-u5",
+      "category": "unanswerable",
+      "repeat": 0,
+      "latency_s": 6.82,
+      "answer": "An MCP server bills clients for tool usage through a client-server architecture. The MCP host, which is an AI application like Claude Code or Claude Desktop, establishes connections to one or more MCP servers. Each MCP client maintains a dedicated connection with its corresponding MCP server. The billing process is typically handled through the standardized protocol interfaces provided by the MCP servers. For example, a file system server for document access, a database server for data queries, a GitHub server for code management, a Slack server for team communication, and a calendar server for scheduling are common examples of MCP servers. The key participants in the MCP architecture are the MCP host and the MCP clients.",
+      "tool_calls": [
+        {
+          "name": "search_documents",
+          "args": {
+            "query": "How does an MCP server bill clients for tool usage?"
+          },
+          "forced": true
+        }
+      ],
+      "tool_results": [
+        {
+          "name": "search_documents",
+          "content": "[mcp-architecture#4, score=0.5637] Architecture overview > Participants\n\n- **MCP Host**: The AI application that coordinates and manages one or multiple MCP clients\n- **MCP Client**: A component that maintains a connection to an MCP server and obtains context from an MCP server for the MCP host to use\n- **MCP Server**: A program that provides context to MCP clients\n\n**For example**: Visual Studio Code acts as an MCP host. When Visual Studio Code establishes a connection to an MCP server, such as the Sentry MCP server, the Visual Studio Code runtime instantiates an MCP client object that maintains the connection to the Sentry MCP server.\nWhen Visual Studio Code subsequently connects to another MCP server, such as the local filesystem server, the Visual Studio Code runtime instantiates an additional MCP client object to maintain this connection.\n[mcp-server-concepts#0, score=0.5605] Understanding MCP servers\n\nMCP servers are programs that expose specific capabilities to AI applications through standardized protocol interfaces.\n\nCommon examples include file system servers for document access, database servers for data queries, GitHub servers for code management, Slack servers for team communication, and calendar servers for scheduling.\n[mcp-architecture#2, score=0.5555] Architecture overview > Participants\n\nMCP follows a client-server architecture where an MCP host \u2014 an AI application like Claude Code or Claude Desktop \u2014 establishes connections to one or more MCP servers. The MCP host accomplishes this by creating one MCP client for each MCP server. Each MCP client maintains a dedicated connection with its corresponding MCP server.\n\nLocal MCP servers that use the STDIO transport typically serve a single MCP client, whereas remote MCP servers that use the Streamable HTTP transport will typically serve many MCP clients.\n\nThe key participants in the MCP architecture are:"
+        }
+      ],
+      "agent_retrieved_text": [
+        "[mcp-architecture#4, score=0.5637] Architecture overview > Participants\n\n- **MCP Host**: The AI application that coordinates and manages one or multiple MCP clients\n- **MCP Client**: A component that maintains a connection to an MCP server and obtains context from an MCP server for the MCP host to use\n- **MCP Server**: A program that provides context to MCP clients\n\n**For example**: Visual Studio Code acts as an MCP host. When Visual Studio Code establishes a connection to an MCP server, such as the Sentry MCP server, the Visual Studio Code runtime instantiates an MCP client object that maintains the connection to the Sentry MCP server.\nWhen Visual Studio Code subsequently connects to another MCP server, such as the local filesystem server, the Visual Studio Code runtime instantiates an additional MCP client object to maintain this connection.\n[mcp-server-concepts#0, score=0.5605] Understanding MCP servers\n\nMCP servers are programs that expose specific capabilities to AI applications through standardized protocol interfaces.\n\nCommon examples include file system servers for document access, database servers for data queries, GitHub servers for code management, Slack servers for team communication, and calendar servers for scheduling.\n[mcp-architecture#2, score=0.5555] Architecture overview > Participants\n\nMCP follows a client-server architecture where an MCP host \u2014 an AI application like Claude Code or Claude Desktop \u2014 establishes connections to one or more MCP servers. The MCP host accomplishes this by creating one MCP client for each MCP server. Each MCP client maintains a dedicated connection with its corresponding MCP server.\n\nLocal MCP servers that use the STDIO transport typically serve a single MCP client, whereas remote MCP servers that use the Streamable HTTP transport will typically serve many MCP clients.\n\nThe key participants in the MCP architecture are:"
+      ],
+      "agent_retrieved": [
+        "mcp-architecture#4",
+        "mcp-server-concepts#0",
+        "mcp-architecture#2"
+      ],
+      "tool_check": {
+        "ok": true,
+        "problems": []
+      },
+      "judge": {
+        "model": "gemma3:4b",
+        "refused": false,
+        "refused_source": "regex",
+        "refused_judge": false,
+        "grounded": "partial",
+        "grounded_source": "judge",
+        "facts_covered": [],
+        "fact_coverage": 0.0,
+        "reasons": {
+          "refusal_judge": "The reply describes the architecture but doesn't detail the billing process.",
+          "grounded": "The answer includes information about billing and specific examples of MCP servers, which are not in the source text."
+        },
+        "latency_s": 18.39,
+        "tokens": 966
+      }
+    }
+  ]
+}

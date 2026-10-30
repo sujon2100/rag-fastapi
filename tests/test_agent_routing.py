@@ -128,3 +128,34 @@ def test_forced_search_still_goes_through_authz():
 
     assert search_tool.calls == []
     assert result["messages"][-2].content.startswith("Denied")
+
+
+
+def test_no_context_refusal_skips_the_model():
+    search_tool = StubTool("search_documents", "No relevant documents found.")
+    llm = StubLLM([])  # any model call would pop from an empty script and fail
+    app = build_agent([search_tool], llm, force_search=True, no_context_refusal=True)
+
+    result = _run(
+        app.ainvoke(
+            {"messages": [HumanMessage(content="how do I enable HTTP/2?")], "role": "reader"},
+            config={"configurable": {"thread_id": "t5"}},
+        )
+    )
+
+    assert result["messages"][-1].content == "The documents I can search do not cover this."
+
+
+def test_no_context_refusal_lets_real_results_through():
+    search_tool = StubTool("search_documents", "[doc#1, score=0.8] text")
+    llm = StubLLM([AIMessage(content="answer from doc#1")])
+    app = build_agent([search_tool], llm, force_search=True, no_context_refusal=True)
+
+    result = _run(
+        app.ainvoke(
+            {"messages": [HumanMessage(content="q")], "role": "reader"},
+            config={"configurable": {"thread_id": "t6"}},
+        )
+    )
+
+    assert result["messages"][-1].content == "answer from doc#1"

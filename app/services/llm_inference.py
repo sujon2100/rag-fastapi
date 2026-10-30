@@ -22,7 +22,7 @@ def generate_with_ollama(prompt: str) -> str:
     return response.json()["response"]
 
 
-def query_llm(user_query: str):
+def query_llm(user_query: str) -> str:
     # 1. Embed query
     query_embedding = embed(user_query)
 
@@ -31,7 +31,7 @@ def query_llm(user_query: str):
     matches = relevant_matches(results)
 
     if not matches:
-        return {"answer": "No relevant documents found."}
+        return "No relevant documents found."
 
     context = " ".join(
         m["metadata"]["text"]
@@ -56,4 +56,7 @@ Answer:
     # 4. Generate answer
     answer = generate_with_ollama(prompt)
 
-    return {"answer": answer.strip()}
+    # plain string; the route wraps it. Returning {"answer": ...} here made
+    # /rag/query respond {"answer": {"answer": ...}} - caught by the
+    # functional test against the running API.
+    return answer.strip()

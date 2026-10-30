@@ -12,7 +12,7 @@ This scores the RAG + MCP agent on a fixed set of 40 questions against a fixed c
 | `scoring.py` | Plain-assertion scoring. No models, unit tested in `tests/test_scoring.py` |
 | `judge.py` | LLM judge through local Ollama, default `gemma3:4b` (see "How far to trust the judge" in the top-level README) |
 | `run_eval.py` | The runner |
-| `thresholds.json` | Minimums the CI gate checks. Set from the fix B run (`2026-10-29_143035`), each a case or two below the measured value. Checked: the original agent fails 4 of them (searched rate, tool-call correctness, groundedness, fact coverage), fix B fails none |
+| `thresholds.json` | Minimums the CI gate checks. Set from the fix B run (`2026-10-29_143035`), each a case or two below the measured value. Refusal minimum added after fix D. Checked: the original agent fails 5, forced search and the cutoff version each fail refusals, the current version passes all |
 
 ## Golden case format
 
@@ -53,6 +53,9 @@ python -m evals.run_eval --phase agent          # + agent (needs Ollama with qwe
 python -m evals.run_eval --phase judge --results evals/results/<file>_agent.json
 python -m evals.run_eval                        # all three phases in one go
 python -m evals.run_eval --ids fa-01,un-03 --repeats 3 --gate evals/thresholds.json
+python -m evals.run_eval --golden evals/holdout.jsonl     # held-out set
+python -m evals.run_eval --force-search 0 --grounded-prompt 0 --no-context-refusal 0   # original agent
+SEARCH_MIN_SCORE=0 python -m evals.run_eval              # without the cutoff
 ```
 
 The agent runs at temperature 0 by default so runs can be compared. The deployed service uses Ollama's default temperature; pass `--temperature -1` to evaluate that. The judge runs after the agent model is unloaded, because `gpt-oss:20b` and `qwen2.5:1.5b` don't both fit in 16 GB of RAM.

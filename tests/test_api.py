@@ -71,9 +71,8 @@ def test_rag_query_requires_query(client):
     assert client.post("/rag/query", json={}).status_code == 422
 
 
-@pytest.mark.xfail(strict=True, reason="known bug: query_llm returns a dict and the route wraps it again")
 def test_rag_query_response_shape(client, monkeypatch):
-    monkeypatch.setattr(routes, "query_llm", lambda q: {"answer": f"echo {q}"})
+    monkeypatch.setattr(routes, "query_llm", lambda q: f"echo {q}")
     r = client.post("/rag/query", json={"query": "hi"})
     assert r.status_code == 200
     assert r.json() == {"answer": "echo hi"}

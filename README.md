@@ -150,9 +150,9 @@ pytest tests/ --run-integration        # real MCP tools, writes to namespace int
 
 Unit tests use fakes for Pinecone, Ollama and the agent: authz, tool routing,
 forced search, chunking, the MCP tools, the API layer, the eval's scoring
-rules and the golden set itself. One test is a strict `xfail` for a known bug
-(`/rag/query` returns `{"answer": {"answer": ...}}`), so it fails loudly once
-the bug is fixed and the marker should come off.
+rules and the golden set itself. Functional tests start the real API and MCP
+server and call them over HTTP; their first run caught `/rag/query` returning
+`{"answer": {"answer": ...}}`, which is now fixed.
 
 ## Evaluation
 
@@ -179,28 +179,47 @@ python -m evals.run_eval --grounded-prompt 0 --force-search 0   # the original a
 
 Agent `qwen2.5:1.5b` at temperature 0, judge `gemma3:4b`, both through Ollama
 on a 2020 Intel i5 laptop (16 GB RAM, no GPU). One run per configuration.
+Each column adds one change to the one before it.
 
-| Metric | Original agent | + grounded prompt | + prompt and forced search |
+**Golden set (40 questions)**
+
+| Metric | Original | + prompt | + forced search | + score cutoff | + code refusal (current) |
+|---|---|---|---|---|---|
+| Searched before answering (30 answerable) | 0.00 | 0.00 | 1.00 | 1.00 | 1.00 |
+| Search found an expected chunk (top 3) | 0.87 ¹ | 0.87 ¹ | 0.87 | 0.87 | 0.87 |
+| Groundedness, fully supported (judge) | 0.00 ² | 0.00 ² | 0.53 | 0.57 | 0.63 |
+| Groundedness, supported or partial (judge) | 0.00 ² | 0.00 ² | 0.93 | 0.93 | 0.97 |
+| Key-fact coverage (judge) | 0.61 | 0.59 | 0.89 | 0.89 | 0.89 |
+| Refused on unanswerable (8) | 2 | 0 | 2 | 5 ³ | 7 |
+| Refused an answerable question (30) | 1 | 0 | 0 | 0 | 0 |
+| Latency p50 / p95, seconds | 13.5 / 32.5 | 12.7 / 44.2 | 10.4 / 24.1 | 11.5 / 31.8 | 7.2 / 13.4 |
+| Errors | 0 | 0 | 0 | 0 | 0 |
+
+**Held-out set (12 questions, never used for tuning)**
+
+| Metric | + forced search | + score cutoff | + code refusal (current) |
 |---|---|---|---|
-| Searched before answering (30 answerable) | 0.00 | 0.00 | 1.00 |
-| Search found an expected chunk (top 3) | 0.87 ¹ | 0.87 ¹ | 0.87 |
-| Groundedness, fully supported (judge) | 0.00 ² | 0.00 ² | 0.53 |
-| Groundedness, supported or partial (judge) | 0.00 ² | 0.00 ² | 0.93 |
-| Key-fact coverage (judge) | 0.61 | 0.59 | 0.89 |
-| Refused on unanswerable (8) | 2 of 8 | 0 of 8 | 2 of 8 |
-| Refused an answerable question | 1 of 29 | 0 of 30 | 0 of 30 |
-| Latency p50 / p95, seconds | 13.5 / 32.5 | 12.7 / 44.2 | 10.4 / 24.1 |
-| Errors | 0 | 0 | 0 |
+| Search found an expected chunk (7 answerable) | 7 | 7 | 7 |
+| Groundedness, fully supported (judge) | 0.71 | 0.71 | 0.71 |
+| Refused on unanswerable (5) | 0 | 4 | 4 |
+| Refused an answerable question (7) | 0 | 0 | 0 |
+| Latency p50 / p95, seconds | 9.4 / 21.5 | 7.3 / 8.7 | 6.0 / 7.8 |
 
 ¹ Retriever called directly with the question; the agent itself never searched.
 ² Set by rule: nothing was retrieved, so nothing can be supported.
+³ Two of the five said the docs don't cover it and then answered from memory
+anyway ("However, you can..."); the refusal regex counts them.
 
-Result files: `evals/results/2026-10-29_131139_judged.json`,
-`2026-10-29_135349_fixA-prompt_all.json`, `2026-10-29_143035_fixB-prompt-forced_all.json`.
+**Read the groundedness row with care.** Between the last three columns only
+3 of the 30 answerable answers came out word-for-word the same, even at
+temperature 0, so the agent's wording changes from run to run. The 0.53 /
+0.57 / 0.63 spread is within that noise, not an effect of the later fixes,
+which don't touch answerable questions at all. What the cutoff and the code
+refusal actually changed is the refusal and latency rows.
 
-The search cutoff (`SEARCH_MIN_SCORE`, point 4 below) is on by default but
-its eval runs, golden and held-out, are not finished yet; its numbers will be
-added here when they are.
+Results files are in `evals/results/`. The CI gate (`evals/thresholds.json`)
+fails the original agent on 5 metrics, the forced-search and cutoff versions
+on refusals, and passes the current one.
 
 ### What the eval found, and what changed because of it
 
@@ -212,20 +231,36 @@ added here when they are.
    tests hid this because they all said "search the documents for X".
 2. **A system prompt didn't fix it.** "Before answering any question, call
    search_documents" changed nothing with this model: still 0 of 30.
-3. **Forcing the search did.** A `retrieve` step now runs `search_documents`
-   on the question before the model's first turn, through the same authz
-   check as any other tool call. On by default (`AGENT_FORCE_SEARCH`,
-   `AGENT_GROUNDED_PROMPT`).
-4. **Refusals were weak even with search.** With the documents in front of
-   it, the model still stretched unrelated chunks into answers ("use a
-   middleware for rate limiting"). Search results are now dropped when the best
-   match scores under 0.54 (`SEARCH_MIN_SCORE`), so the model sees "No relevant
-   documents found". The cutoff was picked from the golden set's scores, so it
-   was also checked on the held-out set (see above).
-5. **Runaway generation.** One question made the model generate 7,400+ tokens
-   (about 10 minutes of CPU) and hung the first eval run. Replies are now
-   capped at 1,024 tokens (`AGENT_MAX_TOKENS`), and the agent's model call is
-   async, so a timeout actually cancels it. This affected the live service too.
+3. **Forcing the search did.** A `retrieve` step runs `search_documents` on
+   the question before the model's first turn, through the same authz check
+   as any other tool call.
+4. **The agent still answered unanswerable questions** from loosely related
+   chunks ("use a middleware for rate limiting"). Search now returns nothing
+   when the best match scores under 0.54 (`SEARCH_MIN_SCORE`), picked from the
+   golden set's scores: answerable questions' best match was at least 0.548,
+   7 of 8 unanswerable ones at most 0.535. The gap is narrow; on the held-out
+   set one unanswerable question scored 0.536.
+5. **The model ignored "No relevant documents found."** With the cutoff, it
+   still answered several from memory ("16 KB" this time). So when the
+   forced search finds nothing, the agent now replies "The documents I can
+   search do not cover this." in code, without calling the model
+   (`AGENT_NO_CONTEXT_REFUSAL`). Points 2 and 5 are the same lesson: with a
+   1.5B model, rules have to be enforced in code, not in the prompt.
+6. **Runaway generation.** One question made the model generate 7,400+ tokens
+   (about 10 minutes of CPU) and hung the first eval run. Replies are capped
+   at 1,024 tokens (`AGENT_MAX_TOKENS`), and the model call is async, so a
+   timeout actually cancels it.
+7. **`/rag/query` returned `{"answer": {"answer": ...}}`**, caught by the first
+   functional test run against the real API. Fixed; all 5 functional tests
+   now pass.
+8. **CI's first run failed** before any test ran: plain `pytest` could not
+   import the app (local runs used `python -m pytest`, which hid it). Fixed
+   with `pytest.ini`.
+
+**Still not caught:** questions that sound like the docs but aren't covered
+("Does LangGraph support GraphQL subscriptions?", "How does an MCP server bill
+clients?") score above the cutoff and get invented answers. A single score
+threshold can't separate these.
 
 ### How far to trust the judge
 
@@ -250,8 +285,8 @@ finishing, so it was dropped.
 
 ### Limits
 
-- One run per configuration at temperature 0. Repeats (`--repeats N`) were
-  not run, so there's no variance estimate.
+- One run per configuration. Repeats (`--repeats N`) were not run; the only
+  noise estimate is the 3-of-30 identical answers noted above.
 - 40 + 12 questions over 12 pages is small. A few cases move a metric by
   several points.
 - The cutoff gap on the golden set is narrow (0.535 vs 0.548), and one

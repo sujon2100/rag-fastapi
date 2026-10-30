@@ -97,7 +97,8 @@ def run_retrieval(cases, records_by_key, top_k):
         print(f"  retrieval {case['id']:6} hit={result['hit']!s:5} doc_hit={result['doc_hit']!s:5} {ids}")
 
 
-async def run_agent(cases, records_by_key, repeats, temperature, case_timeout, save, grounded_prompt, force_search):
+async def run_agent(cases, records_by_key, repeats, temperature, case_timeout, save, grounded_prompt, force_search,
+                    no_context_refusal):
     from app.agent.graph import run_query_traced
     from evals.scoring import CATEGORIES_WITH_SOURCES, check_tool_calls, retrieval_scores, retrieved_ids
 
@@ -113,6 +114,7 @@ async def run_agent(cases, records_by_key, repeats, temperature, case_timeout, s
                         thread_id=f"eval-{case['id']}-{rep}-{time.time_ns()}", temperature=temperature,
                         llm_timeout=case_timeout / 2,
                         grounded_prompt=grounded_prompt, force_search=force_search,
+                        no_context_refusal=no_context_refusal,
                     ),
                     timeout=case_timeout,
                 )
@@ -144,6 +146,8 @@ def run_judge(cases, records, model, save=lambda: None):
     by_id = {c["id"]: c for c in cases}
     for rec in records:
         if rec.get("error") or rec["category"] == "authz" or "answer" not in rec:
+            continue
+        if rec.get("judge"):  # already judged in an earlier, interrupted run
             continue
         try:
             rec["judge"] = judge_case(rec, by_id[rec["id"]], model=model)
@@ -198,6 +202,9 @@ def main(argv=None):
                     help="grounded system prompt on/off (default on, as in the service)")
     ap.add_argument("--force-search", type=int, choices=[0, 1], default=1,
                     help="forced first search on/off (default on, as in the service)")
+    ap.add_argument("--no-context-refusal", type=int, choices=[0, 1],
+                    default=int(os.getenv("AGENT_NO_CONTEXT_REFUSAL", "1")),
+                    help="reply with a fixed refusal when the forced search finds nothing")
     ap.add_argument("--label", default="", help="short tag added to the results filename")
     ap.add_argument("--case-timeout", type=float, default=300.0, help="seconds before one agent case is recorded as an error")
     args = ap.parse_args(argv)
@@ -248,6 +255,8 @@ def main(argv=None):
         meta["case_timeout_s"] = args.case_timeout
         meta["grounded_prompt"] = bool(args.grounded_prompt)
         meta["force_search"] = bool(args.force_search)
+        meta["no_context_refusal"] = bool(args.no_context_refusal)
+        meta["search_min_score"] = float(os.getenv("SEARCH_MIN_SCORE", "0.54"))
         meta["agent_max_tokens"] = int(os.getenv("AGENT_MAX_TOKENS", "1024"))
         records_by_key = {(r["id"], r["repeat"]): r for r in records}
         t0 = time.perf_counter()
@@ -258,7 +267,8 @@ def main(argv=None):
             try:
                 print(f"agent, {repeats} repeat(s), temperature={meta['agent_temperature']}")
                 asyncio.run(run_agent(cases, records_by_key, repeats, temperature, args.case_timeout, save,
-                                      bool(args.grounded_prompt), bool(args.force_search)))
+                                      bool(args.grounded_prompt), bool(args.force_search),
+                                      bool(args.no_context_refusal)))
             finally:
                 proc.terminate()
                 proc.wait(timeout=10)

@@ -17,6 +17,7 @@ flowchart TB
         llminf["llm_inference.query_llm<br/>embed, top_k=3, prompt, generate"]
         subgraph graph["LangGraph StateGraph, app/agent/graph.py"]
             retrieve["retrieve node, AGENT_FORCE_SEARCH=1 (default on)<br/>search_documents on the question, via tools node"]
+            refuse["refuse node, AGENT_NO_CONTEXT_REFUSAL=1 (default on)<br/>forced search found nothing: fixed reply, no LLM call"]
             agentnode["agent node, async ainvoke<br/>ChatOllama.bind_tools, num_predict=AGENT_MAX_TOKENS (1024)<br/>grounded system prompt, AGENT_GROUNDED_PROMPT=1 (default on)"]
             toolsnode["tools node"]
             authz["authz.check_tool_authorized<br/>reader: search<br/>ingest_agent: search + ingest"]
@@ -48,6 +49,7 @@ flowchart TB
     agentep --> agentnode
     agentep -.->|"if forced"| retrieve
     retrieve -.-> toolsnode
+    toolsnode -.->|"forced search: No relevant documents"| refuse
     agentnode <-->|"chat + tool calls"| qwen
     agentnode -->|"tool_calls present"| toolsnode
     toolsnode --> authz
@@ -68,7 +70,7 @@ flowchart TB
     corpus --> chunker --> ingestscript -->|"namespace eval-v1"| pinecone
 
     %% P1 eval harness: code written, baseline not run yet
-    subgraph p1eval["P1 eval harness (baseline run 2026-10-29)"]
+    subgraph p1eval["P1 eval harness (runs: baseline, fixes A-D, held-out)"]
         golden["evals/golden.jsonl<br/>40 cases: 26 answerable, 4 multi-doc,<br/>8 unanswerable, 2 authz"]
         holdout["evals/holdout.jsonl<br/>12 held-out cases, never used for tuning"]
         runeval["evals/run_eval.py<br/>phases: retrieval, agent, judge"]
@@ -89,13 +91,12 @@ flowchart TB
     labels --> runeval
     runeval --> results
 
-    %% P1 planned, not built
-    subgraph p1["P1 planned, not built yet"]
-        thresholds["evals/thresholds.json<br/>set after baseline"]
-        ci["GitHub Actions: ci.yml (unit tests + retrieval gate on push),<br/>eval.yml (full eval on demand). Files written, never run"]
+    subgraph p1ci["P1 CI"]
+        thresholds["evals/thresholds.json<br/>from fix B/D runs"]
+        ci["GitHub Actions ci.yml: unit tests on push (green since a709d19),<br/>retrieval gate (skipped until PINECONE_API_KEY secret is set).<br/>eval.yml: full eval on demand, never run"]
     end
-    thresholds -.-> runeval
-    ci -.-> runeval
+    thresholds --> runeval
+    ci --> runeval
 ```
 
 ### Tests
@@ -103,7 +104,7 @@ flowchart TB
 | Suite | Runs where | Needs |
 |---|---|---|
 | `test_authz`, `test_agent_routing`, `test_chunking`, `test_mcp_tools`, `test_api`, `test_scoring`, `test_golden` | Every push (ci.yml) | Nothing; fakes stand in for Pinecone, Ollama and the agent |
-| `test_functional` (`--run-functional`) | Local | Starts real MCP (:8021) and uvicorn (:8020) on ns eval-v1, real Ollama |
+| `test_functional` (`--run-functional`) | Local | Starts real MCP (:8021) and uvicorn (:8020) on ns eval-v1, real Ollama. 5/5 pass after the `/rag/query` fix |
 | `test_integration` (`--run-integration`) | Local | Real MCP (:8001), writes canaries to ns `integration-test` |
 
 ## 2. Request flow: `POST /agent/query`
@@ -122,6 +123,7 @@ sequenceDiagram
     F->>G: run_query(query, role)
     G->>M: get_tools() (new MCP client on every request)
     Note over G: AGENT_FORCE_SEARCH=1 runs search_documents(question) first, through the same authz check
+    Note over G: if that search returns "No relevant documents found" (best score < 0.54), reply "The documents I can search do not cover this." without calling the model
     G->>O: messages + tool schemas (system prompt only if AGENT_GROUNDED_PROMPT=1; reply capped at AGENT_MAX_TOKENS)
     O-->>G: AIMessage with tool_calls, or a final answer
     alt tool_calls present
@@ -159,8 +161,8 @@ sequenceDiagram
 | 2 | ~~The embedder loads at import time~~ Fixed (lazy, `embeddings.py`). Still two copies at runtime (api and mcp-server) | `llm_inference.py`, `mcp/server.py` |
 | 3 | Chunker exists and the eval corpus is chunked, but `ingest_document` still stores one vector per call | `mcp/server.py` |
 | 4 | Measured in the baseline: the agent called search on 0 of 30 answerable questions and made up answers (e.g. "MCP (Maven Central Repository)"). Fix written and switchable (`AGENT_GROUNDED_PROMPT`, `AGENT_FORCE_SEARCH`), both off by default until measured | `agent/graph.py` |
-| 5 | ~~No score threshold~~ Added: `SEARCH_MIN_SCORE` (0.54) gates on the best match, in both `search_documents` and `/rag/query`. Eval runs pending | `vectorstore.relevant_matches` |
-| 6 | `/rag/query` returns a nested `{"answer": {"answer": ...}}`. Covered by a strict xfail unit test and a functional test | `routes.py` and `query_llm` |
+| 5 | ~~No score threshold~~ Added: `SEARCH_MIN_SCORE` (0.54) gates on the best match. Measured: refusals 7/8 golden, 4/5 held-out with fix D. Questions that sound like the docs (GraphQL streaming 0.69, MCP billing 0.56) still pass it | `vectorstore.relevant_matches` |
+| 6 | ~~`/rag/query` returns a nested `{"answer": {"answer": ...}}`~~ Fixed after the first functional test run; `query_llm` returns a string | `llm_inference.py` |
 | 7 | `/agent/query` returns no sources and no tool trace. The eval uses `run_query_traced()` in process instead; the HTTP API is unchanged | `routes.py`, `graph.run_query` |
 | 8 | ~~The integration test writes canary docs into the live index~~ Fixed: writes to namespace `integration-test` | `tests/conftest.py` |
 | 9 | ~~Index name and namespace are hardcoded~~ Fixed: `PINECONE_INDEX`, `PINECONE_NAMESPACE` | `vectorstore.py` |
@@ -177,3 +179,4 @@ sequenceDiagram
 | 2026-10-29 | Baseline run (`2026-10-29_131139`). Judge v2 (separate refusal call, no-context grounding by rule) after a hand check found judge v1 wrong on 6 of 8 refusals; hand labels added. Agent fix options added (`retrieve` node, grounded prompt), off by default | uncommitted |
 | 2026-10-29 | Fix B made the default (forced search, grounded prompt). Search cutoff `SEARCH_MIN_SCORE` = 0.54 on the best match. Held-out set (12). Groundedness hand labels (17, judge agreement 0.59). Copied to `rag-fastapi/docs/ARCHITECTURE.md` | uncommitted |
 | 2026-10-29 | First CI run (3b82644) failed at test collection: plain `pytest` could not import `app`/`evals` (local runs used `python -m pytest`, which hid it; the README command never worked). Added `pytest.ini` with `pythonpath = .` | uncommitted |
+| 2026-10-29 | Fix D: `refuse` node, fixed reply when the forced search finds nothing (`AGENT_NO_CONTEXT_REFUSAL`, default on). Runs: fix C and fix D on golden and held-out. `/rag/query` nested answer fixed (functional tests 5/5). Refusal threshold added | uncommitted |

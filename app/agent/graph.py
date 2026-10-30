@@ -54,6 +54,18 @@ AGENT_MAX_TOKENS = int(os.getenv("AGENT_MAX_TOKENS", "1024"))
 AGENT_GROUNDED_PROMPT = os.getenv("AGENT_GROUNDED_PROMPT", "1") == "1"
 AGENT_FORCE_SEARCH = os.getenv("AGENT_FORCE_SEARCH", "1") == "1"
 
+# With the search cutoff (SEARCH_MIN_SCORE) the forced search correctly came
+# back "No relevant documents found." for 7 of 8 unanswerable eval questions,
+# and the model still answered several of them from memory ("16 KB" for
+# FastAPI's body limit). So when the forced search finds nothing, reply with
+# a fixed refusal in code instead of asking the model.
+# Measured: unanswerable questions refused went from 5/8 to 7/8 on the golden
+# set, 4/5 on the held-out set, no answerable question refused. On by default.
+#   AGENT_NO_CONTEXT_REFUSAL
+AGENT_NO_CONTEXT_REFUSAL = os.getenv("AGENT_NO_CONTEXT_REFUSAL", "1") == "1"
+NO_CONTEXT_REPLY = "The documents I can search do not cover this."
+NO_RESULTS_PREFIX = "No relevant documents found"
+
 GROUNDED_SYSTEM_PROMPT = """You answer questions using a document search tool, not your own memory.
 
 Rules:
@@ -97,7 +109,7 @@ async def get_mcp_tools(url: str = MCP_SERVER_URL) -> list:
     return await client.get_tools()
 
 
-def build_agent(tools: list, llm: ChatOllama, force_search: bool = False):
+def build_agent(tools: list, llm: ChatOllama, force_search: bool = False, no_context_refusal: bool = False):
     """
     Graph structure: START -> agent -> [tools | END] -> agent -> ...
     With force_search: START -> retrieve -> tools -> agent -> ...
@@ -137,6 +149,20 @@ def build_agent(tools: list, llm: ChatOllama, force_search: bool = False):
         call = {"name": "search_documents", "args": {"query": question}, "id": "forced-search"}
         return {"messages": [AIMessage(content="", tool_calls=[call])]}
 
+    def refuse_node(state: AgentState) -> dict:
+        return {"messages": [AIMessage(content=NO_CONTEXT_REPLY)]}
+
+    def after_tools(state: AgentState) -> str:
+        last = state["messages"][-1]
+        if (
+            no_context_refusal
+            and isinstance(last, ToolMessage)
+            and last.tool_call_id == "forced-search"
+            and last.content.startswith(NO_RESULTS_PREFIX)
+        ):
+            return "refuse"
+        return "agent"
+
     def should_continue(state: AgentState) -> str:
         last = state["messages"][-1]
         if isinstance(last, AIMessage) and last.tool_calls:
@@ -153,7 +179,9 @@ def build_agent(tools: list, llm: ChatOllama, force_search: bool = False):
     else:
         graph.add_edge(START, "agent")
     graph.add_conditional_edges("agent", should_continue, {"tools": "tools", END: END})
-    graph.add_edge("tools", "agent")
+    graph.add_node("refuse", refuse_node)
+    graph.add_conditional_edges("tools", after_tools, {"agent": "agent", "refuse": "refuse"})
+    graph.add_edge("refuse", END)
 
     return graph.compile(checkpointer=MemorySaver())
 
@@ -166,6 +194,7 @@ async def run_query_traced(
     llm_timeout: float | None = None,
     grounded_prompt: bool | None = None,
     force_search: bool | None = None,
+    no_context_refusal: bool | None = None,
 ) -> dict:
     """
     Same run as run_query, but also returns what happened along the way:
@@ -178,6 +207,7 @@ async def run_query_traced(
     """
     grounded_prompt = AGENT_GROUNDED_PROMPT if grounded_prompt is None else grounded_prompt
     force_search = AGENT_FORCE_SEARCH if force_search is None else force_search
+    no_context_refusal = AGENT_NO_CONTEXT_REFUSAL if no_context_refusal is None else no_context_refusal
     tools = await get_mcp_tools()
     llm_kwargs = {"num_predict": AGENT_MAX_TOKENS}
     if temperature is not None:
@@ -185,7 +215,7 @@ async def run_query_traced(
     if llm_timeout is not None:
         llm_kwargs["client_kwargs"] = {"timeout": llm_timeout}
     llm = ChatOllama(model=OLLAMA_MODEL, base_url=OLLAMA_BASE_URL, **llm_kwargs)
-    app = build_agent(tools, llm, force_search=force_search)
+    app = build_agent(tools, llm, force_search=force_search, no_context_refusal=no_context_refusal)
     start = [SystemMessage(content=GROUNDED_SYSTEM_PROMPT)] if grounded_prompt else []
     result = await app.ainvoke(
         {"messages": start + [HumanMessage(content=question)], "role": role},
