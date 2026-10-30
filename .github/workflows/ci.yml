@@ -6,10 +6,10 @@ on:
 
 jobs:
   unit-tests:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.11"
           cache: pip
@@ -22,13 +22,13 @@ jobs:
   retrieval-gate:
     # Retriever-only eval against the eval-v1 namespace: no LLM, ~1 minute.
     # Skips itself when the PINECONE_API_KEY secret is not set (e.g. on forks).
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: unit-tests
     env:
       PINECONE_API_KEY: ${{ secrets.PINECONE_API_KEY }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.11"
           cache: pip
@@ -42,7 +42,7 @@ jobs:
       - if: steps.secret.outputs.present == 'true'
         run: python -m evals.run_eval --phase retrieval --gate evals/thresholds.json
       - if: steps.secret.outputs.present == 'true'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: retrieval-eval
           path: evals/results/*_retrieval.json
